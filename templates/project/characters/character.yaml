@@ -1,0 +1,68 @@
+# 角色档案
+# 由 /character-add 创建，/character-edit 更新
+# 路径: characters/{角色名}.yaml
+
+name: ""
+aliases: []               # 别名、称号、绰号
+role: protagonist         # protagonist / supporting / minor / antagonist
+archetype: ""             # 英雄 / 导师 / 信使 / 门槛守卫 / 变形者 / 阴影 / 盟友 / 骗子
+narrative_function: ""    # 推动主线 / 情感锚点 / 缓解气氛 / 世界观展示 / 制造冲突 / 提供信息 / 镜像对照
+
+first_appearance: ""      # 首次登场章节，如"第1章"
+first_scene: ""           # 首次登场场景ID，如 ch0001_s01
+
+# 基本信息
+profile:
+  age: ""
+  gender: ""
+  occupation: ""          # 职业/身份
+  affiliation: []         # 所属组织/阵营
+  location: ""            # 常驻地点
+
+# 性格特质
+traits: []                # 如: [毒舌, 精明, 护短, 爱财]
+moral_spectrum: ""        # 正义 / 灰色 / 黑暗 / 亦正亦邪 / 被迫为恶
+fatal_flaw: ""            # 会伤到自己或他人的关键缺陷
+obsession: ""             # 执念 / 长期追求 / 放不下的目标
+soft_spot: ""             # 软肋 / 最在意的人或事
+misbelief: ""             # 角色坚信但并不完全正确的信念
+contrast_habit: ""        # 反差习惯，用来增加辨识度
+tragedy_trigger: ""       # 容易触发悲剧的结构点，如"总在太晚时才明白真相"
+
+# 外貌描述
+appearance: ""
+
+# 背景故事
+backstory: ""
+
+# 能力
+abilities: []
+# - name: ""
+#   description: ""
+
+# 人物弧光
+arc: []
+# - stage: "起点"
+#   state: "角色初始状态描述"
+#   chapter: 1
+#   scene: ""
+#   moment_type: ""       # 性格展示 / 性格转变 / 内心独白 / 道德抉择 / 成长顿悟 / 堕落滑落 / 信念崩塌 / 信念重建 / 身份揭示 / 觉醒 / 最终抉择
+#   trigger: ""           # 触发弧光变化的事件（可选）
+
+# 人物关系（由 /relationship-add 维护）
+relations: []
+# - character: ""
+#   type: ""
+#   description: ""
+#   dynamic: ""           # 救赎与被救赎 / 镜像与对立 / 共生与寄生 / 守护与诅咒
+#   tension_source: ""    # 关系中的主要张力来源
+
+# 登场统计（由系统维护）
+appearance_stats:
+  scene_count: 0
+  active_chapters: ""
+  dominant_scene_types: []
+  tension_avg: 0
+
+# 备注
+notes: ""

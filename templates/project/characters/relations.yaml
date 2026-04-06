@@ -1,0 +1,10 @@
+# 角色关系快照
+# 记录当前关系状态，详细变化见 relation_events.yaml
+
+relations: []
+# - pair: [张三, 李四]
+#   type: 师兄弟
+#   dynamic: ""           # 救赎与被救赎 / 镜像与对立 / 共生与寄生 / 守护与诅咒
+#   tension_source: ""    # 当前关系最主要的张力来源
+#   strength: 3
+#   last_updated: 2026-04-01

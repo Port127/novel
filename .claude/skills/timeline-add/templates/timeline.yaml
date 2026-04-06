@@ -1,0 +1,21 @@
+# 时间线模板
+
+> 用于项目初始化
+
+```yaml
+timeline:
+  start: ""
+  end: ""
+  events: []
+```
+
+## 事件格式
+
+```yaml
+- time: "第1天"
+  event: "事件描述"
+  chapter: 1
+  location: "地点"
+  characters: [角色1, 角色2]
+  notes: "备注"
+```

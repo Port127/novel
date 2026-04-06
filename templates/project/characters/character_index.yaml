@@ -1,0 +1,12 @@
+# 人物索引
+# 自动聚合 characters/ 目录下的角色档案
+# 由 /character-add /character-edit 维护
+
+entries: []
+# - name: ""
+#   role: ""              # protagonist / supporting / minor / antagonist
+#   archetype: ""
+#   file: characters/角色名.yaml
+#   first_appearance: ""
+#   affiliation: []
+#   scene_count: 0

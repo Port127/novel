@@ -1,0 +1,34 @@
+# 项目元信息
+# 由 /novel-init 创建，系统自动维护
+
+project_id: ""            # 项目唯一ID，格式：proj_{YYYYMMDD}_{random4}
+type: novel
+
+# 基本信息
+name: ""
+genre: ""
+sub_genre: []
+author: ""
+created: ""
+updated: ""
+status: drafting          # drafting / revising / completed / suspended
+
+# 写作配置
+writing:
+  pov: ""                 # 主视角，如"第三人称限制"
+  target_word_count: 0    # 目标总字数
+  current_word_count: 0   # 当前总字数
+  chapter_count: 0        # 章节总数
+  update_frequency: ""    # 更新频率，如"每日一章"
+
+# 关联资源
+external_refs:
+  material_lib: ../novel-material   # 素材库路径
+  knowledge_lib: ../novel-knowledge # 知识库路径
+
+# 写作风格
+style:
+  template: ""            # 风格模板名称（来自 /style-list）
+  prose: []               # 文笔风格标签
+  strength: []            # 写作长板
+  notes: ""               # 风格备注

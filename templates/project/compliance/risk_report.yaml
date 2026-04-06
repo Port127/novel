@@ -1,0 +1,11 @@
+# 借鉴风险报告
+# 由 /inspiration-check 维护（后续实现）
+
+reports: []
+# - chapter: ch003
+#   overall_risk: medium
+#   risk_items:
+#     - type: expression_similarity
+#       level: high
+#       evidence: 与素材 mat_012 存在连续句式重合
+#       suggestion: 替换比喻源域并重构句法

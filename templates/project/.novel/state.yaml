@@ -1,0 +1,28 @@
+# 小说项目状态文件
+# 由AI自动维护，手动修改可能导致不一致
+
+project:
+  name: ""
+  genre: ""
+  created: ""
+  updated: ""
+
+characters: []
+# - name: 张三
+#   role: 主角
+#   file: characters/张三.md
+
+timeline:
+  start: ""
+  end: ""
+  events_count: 0
+
+plot:
+  structure: ""
+  chapters: 0
+
+worldbuilding:
+  locations_count: 0
+  rules_defined: false
+
+current_focus: ""

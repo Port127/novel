@@ -1,0 +1,18 @@
+# 去AI感规则库
+# 由 /anti-ai-check 读取
+
+rules:
+  phrase_watchlist:
+    - 不由得
+    - 仿佛
+    - 这一刻
+    - 与此同时
+  sentence_pattern_limits:
+    repeated_short_sentence_ratio: 0.35
+    parallel_structure_ratio: 0.30
+  dialogue:
+    require_character_voice_difference: true
+    min_distinct_markers_per_main_character: 2
+  scoring:
+    high_risk_below: 60
+    medium_risk_below: 80

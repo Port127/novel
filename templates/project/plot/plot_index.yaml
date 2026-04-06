@@ -1,0 +1,12 @@
+# 情节索引
+# 自动聚合各章节场景的 plot_stage / plot_function 标签
+# 由 /chapter-create /chapter-update 维护
+
+entries: []
+# - chapter_id: ch001
+#   scene_id: ch0001_s01
+#   plot_stage: 第一幕-诱因
+#   plot_function: [铺垫, 伏笔埋设]
+#   pacing: 蓄力
+#   tension: 2
+#   summary: ""

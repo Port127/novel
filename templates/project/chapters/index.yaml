@@ -1,0 +1,14 @@
+# 章节索引
+# 由 /chapter-create 与 /chapter-update 维护
+
+chapters: []
+# - id: ch001
+#   title: 山村惊变
+#   status: draft
+#   pov: 张三
+#   goal: 建立危机并触发离村
+#   word_target: 3000
+#   word_actual: 2780
+#   hooks_planted: [hook_001]
+#   hooks_revealed: []
+#   updated: 2026-04-01

@@ -1,0 +1,11 @@
+# 项目列表
+# 记录所有创建的小说项目
+
+projects: []
+# - name: 仙途
+#   path: projects/仙途
+#   genre: 仙侠
+#   created: 2024-01-15
+#   status: active  # active/paused/completed
+#   chapters: 15
+#   last_worked: 2024-01-20
