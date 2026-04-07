@@ -61,7 +61,7 @@ arguments: query
 ## 关系
 {{relationships}}
 
-📄 详情：characters/$0.md
+📄 详情：characters/$0.yaml
 ```
 
 **字段查询：**
@@ -69,7 +69,7 @@ arguments: query
 ❓ $0的{{字段}}
 
 {{value}}
-来源：characters/$0.md
+来源：characters/$0.yaml
 ```
 
 **筛选查询：**

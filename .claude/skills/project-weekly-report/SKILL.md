@@ -97,6 +97,15 @@ arguments: range
 3. 保留 {{style_advantage}}，避免 {{style_risk}}
 ```
 
+## 数据可计算性说明
+
+- **新增章节数 / 状态推进数 / 字数完成率**：从 `chapters/index.yaml` 的 `updated` 和 `status` 字段计算，可靠
+- **风险统计**：从 `risk_report.yaml` 和 `ai_trace_report.yaml` 计算，依赖这些报告已生成
+- **高效时段 / 卡点类型**（作者版）：当前无自动数据源，基于章节推进模式推断或标注为"需要用户补充"
+- **素材利用率**：依赖 `inspiration_log.yaml` 已登记，未登记则标注覆盖率为"不可计算"
+
+当某项数据不足时，在报告中标注"数据缺失"并给出补充建议（如"运行 `/inspiration-log` 补登记"），不硬算。
+
 ## 注意事项
 
 - 先给事实统计，再给判断结论

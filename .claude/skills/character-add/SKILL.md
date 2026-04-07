@@ -23,13 +23,21 @@ arguments: name role age identity personality
 - `$2` (age): 年龄
 - `$3` (identity): 身份/职业
 - `$4+` (personality): 性格特点等额外信息
+- `--from`: 从文件或引用内容中提取角色信息（见步骤 0）
 
 参数格式灵活，支持：
 - `/character-add 张三 主角 25岁 剑客 隐忍坚毅`
 - `/character-add 李四，反派，50岁，宗门长老`
 - `/character-add 林砚 配角 19岁 学徒 温顺敏感 但极度怕被抛下`
+- `/character-add --from chapters/ch003.md`（从章节中提取出场角色）
 
 ## 执行步骤
+
+### 0. 引用模式（--from）
+
+当指定 `--from` 时，按 [引用提取协议](_protocols/from-extraction.md) 执行提取与确认流程。
+
+提取重点：扫描人物姓名、身份、性格、行为特征；从对白和行为推断缺陷、执念、软肋等立体化字段。每个角色拆为一条创建请求。
 
 ### 1. 检查是否已存在
 

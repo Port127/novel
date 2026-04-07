@@ -40,7 +40,16 @@ arguments: range
 - 角色位置冲突
 - 年龄 / 因果关系问题
 
-### 3. 跨模块一致性检查
+### 3. 设定依赖检查
+
+按 `/worldbuilding-review` 的设定依赖审查标准识别：
+
+- `confirmed` 设定是否引用了已 `deprecated` 的设定
+- `setting_links` 中引用的目标是否存在
+- 大量 `tentative` 堆积未提升——提示用户先做 `/pipeline-setting-consolidate`
+- 孤立设定（无剧情/角色/设定关联）
+
+### 4. 跨模块一致性检查
 
 按 `/consistency-check` 的标准识别：
 
@@ -48,7 +57,7 @@ arguments: range
 - 章节状态与目标脱节
 - 风险章节是否缺修复动作
 
-### 4. 汇总成修复清单
+### 5. 汇总成修复清单
 
 按优先级输出：
 
@@ -62,7 +71,7 @@ arguments: range
 ## CurrentState
 - 阶段：可执行修复清单
 - 范围：{{range}}
-- 已完成关系、时间线与总一致性检查
+- 已完成关系、时间线、设定依赖与总一致性检查
 
 ## Risks
 - {{risk_1}}
@@ -77,7 +86,9 @@ arguments: range
 ## RecommendedCommands
 - /relationship-log {{role1}} {{role2}} {{change}} --chapter {{chapter}}
 - /timeline-add {{time}} {{event}}
+- /setting-edit {{name}} --status confirmed
 - /chapter-update {{chapter_id}} --status revise
+- /pipeline-setting-consolidate
 ```
 
 ## 注意事项

@@ -17,6 +17,8 @@ arguments: focus
 3. 若存在，读取 `{current_path}/plot/outline.yaml`
 4. 读取 `{current_path}/worldbuilding/setting.md`
 5. 若存在，读取 `{current_path}/worldbuilding/worldbuilding.yaml`
+5b. 若存在，读取 `{current_path}/worldbuilding/entries/` 下的设定条目（尤其是 status: confirmed 的）
+5c. 若存在，读取 `{current_path}/ingestion_brief.md`（获取原始素材理解）
 6. 若存在，读取 `{current_path}/timeline/main.yaml`
 7. 若存在，读取 `{current_path}/chapters/index.yaml`
 8. 若存在，读取 `{current_path}/characters/*.yaml`（重点：`fatal_flaw`、`obsession`、`soft_spot`、`misbelief`、`tragedy_trigger`）
@@ -55,6 +57,11 @@ arguments: focus
 - 与世界观、时间线有关的必要说明
 - 主角/关键配角的缺陷、执念、误判是否在大纲里有兑现场景；关系 `dynamic` 与张力是否在关键幕次有对应事件
 
+执行修改时：
+- 修改已有节点 → 通过 `/plot-edit` 执行（会自动做影响分析）
+- 新增节点 → 通过 `/plot-add` 执行
+- 设定不足或需调整 → 通过 `/setting-edit` 或 `/setting-add` 处理
+
 同步更新：
 
 - `plot/outline.md` 的叙述性结构
@@ -87,8 +94,9 @@ arguments: focus
 4. 若关系与角色卡已有字段，检查是否需补 `/relationship-log` 或 `/character-edit`
 
 ## RecommendedCommands
-- /plot-review {{focus}}
-- /relationship-check
+- /plot-edit {{node}} {{changes}}
+- /setting-edit {{name}} --status confirmed
+- /pipeline-setting-consolidate
 - /pipeline-chapter-kickoff {{chapter_id}} {{goal}}
 - /consistency-check
 ```

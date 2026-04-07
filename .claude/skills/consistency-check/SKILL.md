@@ -18,11 +18,13 @@ when_to_use: 用户想确保小说设定没有矛盾
 
 读取：
 - `{current_path}/.novel/state.yaml`
-- `{current_path}/characters/*.md`
+- `{current_path}/characters/*.yaml`
 - `{current_path}/characters/relations.yaml`
 - `{current_path}/characters/relation_events.yaml`
 - `{current_path}/timeline/main.yaml`
 - `{current_path}/worldbuilding/setting.md`
+- `{current_path}/worldbuilding/entries/*.yaml`（设定集条目）
+- `{current_path}/ingestion_brief.md`（素材消化摘要，若存在）
 - `{current_path}/plot/outline.md`
 - `{current_path}/chapters/index.yaml`
 - `{current_path}/compliance/inspiration_log.yaml`

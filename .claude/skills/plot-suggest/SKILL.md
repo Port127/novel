@@ -31,7 +31,7 @@ arguments: problem
 
 读取以下文件了解项目状态：
 - `{current_path}/plot/outline.md` - 当前进度
-- `{current_path}/characters/*.md` - 角色设定
+- `{current_path}/characters/*.yaml` - 角色设定
 - `{current_path}/worldbuilding/setting.md` - 世界观
 - `{current_path}/timeline/main.yaml` - 时间线
 - `{current_path}/.novel/state.yaml` - 项目信息
@@ -47,7 +47,30 @@ arguments: problem
 - 悲剧 / BE
 - 爽点升级 / 反派升级
 
-### 3. 生成建议
+### 3. 素材库案例检索（可选）
+
+如果 `../novel-material/data/material.db` 存在，根据需求类型检索相似案例：
+
+```bash
+# 卡点/转折 → 找类似结构的场景
+python ../novel-material/scripts/search.py scene \
+  --plot-function {对应功能，如 转折 / 高潮 / 钩子} \
+  --conflict {对应冲突类型} --limit 5
+
+# 关系推进 → 找类似关系动态
+python ../novel-material/scripts/search.py scene \
+  --relationship {对应关系} --interaction {对应互动} --limit 5
+
+# 悲剧/BE → 找催泪技法
+python ../novel-material/scripts/search.py scene \
+  --reader-effect 催泪 --emotion 悲伤 --limit 5
+```
+
+将检索到的案例摘要作为「参考案例」附在建议中——借机制和节奏，不借表达。
+
+如果素材库不可用，跳过此步骤。
+
+### 4. 生成建议
 
 提供2-3个可选方案，每个方案包含：
 - 情节概述

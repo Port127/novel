@@ -1,4 +1,6 @@
-# AI小说写作系统 - 业务能力补全清单
+# AI小说写作系统 - 业务能力补全清单（已归档）
+
+> **归档说明（2026-04）**：本文档为早期规划文档。A-D 模块（P0）已全部实现，E-G 模块（P1）属于独立项目 novel-material。KPI 口径定义仍有参考价值。
 
 > 面向真实写作流程：从“能用”升级到“能长期连载、能管控风险、能复盘提效”。
 
@@ -20,7 +22,7 @@
 
 ## 2) 建议新增业务模块
 
-### A. 章节生产管理（P0）
+### A. 章节生产管理（P0）✅ 已实现
 
 **目标**：把章节写作变成可追踪流程，而不是单次生成。
 
@@ -44,7 +46,7 @@
 
 ---
 
-### B. 角色关系演进（P0）
+### B. 角色关系演进（P0）✅ 已实现
 
 **目标**：关系不只“是什么”，还要知道“何时变化、为何变化”。
 
@@ -67,7 +69,7 @@
 
 ---
 
-### C. 借鉴程度与合规防线（P0）
+### C. 借鉴程度与合规防线（P0）✅ 已实现
 
 **目标**：允许借鉴，但可量化、可解释、可追溯。
 
@@ -90,7 +92,7 @@
 
 ---
 
-### D. 去 AI 感质量工程（P0）
+### D. 去 AI 感质量工程（P0）✅ 已实现
 
 **目标**：把“感觉像 AI”变成可检查项，而不靠主观争论。
 
@@ -114,7 +116,7 @@
 
 ---
 
-### E. 素材标签治理（P1）
+### E. 素材标签治理（P1）➡️ 属于 novel-material 项目
 
 **目标**：标签可复用、可检索、可统计，而不是自由文本堆积。
 
@@ -137,7 +139,7 @@
 
 ---
 
-### F. 素材分段与剧情索引（P1）
+### F. 素材分段与剧情索引（P1）➡️ 属于 novel-material 项目
 
 **目标**：从“素材级搜索”升级为“片段级检索与复用”。
 
@@ -160,7 +162,7 @@
 
 ---
 
-### G. 素材人物索引（P1）
+### G. 素材人物索引（P1）➡️ 属于 novel-material 项目
 
 **目标**：快速找到“某类人物写法”，避免角色塑形同质化。
 
@@ -253,20 +255,24 @@ risk_items:
 
 ## 5) 实施优先级（建议）
 
-- **第1阶段（1周）**：章节状态机、关系演进日志、去 AI 感检查
-- **第2阶段（1周）**：借鉴合规检查、标签字典治理
-- **第3阶段（1-2周）**：素材分段索引、剧情索引、人物索引
+**2026-04 更新**：第 1-2 阶段已全部完成。第 3 阶段属于 novel-material 项目。
+
+- ~~**第1阶段（1周）**：章节状态机、关系演进日志、去 AI 感检查~~ ✅
+- ~~**第2阶段（1周）**：借鉴合规检查、标签字典治理~~ ✅
+- **第3阶段（1-2周）**：素材分段索引、剧情索引、人物索引 → novel-material 项目
 
 ---
 
 ## 6) 第一批应新增的 Skill（建议名）
 
-- `/chapter-create` `/chapter-update` `/chapter-board` `/chapter-review`
-- `/relationship-log` `/relationship-evolution` `/relationship-check`
-- `/inspiration-log` `/inspiration-check` `/inspiration-report`
-- `/anti-ai-check` `/anti-ai-rewrite` `/voice-check`
-- `/tag-add` `/tag-merge` `/material-retag`
-- `/material-chunk` `/material-index-plot` `/material-index-character`
+**2026-04 更新**：前四行已全部实现，后两行属于 novel-material 项目。
+
+- ~~`/chapter-create` `/chapter-update` `/chapter-board` `/chapter-review`~~ ✅
+- ~~`/relationship-log` `/relationship-evolution` `/relationship-check`~~ ✅
+- ~~`/inspiration-log` `/inspiration-check` `/inspiration-report`~~ ✅
+- ~~`/anti-ai-check` `/anti-ai-rewrite` `/voice-check`~~ ✅
+- `/tag-add` `/tag-merge` `/material-retag` → novel-material
+- `/material-chunk` `/material-index-plot` `/material-index-character` → novel-material
 
 这些技能优先覆盖“写得出来 + 写得稳 + 风险可控 + 素材可复用”四个核心目标。
 

@@ -1,95 +1,201 @@
 ---
 name: pipeline-outline-bootstrap
-description: 从一句话故事想法出发，编排大纲初始化、关键节点补全与基础一致性校验，产出可继续写作的初版大纲。用于用户想从零开始搭建大纲，或只有一个粗略 premise 时快速落地。
-when_to_use: 用户想创建大纲，且当前项目只有零散想法或空白剧情骨架
-argument-hint: "[一句话故事] [--structure 结构]"
-arguments: premise
+description: 从草稿或故事想法出发，经过素材消化、用户确认、结构推导，产出可继续写作的初版大纲与基础设定。
+when_to_use: 用户想从草稿、灵感文档或一句话想法开始搭建项目骨架。
+argument-hint: "[草稿路径或一句话想法]"
+arguments: input
 ---
 
 # 任务
 
-把一句话 premise 变成“可写大纲”，并输出最小下一步任务。
+把用户的创作素材变成"可写大纲 + 基础设定集"，全程与用户交互确认。
+
+核心原则：**先理解素材，再确认理解，然后才动手构建。绝不跳过确认。**
 
 ## 前置检查
 
-1. 读取 `.current.yaml` 获取 `current_path`
-2. 读取 `{current_path}/plot/outline.md`
-3. 若存在，读取 `{current_path}/plot/outline.yaml`
-4. 若存在，读取 `{current_path}/worldbuilding/setting.md`
-5. 若存在，读取 `{current_path}/timeline/main.yaml`
-
-## 输入参数
-
-- `$0+` (premise): 一句话故事想法
-- `--structure`: `三幕式|英雄之旅|五段式|自定义`，默认 `三幕式`
+1. 判断输入类型：
+   - 如果 `$0` 是一个文件路径 → 素材文档模式
+   - 如果 `$0` 是一句话 → 简短 premise 模式
+2. 读取 `.current.yaml` 获取 `current_path`
+3. 若 `current_path` 不存在或未指向 `projects/` 下的项目：
+   - 提示用户先用 `/novel-init` 创建项目
+   - 或者帮用户创建项目后再继续（需确认书名和类型）
+4. 确保工作目录在 `projects/{项目名}/` 下，**不在仓库根目录或 drafts/ 中生成任何项目文件**
+5. 读取已有文件（若存在）：
+   - `{current_path}/plot/outline.md`
+   - `{current_path}/plot/outline.yaml`
+   - `{current_path}/worldbuilding/setting.md`
+   - `{current_path}/ingestion_brief.md`
 
 ## 执行步骤
 
-### 1. 判断是否适合启动型流程
+---
 
-如果 `plot/outline.md` 已有较完整内容：
+### 阶段一：素材消化
 
-- 先概述现状
-- 询问用户是否要覆盖
-- 若用户更想“补强而不是重建”，引导到 `/pipeline-outline-polish`
+**目标：** 建立对素材的深度理解，输出理解摘要。
 
-### 2. 初始化结构骨架
+#### 情况 A：素材文档模式
 
-按 `/plot-init` 的契约生成基础结构，并确保：
+如果 `$0` 是文件路径：
 
-- `outline.md` 有可阅读的幕次或节点骨架
-- `outline.yaml` 至少包含 premise、structure、foreshadowing、pacing_curve 的初始框架
+1. 按 `/draft-ingest` 的流程执行深度消化
+2. 输出理解摘要，包含：
+   - 真实前提（不是营销式一句话，而是故事的叙事引擎）
+   - 独特机制（这个故事区别于同类的叙事装置）
+   - 主角真实身份与处境
+   - 已定义 / 已暗示 / 缺失的世界规则
+   - 叙事结构线索
+   - 关键势力与角色胚胎
+3. **等待用户确认或修正**
+4. 确认后写入 `{current_path}/ingestion_brief.md`
 
-### 3. 补足关键剧情节点
+#### 情况 B：简短 premise 模式
 
-按 `/plot-suggest` 的方式补出最小可写骨架，至少覆盖：
+如果 `$0` 是一句话想法：
 
-- 开场处境
-- 引发事件
-- 中段升级或中点
-- 危机或最低谷
-- 高潮与结局方向
+1. 不要直接"接受"这句话就开始建大纲
+2. 先通过 3-5 个聚焦问题帮用户展开：
+   - 主角是谁？他为什么处于这个处境？
+   - 这个故事最不寻常的地方是什么？
+   - 主角面对的核心两难是什么？
+   - 世界上有什么规则限制了主角？
+   - 故事的情感基调是什么？
+3. 根据回答构造理解摘要
+4. **等待用户确认**
 
-必要时可将关键节点直接写入 `outline.md`，并同步摘要到 `outline.yaml`。
+#### 情况 C：已有理解摘要
 
-### 4. 做一次轻量一致性校验
+如果 `{current_path}/ingestion_brief.md` 已存在：
 
-按 `/timeline-check` 的标准检查：
+1. 读取并展示摘要要点
+2. 询问用户是否基于此继续，还是需要更新
 
-- 世界规则是否与关键事件矛盾
-- 时间顺序是否明显冲突
-- 是否有依赖世界观但尚未说明的关键设定
+**阶段一止点：** 用户确认理解摘要后，才进入阶段二。
 
-### 5. 输出止点与下一步
+---
 
-将本次落点明确为 `可写大纲`，并只保留最小必要任务。
+### 阶段二：设定落地
+
+**目标：** 将理解摘要中的世界规则转化为设定集条目。
+
+1. 从理解摘要中提取所有世界规则相关内容
+2. 按优先级排序（剧情强相关的规则优先）
+3. 逐条向用户展示，格式为：
+
+   ```
+   📋 设定：{名称}
+   📂 类别：{category}
+   📝 内容：{description}
+   🔗 关联剧情：{plot_links}
+   ❓ 待确认：{open_questions}
+   
+   确认？(Y/修改/跳过)
+   ```
+
+4. 确认的条目通过 `/setting-add` 写入 `worldbuilding/entries/`
+5. 同步更新 `worldbuilding/worldbuilding.yaml` 索引
+6. 将确认的设定汇总写入 `worldbuilding/setting.md`（叙述版）
+
+**阶段二止点：** 核心设定（力量体系 + 核心世界规则 + 主要势力）落地后进入阶段三。不追求一次性补全所有设定。
+
+---
+
+### 阶段三：结构推导与大纲构建
+
+**目标：** 基于已确认的故事理解和设定，推导大纲结构。
+
+#### 3a. 结构推导（不是菜单选择）
+
+**不要** 给用户一个"三幕式 / 英雄之旅 / 五段式"的菜单。
+
+而是从故事本身的特质出发，分析：
+- 故事的独特机制暗示了什么结构？
+  - 例如：时间回溯 → 天然适合"信息差递进"结构，每次回溯揭示新层
+  - 例如：隐藏身份 → 天然适合"揭面"节奏，层层剥离
+- 主角的内在弧线有几个关键转折？
+- 核心冲突的升级有几个自然台阶？
+
+输出结构提案（可以有 2 个方案），说明：
+- 为什么这个结构适合这个故事
+- 每个阶段的核心任务是什么
+- 主角在每个阶段的认知/状态变化
+
+**等待用户选择或调整。**
+
+#### 3b. 大纲骨架生成
+
+基于确认的结构，生成：
+
+**`outline.md`（叙述版）：**
+- 每个阶段的目标、核心事件、主角状态变化
+- 关键转折点的描述
+- 伏笔候选和钩子设计机会
+
+**`outline.yaml`（结构版）：**
+- premise（使用理解摘要中确认的真实前提）
+- theme, tone
+- 结构节点（从故事推导的，不是模板的）
+- foreshadowing 初始条目
+- pacing_curve 初始估算
+
+### 3c. 轻量一致性检查
+
+- 大纲关键事件是否依赖尚未定义的设定？
+- 时间顺序是否有明显冲突？
+- 主角能力与限制是否能支撑关键剧情点？
+
+如有问题，标记为 `⚠️ 待解决` 而非自动修补。
+
+---
+
+### 阶段四：状态同步与下一步
+
+更新 `{current_path}/.novel/state.yaml`：
+- `ingestion.status`：`completed`（若阶段一执行了消化）
+- `ingestion.brief_file`：`ingestion_brief.md`
+- `ingestion.source_draft`：原始草稿路径
+- `plot.structure`：确认的大纲结构名称
+- `worldbuilding.entries_count` / `confirmed_count` / `tentative_count`：设定条目计数
+- `project.updated`：今天日期
+
+输出当前状态和最小必要下一步任务。
 
 ## 输出格式
 
 ```markdown
-## CurrentState
+## 当前状态
 - 阶段：可写大纲
-- premise：{{premise}}
-- 结构：{{structure}}
-- 已补全开场、引发事件、中段升级、高潮方向
+- 真实前提：{{true_premise}}
+- 结构：{{structure_description}}
+- 设定条目：{{confirmed_count}} 条已确认，{{tentative_count}} 条待确认
 
-## Risks
-- {{risk_1}}
-- {{risk_2}}
+## 已完成
+- [x] 素材消化与理解确认
+- [x] 核心设定落地（{{list}}）
+- [x] 大纲骨架生成
 
-## NextTasks
-1. 细化第一个关键章节或幕次节点
-2. 补一条最重要的世界规则或时间线约束
-3. 决定第一章的 POV 与章节目标
+## 待解决
+- {{issue_1}}
+- {{issue_2}}
 
-## RecommendedCommands
-- /pipeline-chapter-kickoff ch001 {{goal}}
-- /plot-add {{node}} {{content}}
-- /timeline-add {{time}} {{event}}
+## 下一步任务
+1. {{next_task_1}}
+2. {{next_task_2}}
+3. {{next_task_3}}
+
+## 推荐命令
+- /pipeline-setting-consolidate  整固设定集（推荐下一步）
+- /setting-add {{name}}          补充设定
+- /character-add {{name}}        创建角色
+- /pipeline-chapter-kickoff      开始第一章
 ```
 
 ## 注意事项
 
-- 这是“启动型”流程，优先让用户尽快进入可写状态
-- 不追求一次性把全书细节补满
-- 若结构将发生大重排，先给预览再执行
+- **全程不跳过确认。** 每个阶段都有止点，必须用户确认才继续。
+- 不要把草稿原文复制粘贴到 setting.md——setting.md 应该是基于确认后的理解重新组织的叙述。
+- 大纲结构从故事特质推导，不从模板填充。
+- 如果用户的素材信息量很大，分多轮处理是正确的，不要试图一次消化完。
+- 所有生成的文件必须在 `projects/{项目名}/` 目录下，不在仓库根目录。

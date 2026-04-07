@@ -1,5 +1,5 @@
 projects/
-drafts/
+/drafts/
 .current.yaml
 .projects.yaml
 feature.md

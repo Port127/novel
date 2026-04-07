@@ -88,7 +88,7 @@ when_to_use: 用户想检查项目结构和配置是否正常
 ✅ .novel/ - 存在
 ✅ characters/ - 存在
 ✅ plot/ - 存在
-⚠️ timeline/ - 存在但 events/ 目录为空
+⚠️ timeline/ - 存在但事件为空
 ❌ worldbuilding/ - 缺失
 
 ## 配置文件
@@ -99,7 +99,7 @@ when_to_use: 用户想检查项目结构和配置是否正常
 ## 数据完整性
 
 ✅ 角色卡片 - 5个文件，格式正确
-⚠️ 张三.md - 缺少「背景故事」部分
+⚠️ 张三.yaml - 缺少「背景故事」部分
 ✅ 时间线 - 20个事件，格式正确
 
 ## 索引一致性
@@ -113,8 +113,8 @@ when_to_use: 用户想检查项目结构和配置是否正常
 
 🔧 建议修复：
    1. 创建 worldbuilding/ 目录
-   2. 补充 张三.md 的背景故事
-   3. 在 timeline/events/ 添加事件详情
+   2. 补充 张三.yaml 的背景故事
+   3. 在 timeline/main.yaml 添加事件详情
 
 💡 可根据建议手动修复，或让 AI 逐项代修复
 ```

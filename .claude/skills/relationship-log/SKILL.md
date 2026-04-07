@@ -58,6 +58,11 @@ events:
 
 若本次变化暴露出新的张力来源，也同步更新快照中的关系描述。
 
+### 3. 更新状态
+
+更新 `{current_path}/.novel/state.yaml`：
+- `project.updated`：今天日期
+
 ## 输出格式
 
 ```

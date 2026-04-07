@@ -42,7 +42,19 @@ arguments: chapter_id
 - 是否偏离人物设定
 - 对白是否体现缺陷、执念或误判，而不只是推进剧情的功能句
 
-### 3. 做去 AI 感检查与定向改写
+### 3. 检查设定依赖状态
+
+检查本章涉及的世界观设定是否可靠：
+
+- 从章节正文和大纲节点中识别引用了哪些设定条目
+- 若引用的设定仍为 `tentative`，标记为风险：
+  ```
+  ⚠️ 本章依赖尚未确认的设定：
+     - {{setting_name}}（tentative）— 建议先 /setting-edit {{id}} --status confirmed
+  ```
+- 若引用的设定已 `deprecated`，标记为错误
+
+### 4. 做去 AI 感检查与定向改写
 
 按 `/anti-ai-check` 识别高风险片段。
 
@@ -52,7 +64,7 @@ arguments: chapter_id
 - 默认做针对高风险片段的 `level 2` 处理
 - 不默认重写整章
 
-### 4. 推进章节状态
+### 5. 推进章节状态
 
 若本章已具备完整草稿，按 `/chapter-update` 将状态推进到 `revise`。
 
@@ -62,7 +74,7 @@ arguments: chapter_id
 ## CurrentState
 - 阶段：可修订草稿
 - 章节：{{chapter_id}}
-- 已完成结构审查、对白检查、去 AI 感处理
+- 已完成结构审查、对白检查、设定依赖检查、去 AI 感处理
 
 ## Risks
 - {{risk_1}}
@@ -78,6 +90,7 @@ arguments: chapter_id
 - /character-edit {{name}} 补充或修正缺陷/执念/误判
 - /relationship-log {{a}} {{b}} {{change}} --chapter {{chapter_id}}
 - /anti-ai-check {{chapter_id}}
+- /setting-edit {{id}} --status confirmed
 - /consistency-check
 ```
 

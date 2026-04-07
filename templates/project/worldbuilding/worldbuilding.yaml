@@ -1,78 +1,45 @@
-# 世界观设定（结构化版）
-# 由 /novel-init 创建，手动维护
-# 与 setting.md 互补：此文件为结构化数据，setting.md 为叙述性文档
+# 世界观索引
+# 由 /novel-init 创建，/setting-add 自动更新
+# 与 setting.md 互补：此文件为结构化索引，setting.md 为叙述性文档
+# 详细设定条目存放在 entries/ 目录下
 
 # ============================================================
-# 力量体系
+# 核心概念（3-5 条定义这个世界的基本规则）
+# ============================================================
+core_concepts: []
+# - name: ""
+#   one_liner: ""           # 一句话概括
+#   entry_id: ""            # 对应的 entries/ 文件 id
+
+# ============================================================
+# 力量体系概要
 # ============================================================
 power_system:
   name: ""
-  type: ""                # 如：魔法/修行/异能/科技
-  ranks: []               # 境界等级列表，由低到高
-  # - "凡人"
-  # - "入门"
-  # - "高手"
-  # - "宗师"
-  rules: []               # 力量运行规则
-  limitations: []         # 力量限制、代价
-  special_abilities: []
-  # - name: ""
-  #   description: ""
-  #   users: []
+  type: ""                  # 魔法 / 修行 / 异能 / 科技
+  entry_ids: []             # 相关 entries/ 文件 id 列表
 
 # ============================================================
-# 地理空间
+# 势力概要
 # ============================================================
-geography:
-  spatial_hierarchy: ""   # 世界结构描述，如"单一大陆"/"双世界"
-  regions: []
-  # - name: ""
-  #   type: ""            # 世界 / 大陆 / 国家 / 城市 / 地点 / 秘境
-  #   description: ""
-  #   sub_locations: []
-  #   connections: []     # 如何抵达
-  #   significance: ""    # 对故事的意义
-
-# ============================================================
-# 势力与组织
-# ============================================================
-factions: []
+factions_summary: []
 # - name: ""
-#   type: ""              # 官方组织 / 宗门 / 地下势力 / 国家 / 阵营
-#   territory: ""
-#   stance: ""            # 立场与目标
-#   power_level: ""
-#   key_figures: []
-#   internal_hierarchy: []
-#   relationships_with: []
-#   # - faction: ""
-#   #   relation: ""      # 从属 / 盟友 / 敌对 / 竞争 / 中立
+#   stance: ""              # 一句话立场
+#   entry_id: ""
 
 # ============================================================
-# 背景知识
+# 地理概要
 # ============================================================
-lore:
-  history: []             # 重要历史事件
-  # - event: ""
-  #   description: ""
-  #   impact: ""
-
-  culture: []             # 文化、习俗、社会规范
-
-  species: []             # 种族/物种
-
-  artifacts: []           # 重要器物/宝物
-  # - name: ""
-  #   description: ""
-  #   owner: ""
-
-  terminology: []         # 专有名词释义
-  # - term: ""
-  #   meaning: ""
+geography_summary:
+  spatial_hierarchy: ""
+  entry_ids: []
 
 # ============================================================
-# 世界规则
+# 设定条目索引
 # ============================================================
-rules_of_world: []
-# - category: ""          # 自然法则 / 社会规则 / 禁忌
-#   rules: []
+entries: []
+# - id: ""
+#   name: ""
+#   category: ""            # world_rule | power_system | faction | geography | lore | terminology | species | artifact
+#   status: ""              # tentative | confirmed | deprecated
+#   file: ""                # entries/{id}.yaml

@@ -13,8 +13,10 @@ arguments: character range
 ## 前置检查
 
 1. 读取 `.current.yaml` 获取 `current_path`
-2. 读取角色卡 `{current_path}/characters/$0.md`
-3. 读取章节内容（按 `$1` 范围）
+2. **角色自动推断**：如果 `$0`（角色名）未提供——检查用户当前打开/引用的文件是否为 `characters/*.yaml`，若是则提取角色名；否则提示用户指定
+3. **章节范围自动推断**：如果 `$1`（范围）未提供——按 [章节自动推断协议](_protocols/chapter-auto-inference.md) 确定检查范围
+4. 读取角色卡 `{current_path}/characters/$0.yaml`
+5. 读取章节内容（按 `$1` 范围）
 
 ## 输入参数
 

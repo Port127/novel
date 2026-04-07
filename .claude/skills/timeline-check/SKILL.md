@@ -17,7 +17,7 @@ when_to_use: 用户想确认时间线没有逻辑问题
 ### 1. 读取数据
 
 - `{current_path}/timeline/main.yaml`
-- `{current_path}/characters/*.md` (年龄信息)
+- `{current_path}/characters/*.yaml`（年龄信息）
 - `{current_path}/worldbuilding/setting.md`
 
 ### 2. 执行检查

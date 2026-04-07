@@ -1,14 +1,14 @@
 ---
 name: plot-init
-description: 初始化剧情大纲结构
-when_to_use: 用户想要规划小说的整体结构
+description: 初始化剧情大纲结构。默认从故事素材推导结构，也支持手动指定模板作为快捷方式。
+when_to_use: 用户想要规划小说的整体结构。若已有素材消化摘要，推荐直接用 /pipeline-outline-bootstrap（包含本 skill 的功能且更完整）。
 argument-hint: "[结构类型]"
 arguments: structure
 ---
 
 # 任务
 
-初始化剧情大纲结构。
+初始化剧情大纲结构，创建 `outline.md`、`outline.yaml` 和 `plot_index.yaml`。
 
 ## 前置检查
 
@@ -16,11 +16,12 @@ arguments: structure
 
 ## 输入参数
 
-- `$0` (structure): 结构类型，可选值：
-  - `三幕式`（默认）
-  - `英雄之旅`
-  - `五段式`
-  - `自定义`
+- `$0` (structure): 可选值：
+  - **不传 / `auto`**（默认）：从 `ingestion_brief.md` 推导最适合的结构
+  - `三幕式` / `英雄之旅` / `五段式` / `自定义`：手动快捷方式
+
+> **推荐使用 `auto`**。手动指定模板适合"我很清楚自己要什么结构"的情况。
+> 如果你有草稿或素材，更推荐走 `/pipeline-outline-bootstrap`，它包含素材消化 → 设定落地 → 结构推导的完整链路。
 
 ## 执行步骤
 
@@ -30,11 +31,30 @@ arguments: structure
 
 如果已有内容，询问是否覆盖。
 
-### 2. 生成叙述性大纲框架
+### 2. 确定结构
 
-根据结构类型生成框架，写入 `{current_path}/plot/outline.md`。
+#### auto 模式（默认 / 推荐）
 
-### 3. 初始化结构化大纲
+1. 读取 `{current_path}/ingestion_brief.md`
+2. 从故事的独特机制和冲突升级路径推导结构——不是从菜单里选一个模板，而是回答：
+   - 这个故事的独特机制暗示了什么结构？
+   - 核心冲突有几个自然升级台阶？
+   - 主角认知有几个关键转折？
+3. 向用户呈现推导理由和推荐结构（可提供 1-2 个方案），等待确认
+4. 若 `ingestion_brief.md` 不存在，提示用户先运行 `/draft-ingest` 或手动指定结构类型
+
+#### 手动模式（指定具体结构名）
+
+直接使用对应结构模板生成框架。适合用户已有明确结构偏好，不需要推导。
+
+### 3. 生成叙述性大纲框架
+
+写入 `{current_path}/plot/outline.md`。
+
+auto 模式产出的框架基于推导结果（节点名称和分段来自故事本身，不是模板的固定标签）。
+手动模式产出的框架基于模板（见下方"结构模板"节）。
+
+### 4. 初始化结构化大纲
 
 写入 `{current_path}/plot/outline.yaml`（若不存在）：
 
@@ -48,7 +68,7 @@ foreshadowing: []
 pacing_curve: []
 ```
 
-### 4. 初始化情节索引
+### 5. 初始化情节索引
 
 写入 `{current_path}/plot/plot_index.yaml`（若不存在）：
 
@@ -56,11 +76,11 @@ pacing_curve: []
 entries: []
 ```
 
-### 5. 更新项目状态
+### 6. 更新项目状态
 
 更新 `state.yaml` 的 `plot.structure`。
 
-## 结构模板
+## 结构模板（仅手动模式使用）
 
 **三幕式：**
 ```markdown
@@ -129,7 +149,7 @@ entries: []
 ```
 ✅ 剧情结构初始化完成
 
-📐 结构：$0
+📐 结构：{{结构名称或推导结果}}
 📄 文件：plot/outline.md
 
 已生成框架，接下来：
@@ -141,4 +161,5 @@ entries: []
 
 - 结构可随时调整
 - 支持混合结构
-- 可导入现有大纲
+- auto 模式推导出的结构节点名称来自故事本身，不强制使用模板标签
+- 如需更完整的从素材到大纲流程，使用 `/pipeline-outline-bootstrap`

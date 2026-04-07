@@ -7,10 +7,15 @@ project:
   created: ""
   updated: ""
 
+ingestion:
+  status: ""              # pending | completed | needs_update
+  brief_file: ""          # ingestion_brief.md 路径
+  source_draft: ""        # 原始草稿路径
+
 characters: []
 # - name: 张三
 #   role: 主角
-#   file: characters/张三.md
+#   file: characters/张三.yaml
 
 timeline:
   start: ""
@@ -24,5 +29,8 @@ plot:
 worldbuilding:
   locations_count: 0
   rules_defined: false
+  entries_count: 0        # 设定集条目数
+  confirmed_count: 0      # 已确认条目数
+  tentative_count: 0      # 待确认条目数
 
 current_focus: ""

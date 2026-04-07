@@ -13,8 +13,9 @@ arguments: chapter_id
 ## 前置检查
 
 1. 读取 `.current.yaml` 获取 `current_path`
-2. 检查 `{current_path}/chapters/$0.md` 是否存在
-3. 读取 `{current_path}/chapters/index.yaml` 获取章节元数据
+2. 按 [章节自动推断协议](_protocols/chapter-auto-inference.md) 确定目标章节
+3. 检查 `{current_path}/chapters/$0.md` 是否存在
+4. 读取 `{current_path}/chapters/index.yaml` 获取章节元数据
 
 ## 执行步骤
 

@@ -13,8 +13,9 @@ arguments: chapter_id
 ## 前置检查
 
 1. 读取 `.current.yaml` 获取 `current_path`
-2. 读取 `{current_path}/chapters/$0.md`
-3. 读取 `shared/styles/anti_ai_rules.yaml`（若存在）
+2. 按 [章节自动推断协议](_protocols/chapter-auto-inference.md) 确定目标章节
+3. 读取 `{current_path}/chapters/$0.md`
+4. 读取 `shared/styles/anti_ai_rules.yaml`（若存在）
 
 ## 执行步骤
 
@@ -33,6 +34,19 @@ arguments: chapter_id
 ### 3. 修复建议
 
 针对每类问题给出“保留剧情不变”的改写建议。
+
+### 4. 写入检测报告
+
+将本次检测结果追加到 `{current_path}/quality/ai_trace_report.yaml`：
+
+```yaml
+reports:
+  - chapter: $0
+    score: {{score}}
+    level: {{level}}
+    issues: [...]
+    date: {{今天日期}}
+```
 
 ## 输出格式
 

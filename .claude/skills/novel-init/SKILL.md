@@ -39,6 +39,7 @@ projects/$0/
 │   ├── meta.yaml              ← 项目元信息
 │   ├── state.yaml             ← 运行状态（AI维护）
 │   └── materials.yaml         ← 素材引用
+├── ingestion_brief.md         ← 素材消化摘要（由 /draft-ingest 生成）
 ├── characters/
 │   ├── character_index.yaml   ← 人物索引（自动聚合）
 │   ├── relations.yaml         ← 关系快照
@@ -57,7 +58,9 @@ projects/$0/
 │   └── ai_trace_report.yaml
 ├── worldbuilding/
 │   ├── setting.md             ← 叙述性世界观
-│   └── worldbuilding.yaml     ← 结构化世界观
+│   ├── worldbuilding.yaml     ← 世界观索引（指向 entries/）
+│   └── entries/               ← 设定集条目（由 /setting-add 生成）
+│       └── _template.yaml     ← 条目模板
 └── chapters/
     ├── index.yaml
     └── (章节文件按需生成)
@@ -93,6 +96,24 @@ style:
   notes: ""
 ```
 
+写入 `projects/$0/.novel/materials.yaml`：
+
+```yaml
+# 素材引用
+# 素材库已独立为 novel-material 项目
+# 路径：../novel-material/data/
+
+external_material_lib: ../novel-material
+
+local_materials: []
+
+referenced_materials: []
+# 从 novel-material 引用的素材ID列表
+# 素材ID格式：nm_{type}_{YYYYMMDD}_{random4}
+```
+
+如果 `../novel-material/data/index.yaml` 存在，自动读取已有素材列表填入 `referenced_materials`。
+
 写入 `projects/$0/.novel/state.yaml`：
 
 ```yaml
@@ -102,14 +123,29 @@ project:
   created: {{今天日期}}
   updated: {{今天日期}}
 
+ingestion:
+  status: pending
+  brief_file: ""
+  source_draft: ""
+
 characters: []
+
 timeline:
   start: ""
   end: ""
   events_count: 0
+
 plot:
   structure: ""
   chapters: 0
+
+worldbuilding:
+  locations_count: 0
+  rules_defined: false
+  entries_count: 0
+  confirmed_count: 0
+  tentative_count: 0
+
 current_focus: ""
 ```
 
@@ -148,10 +184,10 @@ last_updated: {{今天日期}}
 📁 位置：projects/$0/
 
 下一步：
+   /draft-ingest [草稿路径]                素材消化（有草稿时优先）
+   /pipeline-outline-bootstrap [草稿或想法] 从素材到可写大纲
    /character-add [姓名] [定位] [年龄]...  创建角色
-   /plot-init [结构]                       初始化大纲
-
-素材管理见 ../novel-material/ 项目
+   /setting-add [设定名称]                 添加设定条目
 
 当前工作项目已切换为《$0》
 ```

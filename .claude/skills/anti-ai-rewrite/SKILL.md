@@ -13,8 +13,9 @@ arguments: chapter_id
 ## 前置检查
 
 1. 读取 `.current.yaml` 获取 `current_path`
-2. 读取 `{current_path}/chapters/$0.md`
-3. 建议先运行 `/anti-ai-check $0`
+2. 按 [章节自动推断协议](_protocols/chapter-auto-inference.md) 确定目标章节
+3. 读取 `{current_path}/chapters/$0.md`
+4. 建议先运行 `/anti-ai-check $0`
 
 ## 输入参数
 

@@ -15,8 +15,10 @@ arguments: focus
 1. 读取 `.current.yaml` 获取 `current_path`
 2. 读取 `{current_path}/worldbuilding/setting.md`
 3. 若存在，读取 `{current_path}/worldbuilding/worldbuilding.yaml`
-4. 读取 `{current_path}/plot/outline.md`，检查设定是否服务主线剧情
-5. 若存在，读取 `{current_path}/timeline/main.yaml`
+4. 若存在，读取 `{current_path}/worldbuilding/entries/*.yaml`（设定集条目）
+5. 读取 `{current_path}/plot/outline.md`，检查设定是否服务主线剧情
+6. 若存在，读取 `{current_path}/timeline/main.yaml`
+7. 若存在，读取 `{current_path}/ingestion_brief.md`（对照素材消化摘要中的规则缺口）
 
 ## 输入参数
 
@@ -47,7 +49,17 @@ arguments: focus
 - 是否缺少让世界显得真实的生活层纹理
 - 地图与资源分配是否合理，避免小地图里堆满顶级人物、顶级势力和顶级机缘
 
-### 3. 审查设定与剧情咬合度
+### 3. 审查设定依赖与生命周期
+
+如果存在 `entries/*.yaml` 条目，额外检查：
+
+- **依赖完整性**：`setting_links` 中引用的目标设定是否存在，是否已废弃
+- **循环依赖**：A depends_on B, B depends_on A 的循环
+- **孤立设定**：没有任何 `plot_links`、`character_links` 或 `setting_links` 的条目——可能是僵尸设定
+- **tentative 堆积**：大量 tentative 条目未提升为 confirmed，提示用户清理
+- **deprecated 残留**：已废弃但仍被其他 confirmed 设定引用的条目
+
+### 4. 审查设定与剧情咬合度
 
 重点检查：
 
@@ -57,7 +69,7 @@ arguments: focus
 - 世界观是否自然制造冲突与代价
 - 设定是否能自然提供信息差、压迫感或局势升级空间
 
-### 4. 输出优化动作
+### 5. 输出优化动作
 
 给出 3-6 条按优先级排序的动作，要求：
 
@@ -81,14 +93,19 @@ arguments: focus
 ⚠️ 主要问题
 - ...
 
+📊 设定集健康度
+- 条目总数：{{total}}（confirmed: {{confirmed}} / tentative: {{tentative}} / deprecated: {{deprecated}}）
+- 孤立设定：{{orphan_count}} 条
+- 依赖问题：{{dependency_issues}}
+
 🔧 优化动作（按优先级）
 1. ...
 2. ...
 3. ...
 
 建议下一步：
+- /setting-edit [设定] --status confirmed   提升已验证的设定
 - /pipeline-outline-polish {{focus}}
-- /timeline-check
 - /consistency-check
 ```
 
@@ -98,3 +115,4 @@ arguments: focus
 - 设定建议要说明它服务哪段剧情或哪类冲突
 - 若需要重写世界基本规则，先给变更预览再执行
 - 不只追求高概念，也要补让读者信服的日常纹理与资源分配逻辑
+- 建议每次 review 后提示用户将已验证的 tentative 设定提升为 confirmed

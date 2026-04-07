@@ -61,10 +61,25 @@ arguments: range
 - 最优先动作：{{next_action}}
 ```
 
+## 数据可计算性说明
+
+以下指标依赖的数据源和可靠度：
+
+| 指标 | 数据源 | 可靠度 |
+|------|--------|--------|
+| 完稿率 | `chapters/index.yaml` 中 `status: final\|published` 占比 | 高 |
+| 返工率 | `chapters/index.yaml` 中进入 `revise` 的章节占比 | 高 |
+| 连续更新率 | 各章节 `updated` 字段的日期分布 | 中——依赖用户及时推进状态 |
+| 借鉴风险消解率 | `compliance/risk_report.yaml` 中高风险已修复比例 | 中——依赖用户修复后更新报告 |
+| AI 痕迹消解率 | `quality/ai_trace_report.yaml` 中高风险已改写比例 | 中 |
+| 关系冲突修复率 | 需手动追踪，当前无自动数据源 | 低——标注为"预估" |
+
+当数据不足以计算某项指标时，输出"数据缺失：{{原因}}"而非硬算一个数字。
+
 ## 注意事项
 
 - 明确指标口径，避免同名不同义
-- 指标不足时给出“数据缺失提示”而非硬算
+- 指标不足时给出"数据缺失提示"而非硬算
 - 缺失提示文案统一遵循 [reference-reporting.md](../reference-reporting.md)
 
 ## 参考示例

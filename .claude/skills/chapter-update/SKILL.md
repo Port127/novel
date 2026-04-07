@@ -13,8 +13,9 @@ arguments: chapter_id
 ## 前置检查
 
 1. 读取 `.current.yaml` 获取 `current_path`
-2. 校验 `{current_path}/chapters/index.yaml` 存在
-3. 校验 `$0` 指定章节存在
+2. 按 [章节自动推断协议](_protocols/chapter-auto-inference.md) 确定目标章节
+3. 校验 `{current_path}/chapters/index.yaml` 存在
+4. 校验 `$0` 指定章节存在
 
 ## 输入参数
 
@@ -32,13 +33,35 @@ arguments: chapter_id
 
 从 `{current_path}/chapters/index.yaml` 中找到 `id=$0` 的条目。
 
-### 2. 更新字段
+### 2. 状态守卫
+
+如果章节当前状态为 `published`：
+
+```
+⚠️ 章节 $0 已发布
+
+已发布章节修改需谨慎。允许的操作：
+  - 修改元数据（标题、字数统计等）：直接执行
+  - 回退状态（如 published → revise）：需要确认
+
+确认修改？(Y/N)
+```
+
+状态推进建议顺序：`idea → outline → draft → revise → final → published`。
+允许回退，但从 `published` 回退需要用户确认。
+
+### 3. 更新字段
 
 按用户传入参数更新对应字段，并刷新 `updated` 日期。
 
-### 3. 同步正文头部（可选）
+### 4. 同步正文头部（可选）
 
 如果 `{current_path}/chapters/$0.md` 存在，同步更新头部元数据。
+
+### 5. 更新状态
+
+更新 `{current_path}/.novel/state.yaml`：
+- `project.updated`：今天日期
 
 ## 输出格式
 
