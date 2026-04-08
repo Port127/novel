@@ -5,3 +5,6 @@ projects/
 feature.md
 oh-my-harness.md
 .DS_Store
+
+.cursor/rules/novel-project-context.mdc
+.cursor/rules/novel-core-constraints.mdc
