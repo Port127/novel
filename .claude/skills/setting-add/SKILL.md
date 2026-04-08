@@ -92,7 +92,7 @@ arguments: name
 
 关键要求：
 - `summary` 必须在一句话内说清楚这条设定是什么
-- `description` 要足够详细，让其他 skill 可以引用
+- `description` 不是百科词条，是世界的切片——想象一个角色在这条设定下生活是什么感觉。"双宇宙融合"不是物理概念，是街角突然出现一栋不属于这里的建筑，是推开门发现门后的走廊比门外的建筑更长。用叙事质感写，让读到它的人能"看见"这条设定在故事里长什么样
 - `plot_links` 尽量填写（与大纲节点关联）
 - `setting_links` 填写与其他设定的依赖关系（如力量体系依赖某条世界规则）
 - `source` 必须标明来源（草稿行号、用户口述等）
@@ -109,7 +109,7 @@ arguments: name
 
 当指定 `--batch` 时：
 - 读取 `ingestion_brief.md` 中的世界规则部分
-- 将"已定义"的规则创建为 `status: confirmed` 的条目
+- 将"已定义"的规则创建为 `status: confirmed` 的条目——description 不是复制粘贴 ingestion_brief 原文，用你的理解重新表达规则的运作方式和人物感受
 - 将"已暗示未展开"的规则创建为 `status: tentative` 的条目
 - "规则缺口"不创建条目，但记录到 `worldbuilding/gaps.md`
 - 每条创建前向用户展示，等待确认
