@@ -8,3 +8,10 @@ oh-my-harness.md
 
 .cursor/rules/novel-project-context.mdc
 .cursor/rules/novel-core-constraints.mdc
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Local LLM credentials (defaults in backend/config.py when missing)
+backend/llm_config.json
