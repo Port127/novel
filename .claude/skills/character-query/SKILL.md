@@ -37,7 +37,7 @@ arguments: query
 
 ### 2. 读取相关数据
 
-- 读取 `{current_path}/.novel/state.yaml` 获取角色列表
+- 读取 `{current_path}/characters/character_index.yaml` 获取角色列表
 - 读取相关角色卡片文件
 
 ### 3. 格式化输出

@@ -114,7 +114,7 @@ referenced_materials: []
 
 如果 `../novel-material/data/index.yaml` 存在，自动读取已有素材列表填入 `referenced_materials`。
 
-写入 `projects/$0/.novel/state.yaml`：
+写入 `projects/$0/.novel/state.yaml`（仅存储不可从源文件推导的状态）：
 
 ```yaml
 project:
@@ -123,28 +123,15 @@ project:
   created: {{今天日期}}
   updated: {{今天日期}}
 
+protagonist: ""
+
 ingestion:
   status: pending
   brief_file: ""
   source_draft: ""
 
-characters: []
-
-timeline:
-  start: ""
-  end: ""
-  events_count: 0
-
 plot:
   structure: ""
-  chapters: 0
-
-worldbuilding:
-  locations_count: 0
-  rules_defined: false
-  entries_count: 0
-  confirmed_count: 0
-  tentative_count: 0
 
 current_focus: ""
 ```

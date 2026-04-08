@@ -13,7 +13,7 @@ arguments: char1 char2 change
 ## 前置检查
 
 1. 读取 `.current.yaml` 获取 `current_path`
-2. 检查角色是否在 `{current_path}/.novel/state.yaml` 中存在
+2. 检查角色是否存在：读取 `{current_path}/characters/character_index.yaml` 或扫描 `characters/*.yaml`
 3. 读取或创建 `characters/relation_events.yaml` 与 `characters/relations.yaml`
 
 ## 输入参数

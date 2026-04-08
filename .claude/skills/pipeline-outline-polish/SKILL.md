@@ -32,7 +32,7 @@ arguments: focus
 
 ### 1. 做双重 review
 
-先按 `/plot-review` 审查结构、节奏、伏笔，再按 `/worldbuilding-review` 审查设定支撑度。
+先调用 `/plot-review`，再调用 `/worldbuilding-review`，将两份审查结果合并用于下一步。
 
 ### 2. 判断改动级别
 
@@ -49,7 +49,7 @@ arguments: focus
 
 ### 3. 更新大纲
 
-结合 `/plot-suggest` 的方法补强以下内容：
+参照 `/plot-suggest`（卡点突破与钩子设计方法），补强以下内容：
 
 - 幕次弧线与关键转折
 - 中点、危机、高潮的因果链
@@ -58,9 +58,9 @@ arguments: focus
 - 主角/关键配角的缺陷、执念、误判是否在大纲里有兑现场景；关系 `dynamic` 与张力是否在关键幕次有对应事件
 
 执行修改时：
-- 修改已有节点 → 通过 `/plot-edit` 执行（会自动做影响分析）
-- 新增节点 → 通过 `/plot-add` 执行
-- 设定不足或需调整 → 通过 `/setting-edit` 或 `/setting-add` 处理
+- 修改已有节点 → 调用 `/plot-edit`（会自动做影响分析）
+- 新增节点 → 调用 `/plot-add`
+- 设定不足或需调整 → 调用 `/setting-edit` 或 `/setting-add`
 
 同步更新：
 
@@ -69,7 +69,7 @@ arguments: focus
 
 ### 4. 做一次总体验证
 
-按 `/consistency-check` 的口径做轻量回看，确认：
+参照 `/consistency-check`（交叉检查维度），做轻量回看，确认：
 
 - 新增设定不与既有章节冲突
 - 时间线没有新增硬冲突

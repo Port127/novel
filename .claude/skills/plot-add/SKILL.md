@@ -56,7 +56,8 @@ arguments: chapter content
 
 ### 4. 更新状态
 
-更新 `state.yaml` 的 `plot.chapters` 计数。
+更新 `{current_path}/.novel/state.yaml`：
+- `project.updated`：今天日期
 
 ## 输出格式
 

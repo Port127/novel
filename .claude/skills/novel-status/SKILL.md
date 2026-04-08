@@ -17,14 +17,15 @@ when_to_use: 用户想了解当前小说项目的整体情况
 
 ### 1. 读取项目状态
 
-从 `{current_path}/.novel/state.yaml` 读取基本信息。
+从 `{current_path}/.novel/state.yaml` 读取非推导字段（project、protagonist、ingestion、plot.structure、current_focus）。
 
-### 2. 统计各模块数据
+### 2. 从源文件动态统计各模块数据
 
-- **角色**: 读取 `characters/` 目录，统计角色数量和分类
-- **剧情**: 读取 `plot/outline.md`，统计章节数
+- **角色**: 读取 `characters/character_index.yaml` 或扫描 `characters/*.yaml`，统计角色数量和分类
+- **剧情**: 读取 `plot/outline.md` 和 `chapters/index.yaml`，统计章节数
 - **时间线**: 读取 `timeline/main.yaml`，统计事件数和时间范围
-- **世界观**: 检查 `worldbuilding/setting.md` 是否有内容
+- **世界观**: 读取 `worldbuilding/worldbuilding.yaml` 和 `worldbuilding/entries/*.yaml`，统计设定条目数和确认状态
+- **关系**: 读取 `characters/relations.yaml`，统计关系对数
 
 ### 3. 检查待处理事项
 

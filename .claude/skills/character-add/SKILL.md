@@ -118,18 +118,9 @@ entries:
 ### 4. 更新项目状态
 
 更新 `{current_path}/.novel/state.yaml`：
+- `project.updated`：今天日期
 
-```yaml
-characters:
-  - name: $0
-    role: $1
-    file: characters/$0.yaml
-
-project:
-  updated: {{今天日期}}
-```
-
-**成功标准**: `characters/$0.yaml` 创建，`character_index.yaml` 已追加，`state.yaml` 已更新
+**成功标准**: `characters/$0.yaml` 创建，`character_index.yaml` 已追加
 
 ## 输出格式
 

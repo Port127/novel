@@ -57,6 +57,20 @@ relations: []
 #   dynamic: ""           # 救赎与被救赎 / 镜像与对立 / 共生与寄生 / 守护与诅咒
 #   tension_source: ""    # 关系中的主要张力来源
 
+# 交叉索引（由 /character-add 初始化，/project-reindex 维护）
+cross_references:
+  related_settings: []
+  # - id: rule_001
+  #   name: 设定名称
+  #   relevance: 与该角色的关联说明
+  related_factions: []
+  # - id: faction_001
+  #   name: 势力名称
+  #   stance: 该势力对此角色的态度
+  related_characters: []
+  key_chapters: []
+  related_plot_nodes: []
+
 # 登场统计（由系统维护）
 appearance_stats:
   scene_count: 0

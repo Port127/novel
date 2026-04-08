@@ -26,23 +26,15 @@ arguments: range
 
 ### 1. 关系演进检查
 
-按 `/relationship-check` 的标准识别：
-
-- 关系跳变
-- 缺桥接事件
-- 关系类型冲突
+调用 `/relationship-check`，将结果中的关系跳变、缺桥接事件、关系类型冲突纳入修复清单。
 
 ### 2. 时间线检查
 
-按 `/timeline-check` 的标准识别：
-
-- 时间顺序冲突
-- 角色位置冲突
-- 年龄 / 因果关系问题
+调用 `/timeline-check`，将结果中的时间顺序冲突、角色位置冲突、年龄/因果关系问题纳入修复清单。
 
 ### 3. 设定依赖检查
 
-按 `/worldbuilding-review` 的设定依赖审查标准识别：
+参照 `/worldbuilding-review`（设定依赖与生命周期审查部分），识别：
 
 - `confirmed` 设定是否引用了已 `deprecated` 的设定
 - `setting_links` 中引用的目标是否存在
@@ -51,7 +43,7 @@ arguments: range
 
 ### 4. 跨模块一致性检查
 
-按 `/consistency-check` 的标准识别：
+参照 `/consistency-check`（交叉检查维度），识别：
 
 - 世界规则与剧情矛盾
 - 章节状态与目标脱节

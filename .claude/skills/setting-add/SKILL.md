@@ -130,9 +130,6 @@ entries:
 ### 6. 更新状态
 
 更新 `{current_path}/.novel/state.yaml`：
-- `worldbuilding.entries_count`：当前 entries/ 目录下条目总数
-- `worldbuilding.confirmed_count`：`status: confirmed` 的条目数
-- `worldbuilding.tentative_count`：`status: tentative` 的条目数
 - `project.updated`：今天日期
 
 ## 输出格式

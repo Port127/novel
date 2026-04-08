@@ -1,5 +1,6 @@
 # 小说项目状态文件
-# 由AI自动维护，手动修改可能导致不一致
+# 仅存储不可从源文件推导的状态信息
+# 派生数据（角色计数、设定计数、章节数等）由读取方按需从源文件计算
 
 project:
   name: ""
@@ -7,30 +8,14 @@ project:
   created: ""
   updated: ""
 
+protagonist: ""
+
 ingestion:
   status: ""              # pending | completed | needs_update
   brief_file: ""          # ingestion_brief.md 路径
   source_draft: ""        # 原始草稿路径
 
-characters: []
-# - name: 张三
-#   role: 主角
-#   file: characters/张三.yaml
-
-timeline:
-  start: ""
-  end: ""
-  events_count: 0
-
 plot:
-  structure: ""
-  chapters: 0
-
-worldbuilding:
-  locations_count: 0
-  rules_defined: false
-  entries_count: 0        # 设定集条目数
-  confirmed_count: 0      # 已确认条目数
-  tentative_count: 0      # 待确认条目数
+  structure: ""           # 大纲结构类型（手动设定）
 
 current_focus: ""

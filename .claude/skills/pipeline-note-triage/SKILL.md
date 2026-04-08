@@ -119,24 +119,15 @@ arguments: file_path
 
 确认后，按类型依次派发到对应 skill：
 
-1. **设定类** → 调用 `/setting-add`
-   - 自动推断 `category`
-   - 默认 `status: tentative`
-   - `source` 标注为笔记文件路径和条目编号
+1. **设定类** → 调用 `/setting-add`，自动推断 `category`，默认 `status: tentative`，`source` 标注为笔记文件路径和条目编号
 
-2. **角色类** → 调用 `/character-add`
-   - 从描述中提取姓名、定位、年龄、身份、性格
-   - 不足的字段留空，后续通过 `/character-edit` 补充
+2. **角色类** → 调用 `/character-add`，从描述中提取姓名、定位、年龄、身份、性格；不足的字段留空，后续可通过 `/character-edit` 补充
 
-3. **剧情类** → 调用 `/plot-add`
-   - 推断章节位置
-   - 提取事件、冲突、转折
+3. **剧情类** → 调用 `/plot-add`，推断章节位置，提取事件、冲突、转折
 
-4. **时间线类** → 调用 `/timeline-add`
-   - 提取时间点、事件、关联角色
+4. **时间线类** → 调用 `/timeline-add`，提取时间点、事件、关联角色
 
-5. **关系类** → 调用 `/relationship-add` 或 `/relationship-log`
-   - 首次建立关系用 `add`，关系变化事件用 `log`
+5. **关系类** → 首次建立关系调用 `/relationship-add`，关系变化事件调用 `/relationship-log`
 
 6. **世界观叙述类** → 追加到 `worldbuilding/setting.md`
 
@@ -150,7 +141,6 @@ arguments: file_path
 
 更新 `{current_path}/.novel/state.yaml`：
 - `project.updated`：今天日期
-- 各计数字段按实际写入结果更新
 
 ### 7. 输出汇总报告
 

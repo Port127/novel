@@ -122,12 +122,9 @@ lifecycle:
 - 如果修改了 `name`、`category` 或 `status`，同步索引条目
 - 如果修改了 `summary`，同步 `core_concepts` 或 `factions_summary` 中的 `one_liner`（若有对应条目）
 
-### 5. 更新计数
+### 5. 更新状态
 
 更新 `{current_path}/.novel/state.yaml`：
-- `worldbuilding.entries_count`：条目总数
-- `worldbuilding.confirmed_count`：已确认数
-- `worldbuilding.tentative_count`：待确认数
 - `project.updated`：今天日期
 
 ## 输出格式

@@ -17,7 +17,8 @@ when_to_use: 用户想确保小说设定没有矛盾
 ### 1. 收集所有数据
 
 读取：
-- `{current_path}/.novel/state.yaml`
+- `{current_path}/.novel/state.yaml`（仅取非推导字段：project、ingestion、plot.structure、current_focus）
+- `{current_path}/characters/character_index.yaml`
 - `{current_path}/characters/*.yaml`
 - `{current_path}/characters/relations.yaml`
 - `{current_path}/characters/relation_events.yaml`

@@ -1,0 +1,24 @@
+---
+description: 小说项目的工作流经验和最佳实践（通用，跨项目共享）
+alwaysApply: true
+---
+
+# 工作流经验
+
+## 文件约定
+- 角色档案：`characters/{角色名}.yaml`
+- 世界观设定：`worldbuilding/entries/{类型}_{编号}.yaml`（rule_/power_/faction_/lore_ 前缀）
+- `state.yaml` 只存不可推导状态（项目元信息、工作流状态、设计选择），不存计数和列表；派生数据由读取方从源文件计算
+- 角色文件含 `cross_references`，设定文件含 `character_links`；交叉引用由 `/project-reindex` 统一维护，CRUD skill 不跨领域写入
+- Pipeline 引用子 skill 时使用"调用"或"参照"措辞（见 `_protocols/pipeline-delegation.md`），不使用模糊写法
+
+## 创作护栏
+- 新设定默认 tentative，经作者确认后转 confirmed；不要擅自填补核心设定
+- 角色五件套（fatal_flaw / obsession / soft_spot / misbelief / contrast_habit）不能留空
+- 不要用 AI 腔调：避免"仿佛在诉说着…"、"不禁…"、"一丝…"、"竟然…"
+- 每次聚焦一个 pipeline，完成后再推进下一个
+
+## 常用 Skill
+- 查角色：`/character-query` | 查大纲：`/plot-query`
+- 开新章：`/pipeline-chapter-kickoff` | 写完打磨：`/pipeline-draft-polish`
+- 写作前：`/consistency-check` | 索引维护：`/project-reindex`

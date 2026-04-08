@@ -69,7 +69,8 @@ when_to_use: 用户想检查项目结构和配置是否正常
 
 ### 4. 索引一致性
 
-- state.yaml 中的角色列表与实际文件匹配
+- character_index.yaml 与 characters/*.yaml 实际文件匹配
+- worldbuilding.yaml 的 entries 列表与 entries/*.yaml 实际文件匹配
 - 时间范围与事件匹配
 - chapters/index.yaml 与 chapters/*.md 匹配
 - relation_events.yaml 与 relations.yaml 的角色对可追溯

@@ -89,9 +89,9 @@ arguments: focus
 ```
 
 用户选择后：
-- `C`：通过 `/setting-edit` 将 status → confirmed，记录 lifecycle
-- `E`：先修改内容，再确认
-- `D`：标记 deprecated，检查是否有其他设定依赖它
+- `C`：调用 `/setting-edit`，将 status → confirmed，记录 lifecycle
+- `E`：先修改内容，再调用 `/setting-edit` 确认
+- `D`：调用 `/setting-edit` 标记 deprecated，检查是否有其他设定依赖它
 - `S`：跳过，进入下一条
 
 **阶段二止点：** 所有高优先级 tentative 处理完毕。
@@ -103,7 +103,7 @@ arguments: focus
 **目标：** 填补规则缺口，修复依赖问题。
 
 1. 对照大纲关键事件，检查是否仍有未覆盖的设定需求
-2. 若发现缺口，引导用户通过 `/setting-add` 创建新条目
+2. 若发现缺口，引导用户确认后调用 `/setting-add` 创建新条目
 3. 修复 `setting_links` 中的断裂引用
 4. 更新 `worldbuilding/worldbuilding.yaml` 索引的 `core_concepts` 和 `factions_summary`
 5. 同步更新 `worldbuilding/setting.md`（叙述版）
@@ -113,8 +113,6 @@ arguments: focus
 ### 阶段四：状态同步与下一步
 
 更新 `{current_path}/.novel/state.yaml`：
-- `worldbuilding.entries_count` / `confirmed_count` / `tentative_count`：最新计数
-- `worldbuilding.rules_defined`：若有 confirmed 的 world_rule，设为 true
 - `project.updated`：今天日期
 
 ## 输出格式

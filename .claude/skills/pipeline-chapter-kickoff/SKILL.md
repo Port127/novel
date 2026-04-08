@@ -28,22 +28,15 @@ arguments: chapter_id goal
 
 ### 1. 创建章节卡
 
-按 `/chapter-create` 的契约：
-
-- 创建章节正文文件
-- 在 `chapters/index.yaml` 中登记条目
+调用 `/chapter-create`，创建章节正文文件并在 `chapters/index.yaml` 中登记条目。
 
 ### 2. 推进到 outline 阶段
 
-按 `/chapter-update` 的契约：
-
-- 将章节状态设为 `outline`
-- 若用户给出 `--pov`，同步写入 POV
-- 必要时补标题、目标字数等最小元数据
+调用 `/chapter-update`，将章节状态设为 `outline`。若用户给出 `--pov`，同步写入 POV；必要时补标题、目标字数等最小元数据。
 
 ### 3. 补齐对应情节点
 
-按 `/plot-add` 的契约，把本章写入现有大纲：
+调用 `/plot-add`，把本章写入现有大纲：
 
 - 章节目标
 - 事件推进

@@ -34,12 +34,7 @@ novel/
 │   │   ├── character-add/
 │   │   │   └── SKILL.md
 │   │   └── ...
-│   ├── memory/                    # 记忆系统
-│   │   ├── MEMORY.md              # 记忆索引
-│   │   ├── user/                  # 用户偏好
-│   │   ├── feedback/              # 反馈记忆
-│   │   ├── project/               # 项目记忆
-│   │   └── reference/             # 外部引用
+│   # 记忆层已迁移至 .cursor/rules/（通用）和 projects/{name}/.novel/rules/（项目专属）
 │   └── settings.local.json        # 项目设置（本地）
 │
 ├── shared/                        # 共享资源
@@ -51,7 +46,10 @@ novel/
 │   │   ├── .novel/
 │   │   │   ├── meta.yaml          # 项目元信息
 │   │   │   ├── state.yaml         # 项目状态（AI维护）
-│   │   │   └── materials.yaml     # 素材引用（指向 novel-material）
+│   │   │   ├── materials.yaml     # 素材引用（指向 novel-material）
+│   │   │   └── rules/             # 项目专属 Cursor Rules 源文件
+│   │   │       ├── context.md     # → .cursor/rules/novel-project-context.mdc
+│   │   │       └── constraints.md # → .cursor/rules/novel-core-constraints.mdc
 │   │   ├── characters/
 │   │   ├── compliance/
 │   │   ├── plot/
@@ -258,6 +256,8 @@ last_updated: 2024-04-01
 
 ### projects/{name}/.novel/state.yaml
 
+> 仅存储不可从源文件推导的状态。角色计数、设定计数、章节数等派生数据由读取方按需从源文件计算。
+
 ```yaml
 project:
   name: 仙途
@@ -265,31 +265,15 @@ project:
   created: 2024-04-01
   updated: 2024-04-01
 
+protagonist: 张三
+
 ingestion:
   status: completed
   brief_file: ingestion_brief.md
   source_draft: ""
 
-characters:
-  - name: 张三
-    role: 主角
-    file: characters/张三.yaml
-
-timeline:
-  start: 第1天
-  end: 第3年
-  events_count: 20
-
 plot:
   structure: 三幕式
-  chapters: 15
-
-worldbuilding:
-  locations_count: 3
-  rules_defined: true
-  entries_count: 8
-  confirmed_count: 5
-  tentative_count: 3
 
 current_focus: 第8章
 ```
@@ -302,11 +286,11 @@ current_focus: 第8章
 
 | 事件 | 触发条件 | 动作 |
 |------|----------|------|
-| 写入角色卡片 | Write to `characters/*.yaml` | 更新 state.yaml 的 characters 列表 |
+| 写入角色卡片 | Write to `characters/*.yaml` | 更新 character_index.yaml |
 | 添加时间线 | Write to `timeline/main.yaml` | 检查时间冲突 |
 | 切换项目 | `/novel-switch` | 更新 .current.yaml |
 
-实现方式：在skill中显式调用状态更新步骤。
+实现方式：在skill中显式调用状态更新步骤。state.yaml 仅更新 `project.updated`，不维护派生计数。
 
 ---
 
@@ -337,6 +321,7 @@ current_focus: 第8章
 | `/draft-ingest` | 深度消化草稿/素材文档 | $0=草稿路径 |
 | `/project-weekly-report` | 生成双视角项目周报 | $0=范围 |
 | `/novel-kpi` | 计算项目核心KPI | $0=范围 |
+| `/project-reindex` | 重建交叉索引、角色/设定反向引用、项目地图 | --dry-run |
 
 ### 角色管理
 | Skill | 功能 | 参数 |
@@ -422,6 +407,7 @@ current_focus: 第8章
 |------|------|--------|
 | `_protocols/chapter-auto-inference.md` | 章节 ID 自动推断 | chapter-review, chapter-update, anti-ai-check, anti-ai-rewrite, voice-check, chapter-draft |
 | `_protocols/from-extraction.md` | `--from` 引用提取 | character-add, plot-add, setting-add |
+| `_protocols/pipeline-delegation.md` | Pipeline 引用子 skill 的委派规范 | 全部 8 个 pipeline-* skill |
 
 ---
 

@@ -25,7 +25,7 @@ arguments: target
 
 ### 1. 先检查登记是否完整
 
-按 `/inspiration-log` 的口径检查目标范围内是否已有借鉴登记。
+参照 `/inspiration-log`（登记字段要求），检查目标范围内是否已有借鉴登记。
 
 若缺失：
 
@@ -35,15 +35,11 @@ arguments: target
 
 ### 2. 逐章风险检查
 
-按 `/inspiration-check` 的标准检查：
-
-- 表达相似风险
-- 桥段相似风险
-- 人物关系相似风险
+调用 `/inspiration-check`，检查目标范围内各章的表达相似、桥段相似、人物关系相似风险。
 
 ### 3. 生成范围报告
 
-按 `/inspiration-report` 的标准汇总：
+调用 `/inspiration-report`，汇总：
 
 - 覆盖章节数
 - 风险级别分布

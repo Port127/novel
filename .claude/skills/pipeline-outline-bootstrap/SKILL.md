@@ -40,7 +40,7 @@ arguments: input
 
 如果 `$0` 是文件路径：
 
-1. 按 `/draft-ingest` 的流程执行深度消化
+1. 调用 `/draft-ingest`，将其产出的理解摘要用于后续阶段
 2. 输出理解摘要，包含：
    - 真实前提（不是营销式一句话，而是故事的叙事引擎）
    - 独特机制（这个故事区别于同类的叙事装置）
@@ -94,7 +94,7 @@ arguments: input
    确认？(Y/修改/跳过)
    ```
 
-4. 确认的条目通过 `/setting-add` 写入 `worldbuilding/entries/`
+4. 确认的条目调用 `/setting-add` 写入 `worldbuilding/entries/`
 5. 同步更新 `worldbuilding/worldbuilding.yaml` 索引
 6. 将确认的设定汇总写入 `worldbuilding/setting.md`（叙述版）
 
@@ -157,7 +157,6 @@ arguments: input
 - `ingestion.brief_file`：`ingestion_brief.md`
 - `ingestion.source_draft`：原始草稿路径
 - `plot.structure`：确认的大纲结构名称
-- `worldbuilding.entries_count` / `confirmed_count` / `tentative_count`：设定条目计数
 - `project.updated`：今天日期
 
 输出当前状态和最小必要下一步任务。

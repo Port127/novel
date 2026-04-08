@@ -106,7 +106,6 @@ b) 检查关联章节的状态
 ### 5. 更新状态
 
 更新 `{current_path}/.novel/state.yaml`：
-- `plot.chapters`：大纲节点计数（若有增减）
 - `project.updated`：今天日期
 
 ## 输出格式

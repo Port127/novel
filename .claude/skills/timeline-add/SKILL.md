@@ -49,9 +49,8 @@ events:
 
 ### 4. 更新状态
 
-更新 `state.yaml`：
-- `timeline.start/end` 范围
-- `timeline.events_count` 计数
+更新 `{current_path}/.novel/state.yaml`：
+- `project.updated`：今天日期
 
 ## 输出格式
 
