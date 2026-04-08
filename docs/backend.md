@@ -279,7 +279,7 @@ pip install -r backend/requirements.txt
 
 ```bash
 # 必须从项目根目录（novel/）运行
-python -m uvicorn backend.main:app --port 8000 --reload --reload-dir backend
+python -m uvicorn backend.main:app --port 4273 --reload --reload-dir backend
 ```
 
 > `--reload-dir backend` 限制只监视 Python 文件变更，避免前端文件改动导致后端重启。
@@ -288,9 +288,9 @@ python -m uvicorn backend.main:app --port 8000 --reload --reload-dir backend
 
 | 地址 | 说明 |
 |------|------|
-| http://localhost:8000/docs | Swagger UI（交互式 API 文档） |
-| http://localhost:8000/redoc | ReDoc（API 文档阅读模式） |
-| http://localhost:8000/api/health | 健康检查 |
+| http://localhost:4273/docs | Swagger UI（交互式 API 文档） |
+| http://localhost:4273/redoc | ReDoc（API 文档阅读模式） |
+| http://localhost:4273/api/health | 健康检查 |
 
 ### 5.5 添加新路由模块
 
@@ -305,8 +305,8 @@ python -m uvicorn backend.main:app --port 8000 --reload --reload-dir backend
 
 ```python
 allow_origins = [
-    "http://localhost:5173",   # Vite dev server
-    "http://127.0.0.1:5173",
+    "http://localhost:4173",   # Vite dev server
+    "http://127.0.0.1:4173",
     "http://localhost:3000",
 ]
 ```

@@ -14,22 +14,22 @@ if ! python -c "import fastapi" 2>/dev/null; then
 fi
 
 # Start backend (from project root so 'backend' package is importable)
-echo "🚀 Starting backend on http://localhost:8000 ..."
+echo "🚀 Starting backend on http://localhost:4273 ..."
 cd "$PROJECT_ROOT"
-python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir backend &
+python -m uvicorn backend.main:app --host 0.0.0.0 --port 4273 --reload --reload-dir backend &
 BACKEND_PID=$!
 
 # Start frontend
-echo "🚀 Starting frontend on http://localhost:5173 ..."
+echo "🚀 Starting frontend on http://localhost:4173 ..."
 cd "$FRONTEND_DIR"
 npx vite --host &
 FRONTEND_PID=$!
 
 echo ""
 echo "✅ Both servers running. Press Ctrl+C to stop."
-echo "   Frontend: http://localhost:5173"
-echo "   Backend:  http://localhost:8000"
-echo "   API docs: http://localhost:8000/docs"
+echo "   Frontend: http://localhost:4173"
+echo "   Backend:  http://localhost:4273"
+echo "   API docs: http://localhost:4273/docs"
 echo ""
 
 trap "kill $BACKEND_PID $FRONTEND_PID 2>/dev/null; exit" INT TERM

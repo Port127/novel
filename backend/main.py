@@ -24,8 +24,8 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
+        "http://localhost:4173",
+        "http://127.0.0.1:4173",
         "http://localhost:3000",
     ],
     allow_credentials=True,
@@ -54,4 +54,4 @@ async def health():
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run("backend.main:app", host="0.0.0.0", port=8000, reload=True, reload_dirs=["backend"])
+    uvicorn.run("backend.main:app", host="0.0.0.0", port=4273, reload=True, reload_dirs=["backend"])

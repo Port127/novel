@@ -9,7 +9,7 @@
 ### 快速开始
 
 1. **启动服务**：在终端运行 `cd frontend && ./start.sh`（同时启动前后端）
-2. **打开浏览器**：访问 http://localhost:5173
+2. **打开浏览器**：访问 http://localhost:4173
 3. **配置 LLM**：首次使用需进入「设置」页面配置大模型 API（详见下方）
 
 ### 界面概览
@@ -351,7 +351,7 @@ interface AppState {
 server: {
   proxy: {
     "/api": {
-      target: "http://localhost:8000",
+      target: "http://localhost:4273",
       changeOrigin: true,
     }
   }

@@ -29,12 +29,12 @@ pip install -r server/requirements.txt
 
 # 或者分别启动：
 # 终端 1 - 后端
-cd .. && python -m uvicorn server.main:app --reload --app-dir frontend --port 8000
+cd .. && python -m uvicorn server.main:app --reload --app-dir frontend --port 4273
 # 终端 2 - 前端
 npm run dev
 ```
 
-打开 http://localhost:5173 即可使用。
+打开 http://localhost:4173 即可使用。
 
 ## 配置 LLM
 
