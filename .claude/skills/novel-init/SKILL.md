@@ -38,7 +38,10 @@ projects/$0/
 ├── .novel/
 │   ├── meta.yaml              ← 项目元信息
 │   ├── state.yaml             ← 运行状态（AI维护）
-│   └── materials.yaml         ← 素材引用
+│   ├── materials.yaml         ← 素材引用
+│   └── rules/                 ← 项目专属 Cursor Rules 源文件
+│       ├── context.md         ← 项目上下文（→ .cursor/rules/novel-project-context.mdc）
+│       └── constraints.md     ← 世界观护栏（→ .cursor/rules/novel-core-constraints.mdc）
 ├── ingestion_brief.md         ← 素材消化摘要（由 /draft-ingest 生成）
 ├── characters/
 │   ├── character_index.yaml   ← 人物索引（自动聚合）
@@ -136,7 +139,25 @@ plot:
 current_focus: ""
 ```
 
-### 4. 更新项目列表
+### 4. 初始化项目 Rules
+
+从 `templates/project/.novel/rules/` 复制 `context.md` 和 `constraints.md` 到 `projects/$0/.novel/rules/`。
+
+将 `context.md` 中的占位符替换为实际值：
+- `{{项目名称}}` → `$0`
+- `{{类型}}` → `$1`
+- `{{当前阶段}}` → `待素材消化`
+- `{{一句话概括故事核心}}` → 留空，后续由 `/draft-ingest` 或 `/pipeline-outline-bootstrap` 填充
+
+将两个文件同步到 `.cursor/rules/`（包裹 YAML 前置，同 `/novel-switch` 步骤 3）：
+- `context.md` → `.cursor/rules/novel-project-context.mdc`
+- `constraints.md` → `.cursor/rules/novel-core-constraints.mdc`
+
+这一步确保新项目创建后，`.cursor/rules/` 立刻指向新书，不会残留上一本书的护栏。
+
+**成功标准**: `projects/$0/.novel/rules/` 下有 `context.md` 和 `constraints.md`，且 `.cursor/rules/` 已同步
+
+### 5. 更新项目列表
 
 更新 `.projects.yaml`：
 
@@ -149,7 +170,7 @@ projects:
     status: active
 ```
 
-### 5. 设置为当前项目
+### 6. 设置为当前项目
 
 更新 `.current.yaml`：
 

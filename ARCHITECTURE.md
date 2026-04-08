@@ -9,8 +9,8 @@
 3. 记忆层（Cursor Rules）：
    - 通用规则：`.cursor/rules/novel-workflow.mdc`（所有项目共享）
    - 项目专属规则源：`projects/{name}/.novel/rules/context.md`、`constraints.md`
-   - 活跃规则：`.cursor/rules/novel-project-context.mdc`、`novel-core-constraints.mdc`（由 `/novel-switch` 从当前项目同步）
-4. 项目模板/数据层：`templates/project/*`、`shared/styles/*`
+   - 活跃规则：`.cursor/rules/novel-project-context.mdc`、`novel-core-constraints.mdc`（由 `/novel-switch` 和 `/project-reindex` 同步，`/novel-init` 初始化空模板）
+4. 项目模板/数据层：`templates/project/*`、`shared/styles/*`（含 `anti_ai_rules.yaml` 去AI感规则库）
 5. 产品文档层：`README*.md`、`docs/*`
 
 ## 主要领域
@@ -21,7 +21,7 @@
 - 世界观与设定集管理
 - 素材检索与参考（通过 `../novel-material` 素材库）
 - 合规与借鉴可追溯性
-- 写作风格与去 AI 质量控制
+- 写作风格与去 AI 质量控制（六维检测、角色语言画像 `speech_pattern`、分策略改写）
 - 流程编排（8 个 pipeline 预设）
 
 ## 素材库集成
@@ -74,6 +74,22 @@
 **决策**：Pipeline 引用子 skill 时统一使用两种措辞——"调用 /skill-name"（完整执行）或"参照 /skill-name（具体部分）"（引用部分逻辑）。禁止"按 X 的标准/口径/方法"等模糊写法。详见 `_protocols/pipeline-delegation.md`。
 
 **动机**：模糊措辞导致 AI 可能不读取子 skill 的实际定义，内联的审查逻辑与子 skill 更新脱节。
+
+### ADR-4：章节摘要链与角色状态快照（2026-04-08）
+
+**决策**：`chapters/index.yaml` 新增 `summary` 和 `characters_involved` 字段，角色卡新增 `current_state` 块。`/chapter-update` 在状态推进到 `draft`/`final` 时自动生成摘要和更新角色状态。`/chapter-draft` 写新章时优先读取摘要链和角色当前状态，而非回读全部正文。
+
+**动机**：写到第 20 章时，AI 不知道前 19 章发生了什么，导致人物行为不一致、信息重复交代、伏笔遗漏。读全部正文既昂贵又容易超出上下文窗口。
+
+**代价**：每次推进章节状态多一步摘要生成（约 100 字），每个主要角色多一步状态更新。对已写但未生成摘要的旧章节，需手动补跑 `/chapter-update --status draft`。
+
+### ADR-5：角色语言画像与去AI感闭环（2026-04-08）
+
+**决策**：角色模板新增 `speech_pattern` 块（语气/句式/粗话/口头禅/禁用词等），`anti_ai_rules.yaml` 扩展为六维规则库（套话/句式/比喻/描写/对白/转折）。三层闭环：`chapter-draft` 源头写对 → `anti-ai-check` 六维检测 → `anti-ai-rewrite` 分策略修复。
+
+**动机**：AI 生成文本的两个核心问题——比喻/描写堆砌和对白同质化——此前缺乏量化检测维度和针对性修复策略。对白改写没有角色语言画像可参照，只能做笼统的"去AI感"。
+
+**代价**：创建角色时多了 `speech_pattern` 需要填（至少填 tone + profanity_level + sample_lines）。对已存在的角色卡需要手动补充或通过 `--auto-fill` 从章节对白中提炼。
 
 ### 已知接受的代价
 

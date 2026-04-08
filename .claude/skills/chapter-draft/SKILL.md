@@ -33,17 +33,22 @@ arguments: chapter_id
 
 读取以下文件构建完整上下文：
 
+**前情积累（最重要——让 AI 知道"到目前为止发生了什么"）：**
+- `{current_path}/chapters/index.yaml` — 提取本章之前**所有已写章节的 `summary`**，拼接为前情摘要链
+- 本章出场角色的 `current_state` — 每个角色"此刻是什么状态"（位置、情绪、已知信息、行动目标、未解悬念）
+- 若存在前一章节文件，读取其结尾段落（确保开场衔接）
+
+**大纲与设定：**
 - `{current_path}/plot/outline.md` — 本章对应的大纲节点（目标、事件、冲突、钩子）
 - `{current_path}/plot/outline.yaml` — 伏笔和节奏标记
-- `{current_path}/characters/*.yaml` — 本章出场角色的完整档案（重点：`traits`、`fatal_flaw`、`obsession`、`soft_spot`、`misbelief`、`contrast_habit`）
+- `{current_path}/characters/*.yaml` — 本章出场角色的完整档案（重点：`traits`、`fatal_flaw`、`obsession`、`soft_spot`、`misbelief`、`contrast_habit`、`speech_pattern`）
 - `{current_path}/characters/relations.yaml` — 出场角色之间的当前关系状态
 - `{current_path}/characters/relation_events.yaml` — 最近的关系变化事件
 - `{current_path}/worldbuilding/setting.md` — 本章涉及的世界观背景
 - `{current_path}/worldbuilding/entries/*.yaml` — 本章依赖的具体设定条目
 - `{current_path}/timeline/main.yaml` — 本章的时间位置
-- `{current_path}/chapters/index.yaml` — 前后章节的目标和钩子（确保衔接）
 
-若存在前一章节文件，读取其结尾段落（确保开场衔接）。
+构建上下文的优先级：**前情摘要链 > 角色当前状态 > 前章结尾 > 本章大纲 > 角色档案 > 设定**。如果上下文过长需要裁剪，从底部开始砍。
 
 ### 2. 素材库参考检索（可选）
 
@@ -84,10 +89,22 @@ python ../novel-material/scripts/search.py scene \
 - 至少一个角色在本章展现 `fatal_flaw` 或 `contrast_habit`
 - 关系互动必须与 `relations.yaml` 的当前状态一致
 
+**对白约束（基于 speech_pattern）：**
+- 每个出场角色写对白前，先读取其 `speech_pattern`
+- 按 `tone` 设定语气基调（嘲讽的角色不会正经说话，粗犷的角色不会用敬语）
+- 按 `profanity_level` 控制粗话频率（"满嘴脏话"的角色每段对白都应有脏字，"无"的角色绝对不出现）
+- 按 `sentence_style` 控制句式（"短句多"的角色不写超过 15 字的对白）
+- 插入 `catchphrase` 和 `verbal_tics`（不是每句都插，自然分布即可）
+- 检查 `taboo_words`，确保角色不说不该说的话
+- 按 `education_voice` 调整用词层次（文盲不用成语，学究不说大白话）
+- 如果角色没有 `speech_pattern`，用 `traits` + `profile` 推断一个临时画像，并在写作备忘中标记"建议补充 speech_pattern"
+
 **文风约束：**
 - 若指定了 `--style`，按风格模板的句式、修辞、节奏特征写
 - 若项目 `meta.yaml` 中有 `style.prose` 或 `style.notes`，作为基础文风参考
 - 默认不使用典型 AI 文风（避免并列排比、空泛抒情、机械转折）
+- 比喻每千字不超过 3 个，且必须贴合 POV 角色的认知范围
+- 场景描写不连续超过 2 段，每段描写需绑定角色反应或叙事推进
 
 ### 5. 生成初稿
 

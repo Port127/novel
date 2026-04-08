@@ -88,6 +88,7 @@ arguments: ""
 - 如果 `cross_references` 字段不存在 → 在 `appearance_stats:` 前插入完整块
 - 如果 `cross_references` 已存在 → 仅追加缺失的条目，不删除已有条目
 - `key_chapters` 和 `related_plot_nodes` 从章节和情节数据自动填充
+- **防膨胀**：`related_settings` 上限 10 条，`related_factions` 上限 5 条。超限时按相关度排序保留 Top N，截断数量记入 `settings_overflow` / `factions_overflow`。排序依据：直接能力关联 > 背景关联 > 反向关联。完整引用列表写入 PROJECT_MAP.md 的角色地图中
 
 **设定文件更新规则**：
 - 仅追加缺失的 `character_links` 条目，不删除已有条目
@@ -140,3 +141,4 @@ arguments: ""
 - 推导关系标注来源：自动推导的条目加 `# auto-indexed` 注释，便于区分
 - 大项目（50+ 角色）时分批处理，每批完成后报告进度
 - 如果角色文件中没有 `cross_references` 字段，视为首次索引，完整创建
+- 防膨胀策略：主角级角色的交叉引用容易超限（尤其 related_settings），超限后截断并在 PROJECT_MAP.md 中保留完整列表。读取角色卡时看到 `settings_overflow > 0` 说明有更多引用未内联

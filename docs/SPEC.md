@@ -38,8 +38,9 @@ novel/
 │   └── settings.local.json        # 项目设置（本地）
 │
 ├── shared/                        # 共享资源
-│   └── styles/                    # 风格模板
-│       └── templates.yaml
+│   └── styles/                    # 风格模板与质量规则
+│       ├── templates.yaml         # 写作风格模板库
+│       └── anti_ai_rules.yaml    # 去AI感规则库（监控词表、比喻密度、描写占比、对白质量阈值）
 │
 ├── projects/                      # 小说项目
 │   ├── 仙途/
@@ -65,6 +66,12 @@ novel/
 ├── templates/                     # 项目模板
 │   └── project/
 │       ├── .novel/
+│       │   ├── meta.yaml
+│       │   ├── state.yaml
+│       │   ├── materials.yaml
+│       │   └── rules/             # 项目 Rules 模板
+│       │       ├── context.md
+│       │       └── constraints.md
 │       ├── characters/
 │       ├── compliance/
 │       ├── plot/
@@ -326,10 +333,10 @@ current_focus: 第8章
 ### 角色管理
 | Skill | 功能 | 参数 |
 |-------|------|------|
-| `/character-add` | 创建角色 | $0=姓名 $1=定位 $2=年龄... |
-| `/character-edit` | 编辑角色 | $0=姓名 $1+=修改内容 |
-| `/character-query` | 查询角色 | $0=查询内容 |
-| `/relationship-add` | 建立关系 | $0=角色1 $1=角色2 $2=关系 |
+| `/character-add` | 创建角色 | $0=姓名 $1=定位 $2=年龄... [--from] [--quick] |
+| `/character-edit` | 编辑角色 | $0=姓名 $1+=修改内容 [--from-chapters] [--auto-fill] |
+| `/character-query` | 查询角色（支持 --storyline 故事线和 --status 当前状态） | $0=查询内容 [--storyline] [--status] |
+| `/relationship-add` | 建立关系 | $0=角色1 $1=角色2 $2=关系 [--from] [--auto 角色名] [--quick] |
 | `/relationship-map` | 关系图谱 | [$0=角色名] |
 | `/relationship-log` | 记录关系演进事件 | $0=角色1 $1=角色2 $2+=变化描述 |
 | `/relationship-evolution` | 查看关系演进轨迹 | $0=角色名 |
@@ -340,7 +347,7 @@ current_focus: 第8章
 |-------|------|------|
 | `/chapter-create` | 创建章节与元数据 | $0=章节ID $1+=章节目标 |
 | `/chapter-draft` | 基于大纲辅助生成初稿 | $0=章节ID [--style] [--focus] |
-| `/chapter-update` | 更新章节状态/字段 | $0=章节ID |
+| `/chapter-update` | 更新章节状态/字段（推进到 draft/final 时自动生成摘要和角色状态快照） | $0=章节ID |
 | `/chapter-board` | 查看章节进度看板 | [--status=状态] |
 | `/chapter-review` | 审查章节结构与节奏 | $0=章节ID |
 | `/chapter-export` | 导出章节为连续文档 | $0=范围 [--format md\|txt] [--clean] |
@@ -380,12 +387,9 @@ current_focus: 第8章
 ### 素材检索与融合
 | Skill | 功能 | 参数 |
 |-------|------|------|
-| `/material-search` | 检索参考素材（场景/人物/技法） | $0+=需求描述 |
-| `/material-search apply` | 将参考场景融合到写作中 | $0=场景ID $1=模式(draft\|plot\|setting\|rhythm\|character) [$2=目标] |
-| `/material-search link` | 关联素材到当前项目 | $0=素材ID |
-| `/material-search unlink` | 取消素材关联 | $0=素材ID |
-| `/material-search list` | 列出当前项目已关联的素材 | - |
-| `/material-search available` | 列出素材库中所有可用素材 | - |
+| `/material-search` | 检索参考素材（场景/大纲/角色弧光/节奏四个维度） | $0+=需求描述，或子命令 outline/character-arc/rhythm |
+| `/material-apply` | 融合参考素材到写作中（场景级/大纲级/角色级/节奏级） | $0=来源ID $1=模式(draft\|plot\|setting\|character\|outline\|rhythm-pattern\|arc) [$2=目标] |
+| `/material-manage` | 管理素材关联（link/unlink/list/available） | $0=子命令 [$1=素材ID] |
 
 ### 写作工具
 | Skill | 功能 | 参数 |
@@ -393,9 +397,9 @@ current_focus: 第8章
 | `/style-list` | 列出风格 | - |
 | `/style-create` | 创建风格 | $0=名称 $1+=特征 |
 | `/rewrite` | 风格改写 | $0+=内容 |
-| `/anti-ai-check` | 检测 AI 痕迹 | $0=章节ID |
-| `/anti-ai-rewrite` | 去 AI 感改写 | $0=章节ID |
-| `/voice-check` | 检查人物对白辨识度 | $0=角色名 [$1=章节范围] |
+| `/anti-ai-check` | 六维 AI 痕迹检测（套话/句式/比喻/描写/对白/转折） | $0=章节ID |
+| `/anti-ai-rewrite` | 分策略去 AI 感改写（含比喻瘦身、描写压缩、对白口语化） | $0=章节ID --level [1-3] |
+| `/voice-check` | 对白辨识度检查（对比 speech_pattern，带修复建议） | $0=角色名 [$1=章节范围] |
 
 ### 一致性
 | Skill | 功能 | 参数 |
@@ -406,7 +410,7 @@ current_focus: 第8章
 | 协议 | 用途 | 引用者 |
 |------|------|--------|
 | `_protocols/chapter-auto-inference.md` | 章节 ID 自动推断 | chapter-review, chapter-update, anti-ai-check, anti-ai-rewrite, voice-check, chapter-draft |
-| `_protocols/from-extraction.md` | `--from` 引用提取 | character-add, plot-add, setting-add |
+| `_protocols/from-extraction.md` | `--from` 引用提取 | character-add, plot-add, setting-add, relationship-add |
 | `_protocols/pipeline-delegation.md` | Pipeline 引用子 skill 的委派规范 | 全部 8 个 pipeline-* skill |
 
 ---

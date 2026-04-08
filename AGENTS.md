@@ -21,7 +21,7 @@
 | 了解系统架构 | `ARCHITECTURE.md` |
 | 作者快速上手 | `README-AUTHOR.md` |
 | 编辑管理视角 | `README-EDITOR.md` |
-| Pipeline 设计规格 | `docs/product-specs/novel-pipeline.md` |
+| Pipeline 设计规格 | `docs/novel-pipeline.md` |
 
 ## 领域地图
 - 项目运营：项目状态、KPI、周报

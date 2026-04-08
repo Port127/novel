@@ -12,3 +12,5 @@ chapters: []
 #   hooks_planted: [hook_001]
 #   hooks_revealed: []
 #   updated: 2026-04-01
+#   summary: ""            # 2-3句前情摘要，章节进入 draft/final 时由 /chapter-update 写入
+#   characters_involved: [] # 本章出场角色列表，用于角色故事线检索

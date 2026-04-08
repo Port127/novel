@@ -58,6 +58,7 @@ arguments: focus
 - **孤立设定**：没有任何 `plot_links`、`character_links` 或 `setting_links` 的条目——可能是僵尸设定
 - **tentative 堆积**：大量 tentative 条目未提升为 confirmed，提示用户清理
 - **deprecated 残留**：已废弃但仍被其他 confirmed 设定引用的条目
+- **open_questions 堆积**：统计所有条目的 `open_questions` 总数，若 confirmed 条目仍有未解决问题则标记为高优先级
 
 ### 4. 审查设定与剧情咬合度
 
@@ -97,6 +98,7 @@ arguments: focus
 - 条目总数：{{total}}（confirmed: {{confirmed}} / tentative: {{tentative}} / deprecated: {{deprecated}}）
 - 孤立设定：{{orphan_count}} 条
 - 依赖问题：{{dependency_issues}}
+- 未解决问题（open_questions）：{{open_questions_total}} 条，分布在 {{open_questions_entries}} 个条目中
 
 🔧 优化动作（按优先级）
 1. ...

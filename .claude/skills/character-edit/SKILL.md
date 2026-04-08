@@ -19,7 +19,9 @@ arguments: name changes
 ## 输入参数
 
 - `$0` (name): 角色姓名（必需）
-- `$1+` (changes): 修改内容描述
+- `$1+` (changes): 修改内容描述（手动模式）
+- `--from-chapters [范围]`: 从章节正文中自动补充角色信息（见步骤 0）
+- `--auto-fill`: `--from-chapters` 的简写，扫描该角色出场的所有章节
 
 支持的修改格式：
 - `/character-edit 张三 年龄改为26岁`
@@ -27,8 +29,32 @@ arguments: name changes
 - `/character-edit 张三 添加背景：曾是散修`
 - `/character-edit 张三 致命缺陷：总以为自己能一个人扛过去`
 - `/character-edit 张三 执念：一定要找回失踪的师父`
+- `/character-edit 张三 --from-chapters ch001-ch010`
+- `/character-edit 张三 --auto-fill`
 
 ## 执行步骤
+
+### 0. 自动补充模式（--from-chapters / --auto-fill）
+
+当指定 `--from-chapters` 或 `--auto-fill` 时：
+
+1. **确定扫描范围**
+   - `--from-chapters ch001-ch010`：扫描指定章节
+   - `--auto-fill`：从角色卡的 `first_appearance` 和 `cross_references.key_chapters` 推断范围，扫描该角色实际出场的所有章节
+
+2. **提取角色信息**
+   - 从正文中提取该角色的行为、对白、内心活动、他人评价
+   - 与现有角色卡对比，识别哪些字段可以补充或细化
+   - 重点关注：空字段的填充、traits 的补充、缺陷/执念/软肋的发现
+
+3. **生成补充建议**
+   - 输出 diff 表：字段 / 当前值 / 从剧情中发现的内容 / 建议操作（填充/追加/修正）
+   - 每条标注来源章节和段落位置
+   - 不会覆盖用户已手写的内容，只建议补充空字段或追加新发现
+
+4. **用户确认后写入**
+   - 逐条确认或批量确认
+   - 确认后进入标准步骤 2-4 写入
 
 ### 1. 读取角色档案
 
@@ -55,6 +81,8 @@ arguments: name changes
 | 误判/错误信念 | `misbelief` |
 | 反差习惯 | `contrast_habit` |
 | 悲剧触发器 | `tragedy_trigger` |
+| 语言画像/说话方式 | `speech_pattern`（子字段：tone/sentence_style/catchphrase/profanity_level/education_voice/verbal_tics/taboo_words/sample_lines） |
+| 语气/口头禅/粗话 | `speech_pattern` 下对应子字段 |
 | 首次登场 | `first_appearance` |
 | 弧光/arc | `arc`（追加新阶段） |
 | 备注 | `notes` |
@@ -90,3 +118,5 @@ arguments: name changes
 - 复杂修改（如大段弧光补充）可引导用户直接编辑文件
 - 修改弧光时追加新阶段，不覆盖已有阶段
 - 优先补会影响决策和关系的字段，如缺陷、误判、软肋与执念
+- `--from-chapters` / `--auto-fill` 模式下，也会从对白中提炼 `speech_pattern`：统计角色实际说话的句式、粗话频率、口头禅，补充或修正语言画像
+- 编辑 `speech_pattern` 时支持自然语言输入，如 `/character-edit 张三 说话很粗鲁，爱用反问，口头禅是"操"`

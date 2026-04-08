@@ -19,7 +19,7 @@
 
 - **想看写一章正文的完整节奏？** → `docs/USAGE-GUIDE.md` §二（从开工到归档的七步流程）
 - **不知道用什么命令？** → `docs/USAGE-GUIDE.md`（场景使用指南）
-- 总索引：`docs/index.md`
+- 场景使用指南：`docs/USAGE-GUIDE.md`
 - Agent 地图：`AGENTS.md`
 - 架构边界：`ARCHITECTURE.md`
 - 完整命令参考：`docs/SPEC.md`（见"Skill清单"）
