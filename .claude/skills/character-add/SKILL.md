@@ -56,10 +56,10 @@ arguments: name role age identity personality
 
 ### 1. 检查是否已存在
 
-读取 `{current_path}/.novel/state.yaml` 的 `characters` 列表。
+读取 `{current_path}/characters/character_index.yaml` 的 `entries` 列表（若文件不存在则视为空列表）。
 
 如果同名角色已存在：
-- 询问用户是否编辑现有角色（调用 /character-edit）
+- 询问用户是否编辑现有角色（调用 `/character-edit`）
 - 或创建新版本
 
 ### 2. 创建结构化角色档案

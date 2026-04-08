@@ -20,7 +20,7 @@ arguments: focus
 4. 读取 `{current_path}/worldbuilding/entries/*.yaml`（所有条目）
 5. 读取 `{current_path}/plot/outline.md`（用于检查设定与剧情咬合）
 6. 若存在，读取 `{current_path}/ingestion_brief.md`（对照规则缺口）
-7. 若存在，读取 `{current_path}/.novel/state.yaml`（获取当前计数）
+7. 若存在，读取 `{current_path}/.novel/state.yaml`（获取项目元信息与工作流状态）
 
 ## 输入参数
 
@@ -103,7 +103,7 @@ arguments: focus
 **目标：** 填补规则缺口，修复依赖问题。
 
 1. 对照大纲关键事件，检查是否仍有未覆盖的设定需求
-2. 若发现缺口，引导用户确认后调用 `/setting-add` 创建新条目——补缺时同样用叙事质感写 description，参照 `/setting-add` 的创作标准
+2. 若发现缺口，引导用户确认后调用 `/setting-add` 创建新条目——补缺时同样用叙事质感写 description，参照 `/setting-add`（description 叙事质感写法：切片式描述、一句话代入感、避免百科式罗列）
 3. 修复 `setting_links` 中的断裂引用
 4. 更新 `worldbuilding/worldbuilding.yaml` 索引的 `core_concepts` 和 `factions_summary`
 5. 同步更新 `worldbuilding/setting.md`（叙述版）

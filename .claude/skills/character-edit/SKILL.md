@@ -22,6 +22,7 @@ arguments: name changes
 - `$1+` (changes): 修改内容描述（手动模式）
 - `--from-chapters [范围]`: 从章节正文中自动补充角色信息（见步骤 0）
 - `--auto-fill`: `--from-chapters` 的简写，扫描该角色出场的所有章节
+- `--fix`: 人设一致性修复模式——对比角色卡与已写章节中的实际行为，找出矛盾并输出修复建议（见步骤 0B）
 
 支持的修改格式：
 - `/character-edit 张三 年龄改为26岁`
@@ -31,6 +32,8 @@ arguments: name changes
 - `/character-edit 张三 执念：一定要找回失踪的师父`
 - `/character-edit 张三 --from-chapters ch001-ch010`
 - `/character-edit 张三 --auto-fill`
+- `/character-edit 张三 --fix`（检测并修复人设矛盾）
+- `/character-edit 张三 --fix --from-chapters ch010-ch020`（限定范围修复）
 
 ## 执行步骤
 
@@ -55,6 +58,32 @@ arguments: name changes
 4. **用户确认后写入**
    - 逐条确认或批量确认
    - 确认后进入标准步骤 2-4 写入
+
+### 0B. 人设修复模式（--fix）
+
+当指定 `--fix` 时，进入"检测矛盾 → 给修复建议"流程：
+
+1. **确定扫描范围**
+   - 默认扫描该角色所有出场章节（从 `character_index.yaml` 的 `first_appearance` 和章节正文中搜索角色名）
+   - 可叠加 `--from-chapters` 限定范围
+
+2. **对比角色卡与正文行为**
+   - 逐维度对比：性格 traits、fatal_flaw、obsession、soft_spot、misbelief、speech_pattern
+   - 检测矛盾类型：
+     - **行为矛盾**：角色卡写"隐忍坚毅"，但正文中多次冲动暴怒且无铺垫
+     - **能力矛盾**：角色卡标注的能力边界与正文实际表现不符
+     - **关系矛盾**：角色卡的 relations 与正文中的互动不一致
+     - **语言矛盾**：speech_pattern 定义的说话方式与正文对白不符
+
+3. **输出修复建议**
+   - 区分"角色卡该改"和"正文该改"两种方向
+   - 如果正文中的行为更合理/更有趣，建议更新角色卡（角色成长）
+   - 如果正文中的行为是失误，建议标注需修改的章节和段落
+   - 每条建议标注来源章节、具体段落、矛盾类型
+
+4. **用户选择后执行**
+   - 选择"改角色卡"→ 进入标准步骤 2-4
+   - 选择"改正文"→ 输出正文修改清单，用户手动修改或后续用 `/rewrite` 处理
 
 ### 1. 读取角色档案
 

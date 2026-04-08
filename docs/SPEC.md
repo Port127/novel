@@ -28,7 +28,8 @@ novel/
 │   ├── skills/                    # Skill定义
 │   │   ├── _protocols/            # 共享协议（跨 skill 复用的逻辑）
 │   │   │   ├── chapter-auto-inference.md
-│   │   │   └── from-extraction.md
+│   │   │   ├── from-extraction.md
+│   │   │   └── pipeline-delegation.md
 │   │   ├── novel-init/
 │   │   │   └── SKILL.md
 │   │   ├── character-add/
@@ -40,7 +41,7 @@ novel/
 ├── shared/                        # 共享资源
 │   └── styles/                    # 风格模板与质量规则
 │       ├── templates.yaml         # 写作风格模板库
-│       └── anti_ai_rules.yaml    # 去AI感规则库（监控词表、比喻密度、描写占比、对白质量阈值）
+│       └── anti_ai_rules.yaml    # 去AI感六维规则库（套话/句式/比喻密度/描写占比/对白质量/机械转折）
 │
 ├── projects/                      # 小说项目
 │   ├── 仙途/
@@ -73,11 +74,18 @@ novel/
 │       │       ├── context.md
 │       │       └── constraints.md
 │       ├── characters/
+│       │   └── character.yaml     # 角色卡模板
+│       ├── chapters/
+│       │   └── index.yaml         # 章节索引模板
 │       ├── compliance/
 │       ├── plot/
 │       ├── quality/
+│       ├── scenes/
+│       │   └── scene.yaml         # 场景档案模板
 │       ├── timeline/
 │       └── worldbuilding/
+│           └── entries/
+│               └── _template.yaml # 设定条目模板
 │
 ├── .current.yaml                  # 当前工作项目
 ├── .projects.yaml                 # 项目列表
@@ -327,15 +335,15 @@ current_focus: 第8章
 | `/skill-doctor` | 评估 skill 变更影响，检查一致性，同步文档 | $0=skill名称\|sync\|--full |
 | `/draft-ingest` | 深度消化草稿/素材文档 | $0=草稿路径 |
 | `/project-weekly-report` | 生成双视角项目周报 | $0=范围 |
-| `/novel-kpi` | 计算项目核心KPI | $0=范围 |
+| `/novel-kpi` | 计算项目核心KPI（含更新节奏、断更检测、排期达成） | $0=范围 |
 | `/project-reindex` | 重建交叉索引、角色/设定反向引用、项目地图 | --dry-run |
 
 ### 角色管理
 | Skill | 功能 | 参数 |
 |-------|------|------|
 | `/character-add` | 创建角色 | $0=姓名 $1=定位 $2=年龄... [--from] [--quick] |
-| `/character-edit` | 编辑角色 | $0=姓名 $1+=修改内容 [--from-chapters] [--auto-fill] |
-| `/character-query` | 查询角色（支持 --storyline 故事线和 --status 当前状态） | $0=查询内容 [--storyline] [--status] |
+| `/character-edit` | 编辑角色（支持 --fix 人设一致性修复） | $0=姓名 $1+=修改内容 [--from-chapters] [--auto-fill] [--fix] |
+| `/character-query` | 查询角色（--storyline 含弧光完整度评分，--status 当前状态） | $0=查询内容 [--storyline] [--status] |
 | `/relationship-add` | 建立关系 | $0=角色1 $1=角色2 $2=关系 [--from] [--auto 角色名] [--quick] |
 | `/relationship-map` | 关系图谱 | [$0=角色名] |
 | `/relationship-log` | 记录关系演进事件 | $0=角色1 $1=角色2 $2+=变化描述 |
@@ -349,7 +357,7 @@ current_focus: 第8章
 | `/chapter-draft` | 基于大纲辅助生成初稿 | $0=章节ID [--style] [--focus] |
 | `/chapter-update` | 更新章节状态/字段（推进到 draft/final 时自动生成摘要和角色状态快照） | $0=章节ID |
 | `/chapter-board` | 查看章节进度看板 | [--status=状态] |
-| `/chapter-review` | 审查章节结构与节奏 | $0=章节ID |
+| `/chapter-review` | 审查章节结构与节奏（含信息密度/动作场景/跨章衔接） | $0=章节ID [--context] |
 | `/chapter-export` | 导出章节为连续文档 | $0=范围 [--format md\|txt] [--clean] |
 
 ### 剧情管理
@@ -368,14 +376,14 @@ current_focus: 第8章
 | `/setting-add` | 创建/更新设定集条目 | $0=设定名称 [--category 类别] [--quick] [--from] |
 | `/setting-edit` | 编辑已有设定条目 | $0=设定名称或ID $1+=修改内容 [--status] |
 | `/scene-add` | 创建场景档案 | $0=场景名称 [--location] [--category] |
-| `/worldbuilding-review` | 审查设定自洽性与剧情支撑度 | [$0+=优化重点] |
+| `/worldbuilding-review` | 审查设定自洽性与剧情支撑度（支持 --focus 力量体系/势力/地理专项审查） | [$0+=优化重点] [--focus power_system\|factions\|geography] |
 
 ### 时间线
 | Skill | 功能 | 参数 |
 |-------|------|------|
 | `/timeline-add` | 添加事件 | $0=时间 $1+=事件 |
 | `/timeline-check` | 检查冲突 | - |
-| `/timeline-view` | 查看时间线 | [$0=范围] |
+| `/timeline-view` | 查看时间线（支持 --multi-thread 多线并行视图） | [$0=范围] [--multi-thread] [--chapter] [--character] [--location] |
 
 ### 合规管理
 | Skill | 功能 | 参数 |
@@ -397,14 +405,15 @@ current_focus: 第8章
 | `/style-list` | 列出风格 | - |
 | `/style-create` | 创建风格 | $0=名称 $1+=特征 |
 | `/rewrite` | 风格改写 | $0+=内容 |
-| `/anti-ai-check` | 六维 AI 痕迹检测（套话/句式/比喻/描写/对白/转折） | $0=章节ID |
+| `/anti-ai-check` | 七维 AI 痕迹检测（套话/句式/比喻/描写/对白/转折/心理） | $0=章节ID |
 | `/anti-ai-rewrite` | 分策略去 AI 感改写（含比喻瘦身、描写压缩、对白口语化） | $0=章节ID --level [1-3] |
 | `/voice-check` | 对白辨识度检查（对比 speech_pattern，带修复建议） | $0=角色名 [$1=章节范围] |
+| `/style-audit` | 跨章文风一致性审查（抽样对比风格漂移与质量波动） | [$0=章节范围] [--baseline 章节ID] [--detail] |
 
 ### 一致性
 | Skill | 功能 | 参数 |
 |-------|------|------|
-| `/consistency-check` | 全面检查 | - |
+| `/consistency-check` | 全面检查（含大纲偏离度检测） | - |
 
 ### 共享协议
 | 协议 | 用途 | 引用者 |

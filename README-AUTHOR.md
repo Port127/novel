@@ -98,7 +98,7 @@
 | `/pipeline-draft-polish [ch_id]` | 草稿写完，打磨 |
 | `/pipeline-setting-consolidate` | 设定太散，整固一次 |
 
-> 完整 8 个 Pipeline 及推荐顺序见 `docs/USAGE-GUIDE.md` → 十、Pipeline 快速参考
+> 完整 8 个 Pipeline 及推荐顺序见 `docs/USAGE-GUIDE.md` → 附录 B：Pipeline 快速参考
 
 ---
 

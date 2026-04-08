@@ -30,6 +30,36 @@ arguments: range
 - 连续更新率：有新增/推进记录的天数占比
 - 完稿率：`final|published` 章节占比
 - 返工率：进入 `revise` 的章节占比
+- 更新节奏：
+  - 日均产出字数（范围内总字数 ÷ 天数）
+  - 更新频率达成率：若 `meta.yaml` 的 `writing.update_frequency` 已设置（如"每日一章""每周三章"），计算实际达成百分比
+  - 最长断更天数：范围内最大的章节更新间隔
+  - 节奏趋势：最近 7 天的日均字数 vs 范围整体日均——加速/持平/减速
+
+### 1B. 排期达成（若 `meta.yaml` 含 `writing.schedule` 配置）
+
+读取 `meta.yaml` 的 `writing.schedule`（如有），格式示例：
+```yaml
+writing:
+  update_frequency: "每日一章"
+  schedule:
+    target_chapters: 100
+    target_date: "2026-12-31"
+    milestones:
+      - name: "第一卷完结"
+        chapter: 30
+        deadline: "2026-06-30"
+      - name: "第二卷完结"
+        chapter: 60
+        deadline: "2026-09-30"
+```
+
+计算：
+- **总进度**：当前章节数 / target_chapters × 100%
+- **时间进度**：已过天数 / 总计划天数 × 100%
+- **进度差**：总进度 - 时间进度（正值=提前，负值=落后）
+- **里程碑状态**：每个 milestone 是否按期完成/是否有延期风险
+- **预估完成日**：按当前日均产出推算的实际完成日期
 
 ### 2. 风险KPI
 
@@ -50,6 +80,18 @@ arguments: range
 - 连续更新率：{{streak_rate}}%
 - 完稿率：{{completion_rate}}%
 - 返工率：{{rework_rate}}%
+- 日均产出：{{daily_words}} 字/天
+- 更新频率达成率：{{frequency_rate}}%（目标：{{target_frequency}}）
+- 最长断更：{{max_gap}} 天
+- 节奏趋势：{{trend}}（近7天 {{recent_avg}} 字/天 vs 整体 {{overall_avg}} 字/天）
+
+## 排期（若有 schedule 配置）
+- 总进度：{{progress}}%（{{current_chapters}}/{{target_chapters}}章）
+- 时间进度：{{time_progress}}%
+- 进度差：{{delta}}（{{ahead_or_behind}}）
+- 预估完成日：{{est_date}}
+- 里程碑：
+  {{milestone_status}}
 
 ## 风险治理指标
 - 借鉴风险消解率：{{inspiration_resolve}}%
@@ -70,6 +112,10 @@ arguments: range
 | 完稿率 | `chapters/index.yaml` 中 `status: final\|published` 占比 | 高 |
 | 返工率 | `chapters/index.yaml` 中进入 `revise` 的章节占比 | 高 |
 | 连续更新率 | 各章节 `updated` 字段的日期分布 | 中——依赖用户及时推进状态 |
+| 日均产出 | `chapters/index.yaml` 各章 `word_actual` 与 `updated` | 高 |
+| 更新频率达成率 | 章节 `updated` 日期 vs `meta.yaml` 的 `update_frequency` | 中——需 `update_frequency` 已设置 |
+| 最长断更 | 章节 `updated` 日期间隔的最大值 | 高 |
+| 节奏趋势 | 近 7 天与整体日均的比较 | 中 |
 | 借鉴风险消解率 | `compliance/risk_report.yaml` 中高风险已修复比例 | 中——依赖用户修复后更新报告 |
 | AI 痕迹消解率 | `quality/ai_trace_report.yaml` 中高风险已改写比例 | 中 |
 | 关系冲突修复率 | 需手动追踪，当前无自动数据源 | 低——标注为"预估" |

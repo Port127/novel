@@ -22,7 +22,7 @@ arguments: character
 
 ### 1. 获取角色列表
 
-从 `state.yaml` 读取 characters 列表。
+读取 `{current_path}/characters/character_index.yaml` 的 `entries` 列表获取全部角色。若索引文件不存在，扫描 `{current_path}/characters/*.yaml` 中的角色卡。
 
 ### 2. 提取关系信息
 

@@ -16,7 +16,6 @@
 
 - 不替代底层原子 skill
 - 不在 v1 引入独立任务系统或任务看板
-- 不依赖本仓库尚未实现的 `material-*`、`tag-*` 命令
 
 ---
 
@@ -108,10 +107,12 @@ pipeline 只负责：
 
 | Pipeline | 目标 | 主要输入 | 触达文件 | 止点 | 依赖能力 |
 |---|---|---|---|---|---|
-| `pipeline-outline-bootstrap` | 从想法到可写大纲 | premise、结构类型 | `plot/outline.md` `plot/outline.yaml` | `可写大纲` | `plot-init` `plot-suggest` `plot-add` `timeline-check` |
+| `pipeline-outline-bootstrap` | 从想法到可写大纲 | premise、结构类型 | `plot/outline.md` `plot/outline.yaml` | `可写大纲` | `draft-ingest` `plot-init` `plot-suggest` `plot-add` `setting-add` `timeline-check` |
 | `pipeline-outline-polish` | 补强现有大纲 | 当前 outline、优化目标 | `plot/outline.md` `plot/outline.yaml` | `可写大纲` | `plot-review` `worldbuilding-review` `plot-suggest` `consistency-check` |
+| `pipeline-setting-consolidate` | 整固设定集 | worldbuilding entries | `worldbuilding/entries/*.yaml` `worldbuilding/worldbuilding.yaml` `worldbuilding/setting.md` | `可支撑写作的稳定设定集` | `setting-edit` `setting-add` `worldbuilding-review` |
+| `pipeline-note-triage` | 杂乱笔记分拣入库 | 混合笔记文件 | 按内容类型分发到各领域文件 | `笔记全部归档` | `setting-add` `character-add` `plot-add` `timeline-add` `relationship-add` |
 | `pipeline-chapter-kickoff` | 从章节想法到可开写章节 | 章节ID、一句话目标 | `chapters/*.md` `chapters/index.yaml` `plot/outline.md` | `可开写章节` | `chapter-create` `chapter-update` `plot-add` |
-| `pipeline-draft-polish` | 从草稿到可修订稿 | 章节ID | `chapters/*.md` `chapters/index.yaml` `quality/ai_trace_report.yaml` | `可修订草稿` | `chapter-review` `voice-check` `anti-ai-check` `anti-ai-rewrite` |
+| `pipeline-draft-polish` | 从草稿到可修订稿 | 章节ID | `chapters/*.md` `chapters/index.yaml` `quality/ai_trace_report.yaml` | `可修订草稿` | `chapter-review` `voice-check` `anti-ai-check` `anti-ai-rewrite` `chapter-update` |
 | `pipeline-continuity-gate` | 生成连续性修复清单 | 检查范围 | `timeline/main.yaml` `characters/*` `plot/outline.md` `chapters/index.yaml` | `可执行修复清单` | `relationship-check` `timeline-check` `consistency-check` |
 | `pipeline-compliance-gate` | 发布前完成借鉴留痕与风险审查 | 章节ID 或范围 | `compliance/inspiration_log.yaml` `compliance/risk_report.yaml` | `可发前闸口` | `inspiration-log` `inspiration-check` `inspiration-report` |
 

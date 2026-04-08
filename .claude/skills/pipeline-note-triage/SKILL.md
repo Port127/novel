@@ -48,7 +48,7 @@ arguments: file_path
 | `plot` | 事件、冲突、转折、"第X章"、剧情走向 | `/plot-add` |
 | `timeline` | 时间点、"第X天"、日期、事件先后顺序 | `/timeline-add` |
 | `relationship` | 两人关系、A对B、情感变化、盟友/敌对 | `/relationship-add` |
-| `worldbuilding_narrative` | 大段世界观描述、历史、文化背景叙述 | 追加到 `setting.md` |
+| `worldbuilding_narrative` | 大段世界观描述、历史、文化背景叙述 | 追加到 `worldbuilding/setting.md` |
 | `meta` | 写作计划、TODO、"接下来要写"、"记得改" | 不落地，仅展示提醒 |
 | `unclear` | 无法归类 | 由用户指定 |
 
@@ -179,6 +179,6 @@ arguments: file_path
 - 分拣阶段是**展示+确认**，不是自动执行。用户有完全控制权。
 - 一条笔记只归一个类型。如果一段话同时提到角色和设定，按主要内容归类，必要时拆分。
 - `--quick` 模式适合灵感爆发后快速落地，但所有设定都是 tentative，需要后续整固。
-- 大段世界观叙述不要拆成碎片条目，保持叙述完整性追加到 `setting.md`。
+- 大段世界观叙述不要拆成碎片条目，保持叙述完整性追加到 `worldbuilding/setting.md`。
 - 如果笔记内容量很大（>50 条），分批处理，每批 10-15 条，避免确认疲劳。
 - 派发失败不阻塞整体流程，记录后继续。

@@ -81,7 +81,7 @@ entries: []
 
 ### 6. 更新项目状态
 
-更新 `state.yaml` 的 `plot.structure`。
+更新 `{current_path}/.novel/state.yaml` 的 `plot.structure`。
 
 ## 结构模板（仅手动模式使用）
 

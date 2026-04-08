@@ -37,7 +37,7 @@
 | 章节生产 | 新章创建、AI 辅助初稿、状态推进、结构打磨、导出发布 | `/chapter-create` `/chapter-draft` `/chapter-review` `/chapter-export` |
 | 角色关系 | 角色设定、关系维护、关系演进与跳变检查 | `/character-add` `/relationship-log` `/relationship-evolution` `/relationship-check` |
 | 素材消化与设定 | 草稿消化、世界观设定管理、场景档案 | `/draft-ingest` `/setting-add` `/scene-add` `/worldbuilding-review` |
-| 素材库检索 | 从已拆解的小说中找参考场景、人物原型、技法案例 | `/material-search` |
+| 素材库检索 | 从已拆解的小说中找参考场景、人物原型、技法案例 | `/material-search` `/material-apply` `/material-manage` |
 | 文风质量 | 去 AI 感、人物对白区分、风格调优 | `/anti-ai-check` `/anti-ai-rewrite` `/voice-check` `/rewrite` |
 | 合规风控 | 借鉴留痕、风险检查、阶段报告 | `/inspiration-log` `/inspiration-check` `/inspiration-report` |
 
