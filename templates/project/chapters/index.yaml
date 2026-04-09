@@ -9,8 +9,15 @@ chapters: []
 #   goal: 建立危机并触发离村
 #   word_target: 3000
 #   word_actual: 2780
-#   hooks_planted: [hook_001]
+#   hooks_planted: [f001]
 #   hooks_revealed: []
 #   updated: 2026-04-01
 #   summary: ""            # 2-3句前情摘要，章节进入 draft/final 时由 /chapter-update 写入
 #   characters_involved: [] # 本章出场角色列表，用于角色故事线检索
+#   versions:              # 多版本草稿（可选，无备选版本时省略此字段）
+#     - tag: v1            # 默认主稿
+#       file: ch001.md
+#       word_actual: 2780
+#       note: ""           # 版本备注，如"侧重悬念""从对话切入"
+#       created: 2026-04-01
+#   active_version: v1     # 当前生效版本

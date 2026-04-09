@@ -32,6 +32,9 @@ arguments: name
 - `--quick`: 快捕模式——只记一句话，自动填充上下文，不打断写作心流
 - `--from`: 从文件或引用内容中提取设定（见步骤 0b）
 - `--batch`: 从 ingestion_brief 批量创建（见步骤 4）
+- `--supersedes [旧ID]`: 指定本条目取代哪个已有设定（见步骤 2b）
+- `--valid-from [起点]`: 生效起点，如 `ch010` 或 `融合开始后`
+- `--valid-until [终点]`: 失效条件，如 `ch030` 或 `灰域崩塌后`
 
 ## 执行步骤
 
@@ -98,6 +101,28 @@ arguments: name
 - `source` 必须标明来源（草稿行号、用户口述等）
 - `open_questions` 记录任何模糊点
 
+### 2b. 演化接替（--supersedes）
+
+当指定 `--supersedes [旧ID]` 时：
+
+1. **读取旧条目**：确认 `worldbuilding/entries/{旧ID}.yaml` 存在且 status 不是 `deprecated`
+2. **复制上下文**：从旧条目继承 `category`、`plot_links`、`character_links`（用户可覆盖）
+3. **标记新条目**：
+   - `supersedes: {旧ID}`
+   - `valid_from` 默认为当前最新已写章节（可被 `--valid-from` 覆盖）
+   - 在 `setting_links` 中自动添加 `{ target_id: {旧ID}, relation: supersedes, note: "..." }`
+4. **更新旧条目**：
+   - `superseded_by: {新ID}`
+   - `status` → `deprecated`
+   - 追加 `lifecycle` 记录：`{ from: confirmed, to: deprecated, reason: "被 {新ID} 取代", date: 今天 }`
+   - 如果旧条目有 `valid_until` 为空，自动填入当前章节作为 `valid_until`
+5. **输出演化链**：
+   ```
+   🔄 设定演化：{{旧名}}（{{旧ID}}）→ {{新名}}（{{新ID}}）
+   📖 旧版有效范围：{{valid_from}} ~ {{valid_until}}
+   📖 新版生效自：{{valid_from}}
+   ```
+
 ### 3. 写入文件
 
 文件命名：`{current_path}/worldbuilding/entries/{id}.yaml`
@@ -156,3 +181,4 @@ entries:
 - 设定之间可以互相引用（通过 id）
 - `tentative` 状态的设定在写作时会被标记提醒
 - 批量导入时要逐条确认，不要一次性全部写入
+- **命名原则**：设定条目名称用简洁、直白的词语（如灵气复苏规则、灰域机制）。不要造过于生僻或装饰性的名称；术语名称跟随草稿原文，不要替换成更正式的说法。

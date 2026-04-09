@@ -31,6 +31,18 @@ setting_links: []
 #   relation: ""          # depends_on（依赖） / extends（扩展） / conflicts_with（冲突） / supersedes（取代）
 #   note: ""              # 关系说明
 
+# 有效期（可选，不填则永久有效）
+valid_from: ""              # 生效起点，如 "ch001" 或 "融合开始后"
+valid_until: ""             # 失效条件，如 "ch030" 或 "灰域崩塌后" 或 ""（永久）
+expiry_trigger:             # 更精确的过期触发（可选）
+  type: ""                  # chapter / event / condition
+  value: ""                 # "ch030" / "灰域崩塌" / "主角突破凝华"
+  note: ""                  # 为什么会过期
+
+# 演化链（可选，用于设定随剧情演变时的版本接替）
+supersedes: ""              # 本条目取代了哪个旧条目（ID）
+superseded_by: ""           # 本条目被哪个新条目取代（ID，标记后本条目自动进入 deprecated）
+
 # 生命周期记录
 lifecycle: []
 # - from: tentative       # 旧状态

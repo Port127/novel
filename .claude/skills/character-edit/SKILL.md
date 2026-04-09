@@ -89,6 +89,61 @@ arguments: name changes
 
 优先读取 `{current_path}/characters/$0.yaml`，兼容旧版 `.md`。
 
+### 1B. 改名影响评估（仅当修改内容涉及姓名时触发）
+
+**检测条件**：`$1+` 中包含"姓名"、"名字"、"改名"、"name"等关键词，或字段映射到 `name`。
+
+按 [名字解析协议](_protocols/name-resolution.md) §3（重命名协议）执行事务化改名：
+
+**第一步：影响预览（Dry-run）** — 扫描以下文件，统计所有匹配项：
+
+| 文件 | 搜索内容 |
+|---|---|
+| `characters/{旧名}.yaml` | 文件本身需重命名 |
+| `characters/character_index.yaml` | `name` 字段 + `file` 路径 |
+| `characters/relations.yaml` | 所有 `character`/`from`/`to` 字段 |
+| `characters/relation_events.yaml` | 角色名出现 |
+| `characters/*.yaml`（其他角色） | `relations` 列表中的引用 |
+| `chapters/*.md` | 正文中**确切名字**出现（不含代词/代称/描述性称呼） |
+| `chapters/index.yaml` | `characters_involved`、`summary` 字段 |
+| `plot/outline.md` | 名字出现 |
+| `timeline/main.yaml` | `characters` 字段 |
+| `worldbuilding/entries/*.yaml` | `character_links` 中的名字 |
+
+**第二步：输出影响报告，等待用户确认**
+
+```
+📝 重命名影响预览：{旧名} → {新名}
+
+  结构化文件（自动替换）：
+  - characters/{旧名}.yaml → 重命名为 characters/{新名}.yaml
+  - character_index.yaml → 1 处
+  - relations.yaml → {N} 处
+  ...
+
+  章节正文（仅替换确切名字，不动代称）：
+  - ch001.md → "{旧名}" 出现 12 次
+  - ch003.md → "{旧名}" 出现 8 次
+  - ⚠️ aliases 中的别称不会被替换，需手动检查
+
+  不会被替换：代词、aliases 中的别称、描述性称呼
+
+确认执行？(Y / Y-card-only / N)
+```
+
+**第三步：确认后批量执行**
+
+- `Y`：按清单依次替换，每个文件替换后校验格式
+- `Y-card-only`：只改角色卡 + index，章节/大纲/时间线保持旧名
+- `N`：中止
+
+**第四步：完成后提示 aliases 检查**
+
+```
+✅ 重命名完成
+💡 建议检查 aliases 列表是否需要更新（当前：{aliases}）
+```
+
 ### 2. 解析修改意图
 
 根据用户描述识别修改字段（`.yaml` 格式优先）：
@@ -128,6 +183,24 @@ arguments: name changes
 
 **成功标准**: 角色 `.yaml` 已更新，`character_index.yaml` 同步
 
+### 5. 编辑后影响扫描
+
+按 [编辑后影响扫描协议](_protocols/post-edit-impact-scan.md) 执行。
+
+**触发条件**：本次修改涉及 `traits`、`abilities`、`fatal_flaw`、`obsession`、`speech_pattern`、`backstory` 等影响角色行为的字段。纯元数据修改（`first_appearance`、`notes`）跳过此步。
+
+**扫描逻辑**：
+
+1. 在已写章节中搜索该角色名（含 `aliases`）
+2. 对命中的章节，根据修改的字段类型做针对性检查：
+   - 修改了 `abilities` → 正文中是否有该角色使用了已删除/已修改能力的描写
+   - 修改了 `traits` / `fatal_flaw` → 正文中该角色行为是否与新设定明显矛盾
+   - 修改了 `speech_pattern` → 正文对白是否与新语言画像冲突
+   - 修改了 `backstory` → 正文中是否有与新背景矛盾的信息
+3. 输出影响扫描结果（无论有无冲突都报告）
+
+**只报告，不修改任何章节文件。**
+
 ## 输出格式
 
 ```
@@ -138,6 +211,8 @@ arguments: name changes
    - {{字段}}：{{旧值}} → {{新值}}
 
 📄 文件：characters/$0.yaml
+
+{{影响扫描结果——见 _protocols/post-edit-impact-scan.md 输出格式}}
 ```
 
 ## 注意事项
@@ -149,3 +224,4 @@ arguments: name changes
 - 优先补会影响决策和关系的字段，如缺陷、误判、软肋与执念
 - `--from-chapters` / `--auto-fill` 模式下，也会从对白中提炼 `speech_pattern`：统计角色实际说话的句式、粗话频率、口头禅，补充或修正语言画像
 - 编辑 `speech_pattern` 时支持自然语言输入，如 `/character-edit 张三 说话很粗鲁，爱用反问，口头禅是"操"`
+- **改名操作必须先输出影响报告，等待用户确认后才执行**（见步骤 1B）；不得静默重命名文件或替换正文

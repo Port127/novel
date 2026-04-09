@@ -28,8 +28,15 @@ novel/
 │   ├── skills/                    # Skill定义
 │   │   ├── _protocols/            # 共享协议（跨 skill 复用的逻辑）
 │   │   │   ├── chapter-auto-inference.md
+│   │   │   ├── chapter-scope-guard.md
+│   │   │   ├── draft-primacy.md
 │   │   │   ├── from-extraction.md
-│   │   │   └── pipeline-delegation.md
+│   │   │   ├── name-resolution.md
+│   │   │   ├── operation-journal.md
+│   │   │   ├── pipeline-delegation.md
+│   │   │   ├── post-edit-impact-scan.md
+│   │   │   ├── preflight-integrity.md
+│   │   │   └── style-lifecycle.md
 │   │   ├── novel-init/
 │   │   │   └── SKILL.md
 │   │   ├── character-add/
@@ -354,10 +361,11 @@ current_focus: 第8章
 | Skill | 功能 | 参数 |
 |-------|------|------|
 | `/chapter-create` | 创建章节与元数据 | $0=章节ID $1+=章节目标 |
-| `/chapter-draft` | 基于大纲辅助生成初稿 | $0=章节ID [--style] [--focus] |
-| `/chapter-update` | 更新章节状态/字段（推进到 draft/final 时自动生成摘要和角色状态快照） | $0=章节ID |
+| `/chapter-draft` | 基于大纲辅助生成初稿（支持备选版本） | $0=章节ID [--style] [--focus] [--pov-deep] [--alt 备注] |
+| `/chapter-update` | 更新章节状态/字段（支持版本提升） | $0=章节ID [--status] [--promote v{N}] |
+| `/chapter-compare` | 对比同一章节的多个草稿版本 | $0=章节ID [$1=版本A] [$2=版本B] [--all] |
 | `/chapter-board` | 查看章节进度看板 | [--status=状态] |
-| `/chapter-review` | 审查章节结构与节奏（含信息密度/动作场景/跨章衔接） | $0=章节ID [--context] |
+| `/chapter-review` | 审查章节结构与节奏（含信息密度/动作场景/跨章衔接/伏笔分级） | $0=章节ID [--context] |
 | `/chapter-export` | 导出章节为连续文档 | $0=范围 [--format md\|txt] [--clean] |
 
 ### 剧情管理
@@ -370,11 +378,18 @@ current_focus: 第8章
 | `/plot-review` | 审查大纲结构与节奏 | [$0+=优化重点] |
 | `/plot-suggest` | 情节建议 | $0+=描述 |
 
+### 钩子/伏笔管理
+| Skill | 功能 | 参数 |
+|-------|------|------|
+| `/hook-add` | 登记伏笔/钩子（分级、截止、关联链） | $0=名称 --chapter [章节] --level [major/minor/micro] [--deadline] [--condition] [--link] |
+| `/hook-query` | 查询钩子状态（列表/时间轴/逾期） | [--level] [--status] [--near 章节] [--overdue] [--timeline] |
+| `/hook-resolve` | 回收/放弃/延期钩子 | $0=钩子ID --recover [章节] \| --abandon [原因] \| --extend [新截止] |
+
 ### 世界观与场景
 | Skill | 功能 | 参数 |
 |-------|------|------|
-| `/setting-add` | 创建/更新设定集条目 | $0=设定名称 [--category 类别] [--quick] [--from] |
-| `/setting-edit` | 编辑已有设定条目 | $0=设定名称或ID $1+=修改内容 [--status] |
+| `/setting-add` | 创建/更新设定集条目（支持演化接替） | $0=设定名称 [--category] [--quick] [--from] [--supersedes 旧ID] [--valid-from] [--valid-until] |
+| `/setting-edit` | 编辑已有设定条目（支持演化模式） | $0=设定名称或ID $1+=修改内容 [--status] [--evolve] [--valid-until] |
 | `/scene-add` | 创建场景档案 | $0=场景名称 [--location] [--category] |
 | `/worldbuilding-review` | 审查设定自洽性与剧情支撑度（支持 --focus 力量体系/势力/地理专项审查） | [$0+=优化重点] [--focus power_system\|factions\|geography] |
 
@@ -419,8 +434,15 @@ current_focus: 第8章
 | 协议 | 用途 | 引用者 |
 |------|------|--------|
 | `_protocols/chapter-auto-inference.md` | 章节 ID 自动推断 | chapter-review, chapter-update, anti-ai-check, anti-ai-rewrite, voice-check, chapter-draft |
+| `_protocols/chapter-scope-guard.md` | 章节容量守卫，防止单章塞太多剧情 | chapter-draft, pipeline-chapter-kickoff |
+| `_protocols/draft-primacy.md` | 草稿优先原则：草稿是真相来源，不自动改大纲 | chapter-draft, pipeline-draft-polish, consistency-check, chapter-review, project-reindex |
 | `_protocols/from-extraction.md` | `--from` 引用提取 | character-add, plot-add, setting-add, relationship-add |
 | `_protocols/pipeline-delegation.md` | Pipeline 引用子 skill 的委派规范 | 全部 8 个 pipeline-* skill |
+| `_protocols/name-resolution.md` | 名字解析：称呼选择、命名规范、重命名事务化 | character-add, character-edit, chapter-draft, anti-ai-rewrite, rewrite |
+| `_protocols/operation-journal.md` | 操作日志：多文件写入前后记录，检测中断半写 | pipeline-chapter-kickoff, chapter-draft, chapter-update, project-reindex |
+| `_protocols/post-edit-impact-scan.md` | 编辑后影响扫描：修改设定/角色后检查已写章节冲突 | setting-edit, character-edit |
+| `_protocols/preflight-integrity.md` | 预检完整性：操作前验证引用链完整性 | pipeline-chapter-kickoff, chapter-draft, chapter-update, pipeline-draft-polish |
+| `_protocols/style-lifecycle.md` | 风格生命周期：提炼触发 + 漂移检测 | chapter-update, pipeline-draft-polish |
 
 ---
 

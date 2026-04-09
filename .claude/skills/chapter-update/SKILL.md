@@ -16,6 +16,7 @@ arguments: chapter_id
 2. 按 [章节自动推断协议](_protocols/chapter-auto-inference.md) 确定目标章节
 3. 校验 `{current_path}/chapters/index.yaml` 存在
 4. 校验 `$0` 指定章节存在
+5. 按 [预检完整性协议](_protocols/preflight-integrity.md) 检查目标章节引用链完整性
 
 ## 输入参数
 
@@ -26,6 +27,7 @@ arguments: chapter_id
 - `--word-target`: 目标字数
 - `--word-actual`: 实际字数
 - `--goal`: 章节目标
+- `--promote [版本标识]`: 将指定备选版本提升为主稿（见步骤 3b）
 
 ## 执行步骤
 
@@ -53,6 +55,31 @@ arguments: chapter_id
 ### 3. 更新字段
 
 按用户传入参数更新对应字段，并刷新 `updated` 日期。
+
+### 3b. 版本提升（--promote）
+
+当指定 `--promote v{N}` 时：
+
+1. **验证版本存在**：检查 `index.yaml` 的 `versions` 列表中是否存在该 tag，且对应文件存在
+2. **确认操作**：
+   ```
+   ⚠️ 即将提升版本
+
+   当前主稿：{{active_version}}（{{当前主稿文件名}}）
+   目标版本：v{N}（{{目标文件名}}）
+
+   操作：
+   - 当前主稿 {chapter_id}.md → 重命名为 {chapter_id}_v{old}.md
+   - 目标版本 {chapter_id}_v{N}.md → 重命名为 {chapter_id}.md
+
+   确认？(Y/N)
+   ```
+3. **执行交换**：
+   - 将当前主稿文件重命名为 `{chapter_id}_v{old_tag}.md`
+   - 将目标版本文件重命名为 `{chapter_id}.md`
+   - 更新 `versions` 列表中两个条目的 `file` 字段
+   - 更新 `active_version` 为 v{N}
+   - 更新章节的 `word_actual` 为新主稿的字数
 
 ### 4. 同步正文头部（可选）
 
@@ -94,6 +121,30 @@ arguments: chapter_id
 - `knows` 列表只追加不删除（角色不会遗忘已知信息）
 - minor 角色不更新状态快照（信息量不值得维护）
 - 如果无法从正文判断某字段的变化，保持原值
+
+### 5c. 写作风格提炼触发（仅在状态推进到 `draft` 时触发）
+
+按 [风格生命周期协议](_protocols/style-lifecycle.md) 阶段二执行。
+
+**触发条件**（全部满足时触发）：
+
+1. `meta.yaml` 的 `style.template` 为空
+2. `chapters/index.yaml` 中状态为 `draft` 及以上的章节数 ≥ 3
+3. `state.yaml` 中 `style_prompt_declined` 不为 `true`
+
+**触发行为**：主动向用户提议启动风格提炼（不仅仅是末尾一行提示）：
+
+```
+📝 你已完成 {N} 章草稿，从实际写作中提炼你的风格模板吗？
+
+这会分析你写出来的内容，提炼真实的句式、节奏和修辞偏好。
+后续改写和生成初稿会更贴近你的写法。
+
+(Y 开始提炼 / N 跳过)
+```
+
+- Y → 执行 `style-create --from-chapters` 完整流程；成功后更新 `meta.yaml` 的 `style.extracted_at_chapter`
+- N → 记录 `state.yaml` 的 `style_prompt_declined: true`，不再触发
 
 ### 6. 更新项目状态
 

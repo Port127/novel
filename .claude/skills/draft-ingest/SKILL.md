@@ -111,10 +111,56 @@ arguments: draft_path
 - 修正部分理解 → 更新后写入
 - 补充新信息 → 合并后写入
 
-### 6. 写入理解摘要
+### 6. 写入理解摘要（结构化格式）
 
-确认后写入 `{current_path}/ingestion_brief.md`（或 `drafts/` 旁）。
-此文件是后续 pipeline 的输入源。
+确认后写入 `{current_path}/ingestion_brief.md`。此文件是后续 pipeline 的输入源。
+
+**文件格式**：YAML front matter + Markdown body。每条提取内容**必须附带结构化的来源标记**：
+
+```yaml
+---
+source_file: "{$0 的路径}"
+ingested_at: "{今天日期}"
+confirmed: true
+---
+```
+
+正文中，每个提取段落/条目用 HTML 注释附带机读元数据：
+
+```markdown
+## 真实前提
+<!-- confidence: verbatim, source_lines: [1, 2, 3] -->
+{内容}
+
+## 独特机制
+<!-- confidence: verbatim, source_lines: [5, 6, 7, 8] -->
+{内容}
+
+## 角色胚胎
+
+### {角色名}
+<!-- confidence: inferred, source_lines: [7] -->
+- 表面：...
+- 推断：...（原文只提到"..."，身份和动机是推断）
+
+## 世界规则
+
+### 规则 1：{名称}
+<!-- confidence: verbatim, source_lines: [5] -->
+{描述}
+
+### 规则 2：{名称}
+<!-- confidence: supplemented, source_lines: [] -->
+❌ 此条非来源草稿内容。来源：{实际来源文件}。下游消费时须单独确认。
+```
+
+**置信度三级定义**（与 `_protocols/from-extraction.md` 对齐）：
+
+| 级别 | 含义 | 下游处理 |
+|------|------|---------|
+| `verbatim` | 草稿中有明确对应内容，附具体行号 | 直接使用 |
+| `inferred` | 从上下文合理推断，原文无直接表述 | 使用但在输出中标 🔶 |
+| `supplemented` | 来自大纲/角色卡/设定等非草稿来源，或纯 AI 补充 | **禁止直接使用**，必须单独展示并获用户确认 |
 
 ### 7. 更新状态
 
@@ -184,3 +230,4 @@ ingestion:
 - 草稿末尾的零散想法往往是最重要的，不要忽略。
 - 理解摘要不是草稿的重新排版，而是对草稿的**分析性解读**。
 - 如果草稿中存在创意性矛盾（如"普通人"但"直接获得概念核心"），先当作**设计意图**去理解，而非 bug。
+- **来源边界**：摘要中的每条信息必须能对应草稿的具体段落。如果某条信息来自 `outline.md`、`characters/*.yaml` 或其他项目材料而非草稿本身，**必须单独列出并注明来源**，不得混入草稿摘要。这是最常见的隐性错误（见 `_protocols/draft-primacy.md`）。

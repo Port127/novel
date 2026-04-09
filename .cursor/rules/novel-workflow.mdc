@@ -1,7 +1,9 @@
 ---
-description: 小说项目的工作流经验和最佳实践（通用，跨项目共享）
+description: 小说项目的工作流经验和最佳实践（由 /project-reindex 同步，请勿手动编辑）
 alwaysApply: true
 ---
+
+<!-- ⚠️ 此文件由 /project-reindex 自动维护，手动修改会在下次重建索引时被覆盖。 -->
 
 # 工作流经验
 

@@ -32,12 +32,21 @@ timelines: []
 # ============================================================
 foreshadowing: []
 # - id: f001
+#   name: ""              # 可读名称，如"赵宋手背的疤痕"
+#   level: major          # major（主线必收）/ minor（支线应收）/ micro（氛围加分）
+#   status: planted       # planted / pending（接近截止）/ recovered / abandoned
 #   plant_chapter: 1
 #   plant_scene: ""       # 埋设场景ID（可选）
 #   plant_description: "" # 埋设方式描述
-#   payoff_chapter: 0     # 回收章节，未定填 TBD
+#   payoff_chapter: TBD   # 回收章节，未定填 TBD
 #   payoff_description: ""
-#   confidence: ""        # high / medium / low
+#   recovery_deadline:     # 回收截止（可选，不填则无硬性截止）
+#     type: chapter        # chapter / event / word_count
+#     value: ""            # 如 15、"灰域崩塌"、300000
+#     hard: false          # true=硬截止必须回收, false=软截止可延期
+#   recovery_conditions: "" # 回收前提条件，如"主角到达凝华阶段"
+#   linked_hooks: []       # 关联钩子ID列表（钩子链）
+#   confidence: ""         # high / medium / low
 
 # ============================================================
 # 节奏曲线

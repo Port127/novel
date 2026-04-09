@@ -17,6 +17,7 @@ arguments: chapter_id
 3. 读取 `{current_path}/chapters/index.yaml`
 4. 若能确定 POV 或关键角色，读取对应 `{current_path}/characters/*.yaml` 角色卡（优先对照 `fatal_flaw`、`obsession`、`soft_spot`、`misbelief`、`contrast_habit`）
 5. 若本章涉及双人或多人关系戏，读取 `{current_path}/characters/relations.yaml` 与相关 `relation_events.yaml` 片段，核对本章行为是否与快照和近期事件一致
+6. 按 [预检完整性协议](_protocols/preflight-integrity.md) 检查目标章节引用链完整性（含前序章节 summary 和角色状态）
 
 ## 输入参数
 
@@ -55,7 +56,40 @@ arguments: chapter_id
 - 默认做针对高风险片段的 `level 2` 处理
 - 不默认重写整章
 
-### 5. 推进章节状态
+### 5. 风格漂移检测
+
+按 [风格生命周期协议](_protocols/style-lifecycle.md) 阶段三执行。
+
+若 `meta.yaml` 的 `style.extracted_at_chapter` 非空，且当前章节号 - `extracted_at_chapter` ≥ 10：
+
+```
+💡 你的风格模板是在 {extracted_at_chapter} 时提炼的，已过去 {N} 章。
+   写作风格可能已经演化。要更新风格模板吗？(Y/N/永不)
+```
+
+无风格模板或间隔不足时跳过此步。
+
+### 6. 草稿冲突检测
+
+遵循 [草稿优先原则](_protocols/draft-primacy.md)，对本章草稿与结构化材料做比对：
+
+**检测范围：**
+
+| 材料 | 检测内容 |
+|---|---|
+| `plot/outline.md` | 草稿实际发生的事件/角色/目标是否与大纲节点一致 |
+| `characters/*.yaml` | 草稿中角色行为、台词风格、能力使用是否与档案矛盾 |
+| `worldbuilding/entries/*.yaml` | 草稿引用的设定规则是否与条目定义一致 |
+| `timeline/main.yaml` | 草稿的时间线位置是否与时间轴吻合 |
+| `characters/relations.yaml` | 草稿中关系互动是否与当前关系状态一致 |
+
+**冲突处理规则：**
+
+- 发现冲突 → 按 [冲突报告模板](_protocols/draft-primacy.md) 输出，列出每条冲突的草稿原文、材料原文、冲突类型、严重度
+- **不自动更新任何材料**，等待用户显式触发更新命令
+- 若无冲突 → 输出"✅ 草稿与结构化材料一致，无冲突"
+
+### 7. 推进章节状态
 
 若本章已具备完整草稿，调用 `/chapter-update`，将状态推进到 `revise`。
 
@@ -90,3 +124,4 @@ arguments: chapter_id
 - 以“高收益修订”优先，不做整章大换血
 - 若本章尚未形成完整草稿，不应强推到 `revise`
 - 若用户要求整章重写，再转向更重的改写流程
+- **草稿优先**：冲突检测（步骤 5）只输出报告，不自动修改大纲、人物卡、设定或时间线；所有材料更新须由用户主动触发（见 `_protocols/draft-primacy.md`）

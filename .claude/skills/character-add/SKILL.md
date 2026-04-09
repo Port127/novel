@@ -178,3 +178,4 @@ entries:
 - `character_index.yaml` 不存在时自动创建
 - 优先给角色一个会伤到自己的缺点、误判或执念，不要只有优点标签
 - `speech_pattern` 至少填 `tone`、`profanity_level` 和 1-2 条 `sample_lines`——从角色的性格、身份、教育水平推断说话方式。如果用户给了对白样本或参考内容（`--from`），优先从中提炼语言特征
+- **命名原则**：按 [名字解析协议](_protocols/name-resolution.md) §2 执行。读取 `{current_path}/.novel/meta.yaml` 的 `naming` 配置（era/culture/forbidden_patterns），按项目风格起名。默认策略：常见、接地气、好记（如张明、李向前、王妮）。检查已有角色名单避免同音混淆。

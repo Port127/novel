@@ -2,6 +2,7 @@ projects/
 /drafts/
 .current.yaml
 .projects.yaml
+bug.md
 feature.md
 oh-my-harness.md
 .DS_Store

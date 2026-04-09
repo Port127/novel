@@ -26,9 +26,17 @@ external_refs:
   material_lib: ../novel-material   # 素材库路径
   knowledge_lib: ../novel-knowledge # 知识库路径
 
+# 命名配置（由 /novel-init 初始化，/novel-edit 修改）
+naming:
+  era: modern             # modern / ancient / fantasy / mixed
+  culture: chinese        # chinese / western / japanese / mixed
+  style_notes: ""         # 自由备注，如"常见姓名，别用生僻字"
+  forbidden_patterns: []  # 禁止的命名模式（正则），如 ["^.{4,}$"] 禁止四字及以上
+
 # 写作风格
 style:
   template: ""            # 风格模板名称（来自 /style-list）
   prose: []               # 文笔风格标签
   strength: []            # 写作长板
   notes: ""               # 风格备注
+  extracted_at_chapter: "" # 风格模板提炼时对应的章节号（用于漂移检测）

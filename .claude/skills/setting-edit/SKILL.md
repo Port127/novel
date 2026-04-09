@@ -30,6 +30,9 @@ arguments: target changes
 - `/setting-edit 污染体系 描述改为：...`
 - `/setting-edit faction_001 --deprecated 已被后续设定取代`
 - `/setting-edit rule_002 --link plot:inciting 作为引发事件的核心规则`
+- `/setting-edit rule_001 --evolve 融合进入第二阶段后规则改变`
+- `/setting-edit rule_001 --valid-until ch030`
+- `/setting-edit rule_001 --valid-until 灰域崩塌后`
 
 ## 字段映射
 
@@ -47,6 +50,10 @@ arguments: target changes
 | 关联设定/依赖 | `setting_links` |
 | 来源 | `source` |
 | 开放问题 | `open_questions` |
+| 生效起点 | `valid_from` |
+| 失效条件/到期 | `valid_until` |
+| 过期触发 | `expiry_trigger` |
+| 取代/演化 | `supersedes` / `superseded_by` |
 
 ## 执行步骤
 
@@ -98,6 +105,34 @@ d) 向用户展示影响：
 确认修改？(Y/N)
 ```
 
+### 2b. 演化模式（--evolve）
+
+当指定 `--evolve` 时，进入"基于当前条目创建新版本"的快捷流程：
+
+1. **读取当前条目**完整内容
+2. **询问用户**：什么改变了？（用户描述差异部分）
+3. **调用 `/setting-add`**：
+   - 自动带上 `--supersedes {当前条目ID}`
+   - 继承当前条目的 `category`、`plot_links`、`character_links`
+   - 只修改用户指定的差异字段
+   - 新条目名称建议在旧名后加版本标识，如"现实抚平机制（第二阶段）"，但用户可自定义
+4. **旧条目自动处理**：由 `setting-add --supersedes` 完成（标记 deprecated + 写入 superseded_by）
+5. **触发影响扫描**：检查旧版本设定在已写章节中的使用情况
+
+输出：
+```
+🔄 设定演化完成
+
+旧版：{{旧名}}（{{旧ID}}）→ deprecated
+新版：{{新名}}（{{新ID}}）→ {{status}}
+
+📝 变更摘要：{{差异描述}}
+📖 旧版有效范围：{{valid_from}} ~ {{valid_until}}
+📖 新版生效自：{{valid_from}}
+
+{{影响扫描结果}}
+```
+
 ### 3. 执行变更
 
 更新 `{current_path}/worldbuilding/entries/{id}.yaml` 中的目标字段。
@@ -127,6 +162,20 @@ lifecycle:
 更新 `{current_path}/.novel/state.yaml`：
 - `project.updated`：今天日期
 
+### 6. 编辑后影响扫描
+
+按 [编辑后影响扫描协议](_protocols/post-edit-impact-scan.md) 执行。
+
+**触发条件**：本次修改涉及 `description`、`rules`、`constraints` 等核心内容字段。纯元数据修改（`status` 流转、`source`、`open_questions`）跳过此步。
+
+**扫描逻辑**：
+
+1. 从本条目的 `plot_links` 和 `character_links` 找到关联章节
+2. 扫描已写章节（status 为 `draft` / `revise` / `done`）正文，检查是否存在与**修改后设定**矛盾的描述
+3. 输出影响扫描结果（无论有无冲突都报告）
+
+**只报告，不修改任何章节文件。**
+
 ## 输出格式
 
 ```
@@ -140,6 +189,8 @@ lifecycle:
 📄 已更新：
    - worldbuilding/entries/{{id}}.yaml
    - worldbuilding/worldbuilding.yaml
+
+{{影响扫描结果——见 _protocols/post-edit-impact-scan.md 输出格式}}
 
 下一步：
    /setting-edit [名称]              继续编辑

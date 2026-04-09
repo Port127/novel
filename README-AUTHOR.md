@@ -79,6 +79,10 @@
 
 | 场景 | 命令 |
 |------|-----|
+| 埋了伏笔想登记 | `/hook-add 名称 --chapter ch012 --level minor` |
+| 查哪些伏笔该回收了 | `/hook-query --overdue` 或 `--near ch012` |
+| 写了两版想对比 | `/chapter-draft ch012 --alt 方案B` → `/chapter-compare ch012` |
+| 设定随剧情过期了 | `/setting-edit rule_001 --evolve` |
 | 角色关系复杂了 | `/relationship-check` |
 | 文风有 AI 感 | `/anti-ai-check ch012` |
 | 发文前怕借鉴风险 | `/pipeline-compliance-gate ch012` |

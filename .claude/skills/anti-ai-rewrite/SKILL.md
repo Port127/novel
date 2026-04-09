@@ -59,6 +59,7 @@ arguments: chapter_id
 - 外貌描写不超过 2 句，且必须通过其他角色的眼睛看（不要上帝视角列清单）
 
 #### D. 对白口语化
+- 按 [名字解析协议](_protocols/name-resolution.md) §1a 保留作者已用的所有称呼形式，不替换为正式名
 - 读取对白角色的 `speech_pattern`（tone / sentence_style / profanity_level / catchphrase / verbal_tics）
 - 把书面语对白改成符合角色身份的口语：
   - 粗人说粗话，不说"你这样做不妥"而说"你他妈搞什么"

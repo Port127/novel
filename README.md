@@ -34,9 +34,10 @@
 |------|--------------|---------|
 | 项目与运营 | 多书管理、周报复盘、健康体检、Skill 变更管理 | `/novel-switch` `/novel-doctor` `/skill-doctor` `/project-weekly-report` `/novel-kpi` |
 | 流程编排 | 把常用写作流程打包成场景预设，少记命令 | `/pipeline-outline-bootstrap` `/pipeline-note-triage` `/pipeline-draft-polish`（共 8 个） |
-| 章节生产 | 新章创建、AI 辅助初稿、状态推进、结构打磨、导出发布 | `/chapter-create` `/chapter-draft` `/chapter-review` `/chapter-export` |
+| 章节生产 | 新章创建、AI 初稿、多版本对比、状态推进、结构打磨 | `/chapter-create` `/chapter-draft --alt` `/chapter-compare` `/chapter-review` |
+| 钩子/伏笔 | 伏笔分级登记、截止追踪、回收与放弃管理 | `/hook-add` `/hook-query` `/hook-resolve` |
 | 角色关系 | 角色设定、关系维护、关系演进与跳变检查 | `/character-add` `/relationship-log` `/relationship-evolution` `/relationship-check` |
-| 素材消化与设定 | 草稿消化、世界观设定管理、场景档案 | `/draft-ingest` `/setting-add` `/scene-add` `/worldbuilding-review` |
+| 世界观与设定 | 设定管理、设定演化与有效期、世界观审查 | `/setting-add --supersedes` `/setting-edit --evolve` `/worldbuilding-review` |
 | 素材库检索 | 从已拆解的小说中找参考场景、人物原型、技法案例 | `/material-search` `/material-apply` `/material-manage` |
 | 文风质量 | 去 AI 感、人物对白区分、风格调优 | `/anti-ai-check` `/anti-ai-rewrite` `/voice-check` `/rewrite` |
 | 合规风控 | 借鉴留痕、风险检查、阶段报告 | `/inspiration-log` `/inspiration-check` `/inspiration-report` |

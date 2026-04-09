@@ -70,7 +70,11 @@ arguments: input
 如果 `{current_path}/ingestion_brief.md` 已存在：
 
 1. 读取并展示摘要要点
-2. 询问用户是否基于此继续，还是需要更新
+2. **按置信度分级展示**（若摘要包含 `<!-- confidence: ... -->` 标记）：
+   - `verbatim` 内容正常展示
+   - `inferred` 内容标 🔶，提示"此条为推断"
+   - `supplemented` 内容标 ❌，**单独列出并要求确认**——未经确认的 supplemented 内容不得进入后续大纲构建
+3. 询问用户是否基于此继续，还是需要更新
 
 **阶段一止点：** 用户确认理解摘要后，才进入阶段二。
 
@@ -95,6 +99,8 @@ arguments: input
    ```
 
 4. 确认的条目调用 `/setting-add` 写入 `worldbuilding/entries/`——**设定落地不是照搬 ingestion_brief 原文。** 每条设定的 description 应当用有叙事质感的语言重新表达，读起来像小说世界的一部分，不像文档条目
+   - **置信度过滤**：只有 `verbatim` 和 `inferred`（用户已确认）的内容可直接提取为设定
+   - `supplemented` 的内容必须在此步骤单独展示并再次确认后才可创建设定条目
 5. 同步更新 `worldbuilding/worldbuilding.yaml` 索引
 6. 将确认的设定汇总写入 `worldbuilding/setting.md`（叙述版）
 
