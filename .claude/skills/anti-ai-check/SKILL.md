@@ -80,7 +80,9 @@ arguments: chapter_id
 
 ### 4. 写入检测报告
 
-将本次检测结果追加到 `{current_path}/quality/ai_trace_report.yaml`：
+将本次检测结果追加到 `{current_path}/quality/ai_trace_report.yaml`（原有行为不变），**同时**按 [评估闸门协议](_protocols/eval-gate.md) 追加到 `{current_path}/chapters/{chapter_id}_review.yaml`，写入 `anti-ai-check` 条目（含各维度分数、overall、level、top_issues）。
+
+追加到 `quality/ai_trace_report.yaml`：
 
 ```yaml
 reports:

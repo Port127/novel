@@ -16,12 +16,15 @@
 | 你想做什么 | 去哪里 |
 |-----------|-------|
 | 看项目全貌 | `README.md` |
+| **理解项目结构** | **`GUIDE.md`**（推荐首读） |
 | 找命令怎么用 | `docs/USAGE-GUIDE.md` |
 | 查完整命令参考 | `docs/SPEC.md` → Skill清单 |
 | 了解系统架构 | `ARCHITECTURE.md` |
+| **查 Skill 依赖关系** | **`docs/skill-dependency-graph.md`** |
 | 作者快速上手 | `README-AUTHOR.md` |
 | 编辑管理视角 | `README-EDITOR.md` |
 | Pipeline 设计规格 | `docs/novel-pipeline.md` |
+| AI Harness 研究笔记 | `docs/ai-harness-research.md` |
 
 ## 领域地图
 - 项目运营：项目状态、KPI、周报
@@ -38,6 +41,10 @@
 - 名字身份管理：称呼解析、命名规范、重命名事务化
 - 风格生命周期：自动提炼触发、漂移检测
 - 来源追溯：素材消化置信度标记、章节初稿来源水印
+- 评估闸门：审查结果结构化落盘、阈值阻断状态推进、反馈闭环回流
+- 机械化校验：文件-索引一致性、命名规范、钩子/设定健康度（`/project-lint`）
+- 上下文预算：分级读取策略、索引优先、聚焦读取
+- 知识新鲜度：设定/角色/钩子/大纲/文档的过时检测（`/novel-doctor` §5）
 
 ## 工作流程协议
 发现 → 预览 → 确认 → 执行 → 验证 → 报告。

@@ -79,6 +79,53 @@ when_to_use: 用户想检查项目结构和配置是否正常
 - chapters/index.yaml 与 chapters/*.md 匹配
 - relation_events.yaml 与 relations.yaml 的角色对可追溯
 
+> 注：更细致的机械化索引检查参见 `/project-lint`。
+
+### 5. 知识新鲜度
+
+> 灵感来源：OpenAI 的 "doc-gardening" agent——定期扫描过时文档并发起修复。
+
+检测项目中"陈旧"或"可能过时"的信息，防止旧知识误导写作。
+
+**5a. 设定新鲜度**
+
+| 检查 | 条件 | 级别 |
+|------|------|------|
+| 长期 tentative | 设定 status 为 `tentative` 且项目已有 3+ 章 draft | 警告：应尽快确认或删除 |
+| 过期无后继 | `valid_until` 已触发但 `superseded_by` 为空 | 警告：过期设定无新版本 |
+| 过期仍被引用 | 已过期/被取代的设定仍在近期章节中出现 | 错误：需要更新章节或创建后继设定 |
+
+**5b. 角色新鲜度**
+
+| 检查 | 条件 | 级别 |
+|------|------|------|
+| 长期未出场 | 角色在 character_index 中注册但最后出场章节距最新章节 > 10 章 | 提示：是否遗忘？ |
+| current_state 过时 | 角色的 `current_state` 最后更新时对应章节 < 最新已写章节 - 3 | 警告：状态可能已不准确 |
+| 五件套未填 | fatal_flaw / obsession / soft_spot / misbelief / contrast_habit 有空值 | 警告：角色缺少深度 |
+
+**5c. 钩子新鲜度**
+
+| 检查 | 条件 | 级别 |
+|------|------|------|
+| Major 逾期 | `planted` 状态的 major 钩子已过 `recovery_deadline` | 错误：读者很可能记得 |
+| Minor 逾期 | `planted` 的 minor 钩子已过 deadline | 警告 |
+| 无截止日 | major/minor 钩子无 `recovery_deadline` | 警告：应设截止 |
+| 密度异常 | 最近 3 章的 planted 钩子数 > 全书平均 ×2 | 提示：近期伏笔过密 |
+
+**5d. 大纲新鲜度**
+
+| 检查 | 条件 | 级别 |
+|------|------|------|
+| 未写章节过多 | outline.md 中规划的章节数 - 已写章节数 > 20 | 提示：大纲可能需要更新 |
+| 偏离未同步 | 已知偏离的章节（consistency-check 曾报告）的大纲节点仍未更新 | 警告 |
+
+**5e. 文档新鲜度**
+
+| 检查 | 条件 | 级别 |
+|------|------|------|
+| PROJECT_MAP.md 过时 | state.yaml 的 `project.updated` 晚于 PROJECT_MAP.md 的 git 修改时间（若可获取）或内容明显不一致 | 提示：建议 /project-reindex |
+| 风格模板过旧 | `meta.yaml` 的 `style.extracted_at_chapter` 距最新章节 > 15 章 | 提示：风格可能已漂移 |
+
 ## 输出格式
 
 ```
@@ -111,6 +158,14 @@ when_to_use: 用户想检查项目结构和配置是否正常
 
 ✅ 角色索引 - 与实际文件匹配
 ✅ 时间范围 - 与事件匹配
+
+## 知识新鲜度
+
+⚠️ 设定 rule_001 长期 tentative（5 章 draft 未确认）
+⚠️ 角色 庄怀瑾 current_state 过时（最后更新 ch002，当前 ch008）
+❌ Major 钩子「秘密」已过截止 ch010
+✅ 大纲新鲜度 - 正常
+✅ 文档新鲜度 - 正常
 
 ---
 

@@ -1,0 +1,387 @@
+{
+  "timestamp": "2026-04-09T22:43:26.582997",
+  "total": 63,
+  "passed": 63,
+  "failed": 0,
+  "elapsed_seconds": 6.6,
+  "results": [
+    {
+      "id": "ORPHAN-001",
+      "name": "Index still lists orphan chapter",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "ORPHAN-002",
+      "name": "Read orphan chapter doesn't crash",
+      "status": "PASS",
+      "detail": "content empty=''"
+    },
+    {
+      "id": "ORPHAN-003",
+      "name": "PUT to orphan chapter succeeds",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "ORPHAN-003b",
+      "name": "File recreated",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "ORPHAN-004",
+      "name": "Rogue file NOT in index (expected orphan)",
+      "status": "PASS",
+      "detail": "names=['李远', '苏晚', '李明', '倒灌者·无名', '测试角色·特殊']"
+    },
+    {
+      "id": "ORPHAN-005",
+      "name": "Relation orphaned after char delete (API doesn't clean)",
+      "status": "PASS",
+      "detail": "orphan_count=1"
+    },
+    {
+      "id": "ORPHAN-006",
+      "name": "Hook orphaned after chapter delete (API doesn't clean hooks)",
+      "status": "PASS",
+      "detail": "orphan_hooks=1"
+    },
+    {
+      "id": "STRESS-001",
+      "name": "Batch create 20 characters",
+      "status": "PASS",
+      "detail": "created=20"
+    },
+    {
+      "id": "STRESS-001b",
+      "name": "Index reflects batch create",
+      "status": "PASS",
+      "detail": "total=25"
+    },
+    {
+      "id": "STRESS-002",
+      "name": "All 20 characters readable",
+      "status": "PASS",
+      "detail": "readable=20"
+    },
+    {
+      "id": "STRESS-003",
+      "name": "All 20 deleted",
+      "status": "PASS",
+      "detail": "deleted=20"
+    },
+    {
+      "id": "STRESS-003b",
+      "name": "No batch chars in index",
+      "status": "PASS",
+      "detail": "remaining=0"
+    },
+    {
+      "id": "STRESS-004",
+      "name": "Batch create 15 WB entries",
+      "status": "PASS",
+      "detail": "created=15"
+    },
+    {
+      "id": "STRESS-004b",
+      "name": "All stress WB entries cleaned",
+      "status": "PASS",
+      "detail": "left=0"
+    },
+    {
+      "id": "STRESS-005",
+      "name": "Batch create 10 chapters",
+      "status": "PASS",
+      "detail": "created=10"
+    },
+    {
+      "id": "T004-emoji",
+      "name": "Emoji in character name",
+      "status": "PASS",
+      "detail": "status=200"
+    },
+    {
+      "id": "T004-emoji-read",
+      "name": "Read emoji character",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "T003-longname",
+      "name": "Very long character name",
+      "status": "PASS",
+      "detail": "status=200"
+    },
+    {
+      "id": "T013-empty",
+      "name": "Empty content chapter created",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "T013-empty-read",
+      "name": "Empty chapter readable",
+      "status": "PASS",
+      "detail": "content=''"
+    },
+    {
+      "id": "T003-bigch",
+      "name": "50K char chapter created",
+      "status": "PASS",
+      "detail": "content_len=14508"
+    },
+    {
+      "id": "T003-bigch-read",
+      "name": "Big chapter readable",
+      "status": "PASS",
+      "detail": "read_len=14508"
+    },
+    {
+      "id": "T012-nested",
+      "name": "Deeply nested character data",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "T012-nested-read",
+      "name": "Nested data preserved",
+      "status": "PASS",
+      "detail": "has_layers=True"
+    },
+    {
+      "id": "T012-yaml-special",
+      "name": "YAML special chars in entry",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "T012-yaml-read",
+      "name": "Special chars preserved",
+      "status": "PASS",
+      "detail": "desc=包含: 冒号、# 井号、- 破折号、{大括号}、[方括号]"
+    },
+    {
+      "id": "Q029-a",
+      "name": "Test char NOT in real project",
+      "status": "PASS",
+      "detail": "status=404"
+    },
+    {
+      "id": "Q029-b",
+      "name": "赵宋 visible in real project",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "Q029-c",
+      "name": "Test char NOT in 末世 project",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "Q029-d",
+      "name": "Test char still in test project",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "Q026",
+      "name": "Character created in correct project",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "Q026b",
+      "name": "File in correct project directory",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "Q026c",
+      "name": "File NOT in other project",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "STATE-001",
+      "name": "Chapter index-file sync",
+      "status": "PASS",
+      "detail": "idx_only=set(), file_only=set()"
+    },
+    {
+      "id": "STATE-002",
+      "name": "Character index-file sync",
+      "status": "PASS",
+      "detail": "idx_only=set(), file_only=set()"
+    },
+    {
+      "id": "STATE-003",
+      "name": "Worldbuilding index-file sync",
+      "status": "PASS",
+      "detail": "idx_only=set(), file_only=set()"
+    },
+    {
+      "id": "STATE-004",
+      "name": "All project YAML valid",
+      "status": "PASS",
+      "detail": "all OK"
+    },
+    {
+      "id": "STATE-005-meta.yaml",
+      "name": "meta.yaml has content",
+      "status": "PASS",
+      "detail": "size=168"
+    },
+    {
+      "id": "STATE-005-state.yaml",
+      "name": "state.yaml has content",
+      "status": "PASS",
+      "detail": "size=205"
+    },
+    {
+      "id": "ERR-001",
+      "name": "Invalid JSON returns 422",
+      "status": "PASS",
+      "detail": "status=422"
+    },
+    {
+      "id": "ERR-002",
+      "name": "Missing required field returns 422",
+      "status": "PASS",
+      "detail": "status=422"
+    },
+    {
+      "id": "ERR-003",
+      "name": "PUT non-existent char returns 404",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "ERR-004",
+      "name": "PUT non-existent chapter meta returns 404",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "ERR-005",
+      "name": "PUT non-existent chapter content returns 404",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "ERR-006",
+      "name": "PUT non-existent WB entry returns 404",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "ERR-007",
+      "name": "DELETE non-existent char doesn't crash",
+      "status": "PASS",
+      "detail": "status=200"
+    },
+    {
+      "id": "ERR-008",
+      "name": "DELETE non-existent chapter doesn't crash",
+      "status": "PASS",
+      "detail": "status=200"
+    },
+    {
+      "id": "ERR-009",
+      "name": "Non-existent endpoint returns 404/405",
+      "status": "PASS",
+      "detail": "status=404"
+    },
+    {
+      "id": "ERR-010",
+      "name": "POST to read-only relationships",
+      "status": "PASS",
+      "detail": "status=405"
+    },
+    {
+      "id": "I003-dup",
+      "name": "Two events at same time allowed",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "I002-empty",
+      "name": "Empty time event",
+      "status": "PASS",
+      "detail": "API accepts empty time"
+    },
+    {
+      "id": "I012-read",
+      "name": "Timeline readable after mixed adds",
+      "status": "PASS",
+      "detail": "count=8"
+    },
+    {
+      "id": "G019-init",
+      "name": "Initial status is outline",
+      "status": "PASS",
+      "detail": "status=outline"
+    },
+    {
+      "id": "G019-draft",
+      "name": "Transition to draft",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "G020",
+      "name": "Transition to revise",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "G021",
+      "name": "Transition to final",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "G022",
+      "name": "Skip states allowed by API (no guard)",
+      "status": "PASS",
+      "detail": "API has no state machine guard"
+    },
+    {
+      "id": "G023",
+      "name": "Status downgrade allowed",
+      "status": "PASS",
+      "detail": "API allows final→draft (no guard)"
+    },
+    {
+      "id": "G024-invalid",
+      "name": "Invalid status accepted by API",
+      "status": "PASS",
+      "detail": "API has no validation on status values"
+    },
+    {
+      "id": "RAPID-001",
+      "name": "10 CRUD cycles OK",
+      "status": "PASS",
+      "detail": "ok=10"
+    },
+    {
+      "id": "RAPID-002",
+      "name": "5 chapter CRUD cycles OK",
+      "status": "PASS",
+      "detail": "ok=5"
+    },
+    {
+      "id": "SWITCH-001",
+      "name": "15 rapid project switches",
+      "status": "PASS",
+      "detail": "ok=15/15"
+    },
+    {
+      "id": "SWITCH-002",
+      "name": "No cross-contamination after switches",
+      "status": "PASS",
+      "detail": "赵宋 should not be in test project"
+    }
+  ]
+}

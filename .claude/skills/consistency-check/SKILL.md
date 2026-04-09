@@ -14,24 +14,34 @@ when_to_use: 用户想确保小说设定没有矛盾
 
 ## 执行步骤
 
-### 1. 收集所有数据
+### 1. 分阶段收集数据
 
-读取：
-- `{current_path}/.novel/state.yaml`（仅取非推导字段：project、ingestion、plot.structure、current_focus）
+按 [上下文预算协议](_protocols/context-budget.md) 的"分阶段加载"策略执行，避免一次性读取全部文件导致上下文过载。
+
+**第一轮：索引文件（必读）**
+- `{current_path}/.novel/state.yaml`（仅取非推导字段）
 - `{current_path}/characters/character_index.yaml`
-- `{current_path}/characters/*.yaml`
 - `{current_path}/characters/relations.yaml`
-- `{current_path}/characters/relation_events.yaml`
-- `{current_path}/timeline/main.yaml`
-- `{current_path}/worldbuilding/setting.md`
-- `{current_path}/worldbuilding/entries/*.yaml`（设定集条目）
-- `{current_path}/ingestion_brief.md`（素材消化摘要，若存在）
-- `{current_path}/plot/outline.md`
-- `{current_path}/plot/outline.yaml`（伏笔追踪、节奏曲线）
 - `{current_path}/chapters/index.yaml`
+- `{current_path}/plot/outline.yaml`（伏笔和结构）
+- `{current_path}/worldbuilding/worldbuilding.yaml`（索引）
 - `{current_path}/compliance/inspiration_log.yaml`
 - `{current_path}/compliance/risk_report.yaml`
 - `{current_path}/quality/ai_trace_report.yaml`
+
+从索引即可完成的检查：文件-索引一致性、状态合法性、钩子统计、借鉴覆盖率
+
+**第二轮：按需深入（仅对可疑项）**
+- `{current_path}/characters/*.yaml` — 仅读第一轮中发现可能有问题的角色
+- `{current_path}/worldbuilding/entries/*.yaml` — 仅读有效期异常或被引用的条目
+- `{current_path}/characters/relation_events.yaml` — 仅在关系检查需要时读取
+- `{current_path}/timeline/main.yaml` — 仅在时间线检查需要时读取
+
+**第三轮：语义比对（按需）**
+- `{current_path}/plot/outline.md` — 大纲偏离度检测时读取
+- `{current_path}/chapters/index.yaml` 的 summary 字段 — 不读章节全文，用 summary 做语义比对
+- `{current_path}/worldbuilding/setting.md` — 仅在设定一致性需要叙述版对照时读取
+- `{current_path}/ingestion_brief.md` — 仅在素材追溯需要时读取
 
 ### 2. 交叉检查
 

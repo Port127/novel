@@ -23,6 +23,8 @@ arguments: chapter_id
 
 - `$0` (chapter_id): 章节 ID
 - `--rewrite-level`: 可选改写强度，默认 `2`
+- `--force`: 跳过评估闸门，强制推进状态
+- `--threshold N`: 覆盖默认闸门阈值（所有维度统一使用 N）
 
 ## 执行步骤
 
@@ -89,9 +91,35 @@ arguments: chapter_id
 - **不自动更新任何材料**，等待用户显式触发更新命令
 - 若无冲突 → 输出"✅ 草稿与结构化材料一致，无冲突"
 
-### 7. 推进章节状态
+### 7. 评估闸门检查
 
-若本章已具备完整草稿，调用 `/chapter-update`，将状态推进到 `revise`。
+按 [评估闸门协议](_protocols/eval-gate.md) 读取 `{current_path}/chapters/{chapter_id}_review.yaml`，汇总所有评估分数：
+
+| 检查项 | 阈值 | 阻断级别 |
+|--------|------|---------|
+| anti-ai overall | >= 60 | 阻断 |
+| voice distinctiveness | >= 40 | 警告 |
+| structure | >= 50 | 阻断 |
+
+**未通过时**：
+
+```
+⛔ 评估闸门未通过，暂不推进到 revise：
+
+  chapter-review / structure: {{score}}/100（阈值 50）
+  → 建议：修复开场和结尾钩子
+
+  anti-ai-check / overall: {{score}}/100（阈值 60）
+  → 建议：/anti-ai-rewrite {{chapter_id}} --level 2
+
+使用 --force 可跳过闸门强制推进
+```
+
+**全部通过时**：输出通过摘要，继续推进。
+
+### 8. 推进章节状态
+
+若本章已具备完整草稿**且评估闸门通过（或用户指定 --force）**，调用 `/chapter-update`，将状态推进到 `revise`。
 
 ## 输出格式
 
@@ -124,4 +152,6 @@ arguments: chapter_id
 - 以“高收益修订”优先，不做整章大换血
 - 若本章尚未形成完整草稿，不应强推到 `revise`
 - 若用户要求整章重写，再转向更重的改写流程
-- **草稿优先**：冲突检测（步骤 5）只输出报告，不自动修改大纲、人物卡、设定或时间线；所有材料更新须由用户主动触发（见 `_protocols/draft-primacy.md`）
+- **草稿优先**：冲突检测（步骤 6）只输出报告，不自动修改大纲、人物卡、设定或时间线；所有材料更新须由用户主动触发（见 `_protocols/draft-primacy.md`）
+- **评估闸门**：步骤 7 的闸门检查保护质量底线；用 `--force` 跳过，`--threshold N` 调整阈值
+- **反馈闭环**：本轮审查结果写入 `_review.yaml`，下次 `/chapter-draft` 会读取并避免重犯（见 `_protocols/eval-gate.md`）

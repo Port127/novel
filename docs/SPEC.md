@@ -36,7 +36,9 @@ novel/
 │   │   │   ├── pipeline-delegation.md
 │   │   │   ├── post-edit-impact-scan.md
 │   │   │   ├── preflight-integrity.md
-│   │   │   └── style-lifecycle.md
+│   │   │   ├── style-lifecycle.md
+│   │   │   ├── eval-gate.md
+│   │   │   └── context-budget.md
 │   │   ├── novel-init/
 │   │   │   └── SKILL.md
 │   │   ├── character-add/
@@ -337,8 +339,9 @@ current_focus: 第8章
 | `/novel-switch` | 切换项目 | $0=项目名 |
 | `/novel-status` | 查看状态 | - |
 | `/novel-list` | 列出所有项目 | - |
-| `/novel-doctor` | 诊断检查 | - |
+| `/novel-doctor` | 诊断检查（含知识新鲜度） | --quick |
 | `/novel-edit` | 编辑项目基础信息 | $0=字段 $1+=新值 |
+| `/project-lint` | 机械化验证文件完整性、索引一致性、命名规范 | --fix, --scope chapters\|characters\|settings\|hooks\|ops\|all |
 | `/skill-doctor` | 评估 skill 变更影响，检查一致性，同步文档 | $0=skill名称\|sync\|--full |
 | `/draft-ingest` | 深度消化草稿/素材文档 | $0=草稿路径 |
 | `/project-weekly-report` | 生成双视角项目周报 | $0=范围 |
@@ -443,6 +446,8 @@ current_focus: 第8章
 | `_protocols/post-edit-impact-scan.md` | 编辑后影响扫描：修改设定/角色后检查已写章节冲突 | setting-edit, character-edit |
 | `_protocols/preflight-integrity.md` | 预检完整性：操作前验证引用链完整性 | pipeline-chapter-kickoff, chapter-draft, chapter-update, pipeline-draft-polish |
 | `_protocols/style-lifecycle.md` | 风格生命周期：提炼触发 + 漂移检测 | chapter-update, pipeline-draft-polish |
+| `_protocols/eval-gate.md` | 评估闸门：审查结果落盘 + 阈值阻断 + 反馈闭环 | chapter-review, voice-check, anti-ai-check, pipeline-draft-polish, chapter-draft |
+| `_protocols/context-budget.md` | 上下文预算：三级读取策略，防止信息过载 | chapter-draft, consistency-check |
 
 ---
 

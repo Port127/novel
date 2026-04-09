@@ -68,7 +68,22 @@ arguments: chapter_id
   - 节奏衔接：上一章结尾是高潮还是低谷？本章开头的节奏是否匹配（高潮后不宜再长段铺垫，低谷后可以缓起）？
   - 时间跳跃：若存在时间跳跃，是否给了读者足够的过渡信号？
 
-### 3. 输出修订建议
+### 3. 写入评估结果
+
+按 [评估闸门协议](_protocols/eval-gate.md)，将审查结果写入 `{current_path}/chapters/{chapter_id}_review.yaml`。
+
+对以下维度打分（0-100）：
+- `structure`：结构完整性（开场异常点、冲突升级、结尾钩子）
+- `pacing`：节奏（信息密度分布、转折位置）
+- `character`：角色一致性（行为符合设定、展现缺陷/执念）
+- `hook`：钩子有效性（伏笔埋设/回收、悬念强度）
+- `emotion`：情绪张力（危险感知、误判/代价、反差脆弱）
+
+将 blocking_issues（必修项）和 suggestions（建议项，含 priority/location/issue/fix_direction）一并写入。
+
+若文件已存在，更新 `chapter-review` 条目（保留其他 skill 的条目）。
+
+### 4. 输出修订建议
 
 给出 3-5 条"可直接改文"的建议，优先高收益项。
 

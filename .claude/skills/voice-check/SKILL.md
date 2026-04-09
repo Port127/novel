@@ -72,7 +72,18 @@ arguments: character range
 - "我明白了""你说得对""这不可能"等通用句式占比
 - 超过阈值则标记为同质化风险
 
-### 6. 生成修复建议
+### 6. 写入评估结果
+
+按 [评估闸门协议](_protocols/eval-gate.md)，将检查结果追加到 `{current_path}/chapters/{chapter_id}_review.yaml`（若检查范围为单章）。
+
+写入 `voice-check` 条目，包含：
+- `profile_match`：语言画像匹配度（0-100）
+- `distinctiveness`：横向区分度（0-100）
+- suggestions 列表（含 character/issue/fix_direction）
+
+若检查范围跨多章，不写入 review 文件，仅输出报告。
+
+### 7. 生成修复建议
 
 针对每个发现的问题，给出**具体可操作**的修复建议：
 

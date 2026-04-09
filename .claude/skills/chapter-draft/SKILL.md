@@ -33,22 +33,30 @@ arguments: chapter_id
 
 ### 1. 收集写作上下文
 
-读取以下文件构建完整上下文：
+按 [上下文预算协议](_protocols/context-budget.md) 的 Level 1（索引优先）策略读取。先读索引/摘要，只对本章相关内容深入读原文。
 
-**前情积累（最重要——让 AI 知道"到目前为止发生了什么"）：**
-- `{current_path}/chapters/index.yaml` — 提取本章之前**所有已写章节的 `summary`**，拼接为前情摘要链
-- 本章出场角色的 `current_state` — 每个角色"此刻是什么状态"（位置、情绪、已知信息、行动目标、未解悬念）
-- 若存在前一章节文件，读取其结尾段落（确保开场衔接）
+**P0 必读（不可裁剪）：**
+- `{current_path}/chapters/index.yaml` — 提取本章之前**所有已写章节的 `summary`**，拼接为前情摘要链 `[索引优先]`
+- 本章出场角色的 `current_state` — 每个角色"此刻是什么状态" `[必读]`
+- `{current_path}/chapters/{chapter_id}_review.yaml` — 前次审查反馈 `[若存在则必读]`（见下方"反馈闭环"）
 
-**大纲与设定：**
-- `{current_path}/plot/outline.md` — 本章对应的大纲节点（目标、事件、冲突、钩子）
-- `{current_path}/plot/outline.yaml` — 伏笔和节奏标记
-- `{current_path}/characters/*.yaml` — 本章出场角色的完整档案（重点：`traits`、`fatal_flaw`、`obsession`、`soft_spot`、`misbelief`、`contrast_habit`、`speech_pattern`）
-- `{current_path}/characters/relations.yaml` — 出场角色之间的当前关系状态
-- `{current_path}/characters/relation_events.yaml` — 最近的关系变化事件
-- `{current_path}/worldbuilding/setting.md` — 本章涉及的世界观背景
-- `{current_path}/worldbuilding/entries/*.yaml` — 本章依赖的具体设定条目（**注意有效期筛选，见下方**）
-- `{current_path}/timeline/main.yaml` — 本章的时间位置
+**P1 重要（可缩短）：**
+- 前一章节文件的结尾段落（最后 300 字即可） `[可裁剪]`
+- 本章场景大纲（`chapters/$0.md` 的 `## 场景大纲`） `[必读]`
+
+**P2 角色档案（可精简）：**
+- `{current_path}/characters/*.yaml` — **仅本章出场角色**，优先读取 `speech_pattern`、`traits`、`fatal_flaw`、`obsession`、`soft_spot`、`misbelief`、`contrast_habit` `[聚焦读取]`
+- `{current_path}/characters/relations.yaml` — 仅出场角色之间的关系 `[聚焦读取]`
+- `{current_path}/characters/relation_events.yaml` — 仅最近 3 条相关事件 `[可裁剪]`
+
+**P3 设定与大纲（可精简）：**
+- `{current_path}/plot/outline.md` — **仅本章对应的大纲节点**，不读全文 `[聚焦读取]`
+- `{current_path}/plot/outline.yaml` — 伏笔和节奏标记 `[聚焦读取]`
+- `{current_path}/worldbuilding/entries/*.yaml` — **仅本章依赖的条目**（通过场景大纲中的设定引用确定） `[聚焦读取]`
+
+**P4 补充（上下文紧张时可跳过）：**
+- `{current_path}/worldbuilding/setting.md` — 世界观背景概述 `[可裁剪]`
+- `{current_path}/timeline/main.yaml` — 仅本章时间段 `[可裁剪]`
 
 **设定有效期筛选**：读取设定条目时，检查 `valid_until`、`superseded_by` 和 `expiry_trigger`：
 - 已被取代的条目（`superseded_by` 非空）→ 跳过，改用新版条目
@@ -56,7 +64,13 @@ arguments: chapter_id
 - 即将过期的条目（本章接近 `valid_until`）→ 标记警告，写作时考虑体现设定变化的过渡
 - 如果一条过期设定没有后继条目，在步骤 4 的生成前检查中报错
 
-构建上下文的优先级：**前情摘要链 > 角色当前状态 > 前章结尾 > 本章大纲 > 角色档案 > 设定**。如果上下文过长需要裁剪，从底部开始砍。
+**前次审查反馈（反馈闭环）：**
+- 检查 `{current_path}/chapters/{chapter_id}_review.yaml` 是否存在
+- 若存在，提取所有 `blocking_issues` 和 `priority: high` 的 suggestions
+- 在步骤 5 的写作指令中注入："前次审查发现以下问题，本次生成应避免：[问题列表]"
+- 生成完成后在步骤 7 的写作备忘中标注："已参考前次审查反馈（{date}）"
+
+构建上下文的优先级：**前情摘要链 > 角色当前状态 > 前章结尾 > 前次审查反馈 > 本章大纲 > 角色档案 > 设定**。如果上下文过长需要裁剪，从底部开始砍。
 
 ### 2. 素材库参考检索（可选）
 
