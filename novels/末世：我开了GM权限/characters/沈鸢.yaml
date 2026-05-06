@@ -1,0 +1,89 @@
+# 角色档案：沈鸢
+# 由 /character-add 批量创建
+
+name: 沈鸢
+aliases: []
+role: antagonist
+archetype: ""
+narrative_function: 制造冲突 / 提供信息
+
+first_appearance: "第30章"
+first_scene: ""
+
+profile:
+  age: ""
+  gender: "女"
+  occupation: "白烬会智囊"
+  affiliation: ["白烬会"]
+  location: "海临城"
+
+traits: [擅长交易与挑拨]
+moral_spectrum: "黑暗"
+fatal_flaw: "太聪明——聪明到会被更大的局利用"
+obsession: "想收集灰盒波形，想控制陈默"
+soft_spot: "交易——愿意用交易换情报"
+misbelief: "以为交易能控制所有人，但陈默会识破她的挑拨"
+contrast_habit: "擅长交易的人，会在关键时刻不交易——不交易时往往在算命"
+tragedy_trigger: "总在交易后才意识到已经被更大的局利用"
+
+appearance: ""
+backstory: |
+  白烬会智囊，擅长交易与挑拨。
+  
+  常以合作姿态出现，实际在收集灰盒波形与关键权限。
+  
+  第30章透露三股势力盘：门票、税券池、跨区门。记录灰盒波形，集市出现跨区频道试连线。
+
+abilities: []
+
+arc:
+  - stage: "合作姿态"
+    state: "以合作姿态出现，透露三股势力盘"
+    chapter: 30
+    moment_type: "性格展示"
+  - stage: "收集波形"
+    state: "记录灰盒波形，出售情报"
+    chapter: 42
+    moment_type: "性格转变"
+  - stage: "挑拨"
+    state: "每句话都在试探权限边界"
+    chapter: TBD
+    moment_type: "性格展示"
+
+relations:
+  - character: "秦烬"
+    type: "上下级"
+    description: "白烬会首领"
+    dynamic: "命令与收集"
+    tension_source: "收集灰盒波形，但忠诚可能只是交易"
+  - character: "陈默"
+    type: "收集目标"
+    description: "灰盒持有者，交易对象"
+    dynamic: "交易与挑拨"
+    tension_source: "每句话都在试探权限边界"
+
+cross_references:
+  related_settings:
+    - id: "power_001"
+      name: "灰盒调试器"
+      relevance: "收集者——记录灰盒波形"
+  related_factions:
+    - id: "faction_001"
+      name: "白烬会"
+      stance: "智囊"
+  related_characters:
+    - name: "陈默"
+      relation: "交易对象→收集目标"
+  key_chapters: [30, 42]
+  related_plot_nodes: []
+
+appearance_stats:
+  scene_count: 0
+  active_chapters: "30-50"
+  dominant_scene_types: []
+  tension_avg: 0
+
+notes: "白烬会智囊，擅长交易与挑拨。"
+
+created: "2026-04-08"
+updated: "2026-04-08"

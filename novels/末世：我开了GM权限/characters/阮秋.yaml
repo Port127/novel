@@ -1,0 +1,62 @@
+# 角色档案：阮秋
+# 由 /character-add 批量创建
+
+name: 阮秋
+aliases: []
+role: minor
+archetype: ""
+narrative_function: 世界观展示
+
+first_appearance: ""
+first_scene: ""
+
+profile:
+  age: ""
+  gender: "女"
+  occupation: "护士"
+  affiliation: []
+  location: "海临城"
+
+traits: [擅长基础护理与药品管理]
+moral_spectrum: "正义"
+fatal_flaw: "太依赖医疗体系——体系被破后她会失去价值感"
+obsession: "想让据点的医疗线活下去"
+soft_spot: "林知夏——配合她搭医疗线"
+misbelief: "以为医疗能守住，但有些伤医疗扛不住"
+contrast_habit: "擅长护理的人，会在关键时刻失控——失控后更冷静"
+tragedy_trigger: "总在医疗线崩盘后才意识到护理已经不够了"
+
+appearance: ""
+backstory: |
+  护士，擅长基础护理与药品管理。
+  
+  配合林知夏搭医疗线。
+
+abilities: []
+
+arc: []
+
+relations: []
+
+cross_references:
+  related_settings:
+    - id: "rule_004"
+      name: "据点体系"
+      relevance: "医疗线配合"
+  related_factions: []
+  related_characters:
+    - name: "林知夏"
+      relation: "医疗线配合"
+  key_chapters: []
+  related_plot_nodes: []
+
+appearance_stats:
+  scene_count: 0
+  active_chapters: ""
+  dominant_scene_types: []
+  tension_avg: 0
+
+notes: "配合林知夏搭医疗线。"
+
+created: "2026-04-08"
+updated: "2026-04-08"

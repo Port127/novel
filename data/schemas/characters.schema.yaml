@@ -1,0 +1,89 @@
+# characters.yaml schema
+# 人物设定文件
+# 路径: novels/{project_id}/settings/characters.yaml
+
+# 字段说明格式：
+# 字段名: 示例值                  # [R|O] | 字段说明
+# R = 必填, O = 可选
+# 示例值仅作格式参考，实际内容由用户/AI生成
+
+characters: []                        # R | 人物列表
+
+# ──────────────────────────────────────────────
+# 人物结构定义
+# ──────────────────────────────────────────────
+
+# 每个人物包含以下字段：
+
+# === 基本信息 ===
+# name: ""                            # R | 人物名称
+# role: ""                            # R | 角色类型
+#                                      # 可选值：protagonist/antagonist/supporting/minor
+# archetype: ""                       # R | 人物原型
+#                                      # 可选值：废柴逆袭/天才型/导师型/反派/龙套/其他
+# description: ""                     # R | 核心描述（一句话）
+
+# === 性格特征 ===
+# traits: []                          # R | 性格特征列表
+
+# === 心理维度（主角/反派必填，其他可选）===
+# psychology:                         # O | 心理维度
+#   fatal_flaw: ""                    # 关键缺陷（会害到自己或他人）
+#   obsession: ""                     # 执念（长期追求、放不下的事物）
+#   soft_spot: ""                     # 软肋（最在意的人或事）
+#   misbelief: ""                     # 误判（坚信但并不完全正确的信念）
+
+# === 人物弧线 ===
+# arc:                                # R | 人物弧线
+#   type: ""                          # R | 弧线类型
+#                                      # 可选值：成长弧线/堕落弧线/悲剧弧线/探索弧线/扁平弧线
+#   start: ""                         # R | 起点状态
+#   end: ""                           # R | 终点状态
+#   stages: []                        # O | 弧线阶段列表
+#                                      # 每个阶段包含：
+#                                      # - stage: 阶段名称
+#                                      # - state: 该阶段状态
+#                                      # - chapter: 发生章节
+
+# === 关键事件（可选）===
+# key_events: []                      # O | 关键事件列表
+#                                      # 每个事件包含：
+#                                      # - chapter: 章节号
+#                                      # - event: 事件简述
+#                                      # - significance: 意义
+
+# === 关系网络（可选）===
+# relationships: []                   # O | 关系列表
+#                                      # 每个关系包含：
+#                                      # - to: 关系对象
+#                                      # - type: 关系类型
+#                                      # - description: 关系描述
+#                                      # - importance: 重要程度（primary/secondary/minor）
+
+# === 外貌特征（可选）===
+# appearance:                         # O | 外貌描述
+#   age: ""                           # 年龄段
+#   gender: ""                        # 性别
+#   features: []                      # 外貌特征列表
+#   typical_clothing: ""              # 典型着装
+
+# === 阵营归属（可选）===
+# faction_affiliations: []            # O | 阵营归属列表
+#                                      # 每个归属包含：
+#                                      # - faction: 势力名称
+#                                      # - role: 在势力中的角色
+#                                      # - period: 归属时期
+
+# ──────────────────────────────────────────────
+# 角色深度规则
+# ──────────────────────────────────────────────
+
+# | 角色类型    | 必填内容                              |
+# |-------------|--------------------------------------|
+# | protagonist | traits, psychology, arc              |
+# | antagonist  | traits, psychology, arc, 动机        |
+# | supporting  | traits, description                  |
+# | minor       | description                          |
+
+# 主角和反派应有完整的心理维度和人物弧线
+# 配角可简化，龙套只需基本信息

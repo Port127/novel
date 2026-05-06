@@ -1,0 +1,120 @@
+# 角色档案：秦烬
+# 由 /character-add 批量创建
+
+name: 秦烬
+aliases: []
+role: antagonist
+archetype: "阴影"
+narrative_function: 制造冲突 / 镜像对照
+
+first_appearance: "第26章"
+first_scene: ""
+
+profile:
+  age: ""
+  gender: "男"
+  occupation: "白烬会首领"
+  affiliation: ["白烬会"]
+  location: "海临城"
+
+traits: [极端理性, 把末世当竞技场的高端玩家]
+moral_spectrum: "黑暗"
+fatal_flaw: "太理性——理性到会失去人性，失去人性后他会失去控制"
+obsession: "想赢，想把陈默变成'钥匙'或'变量'"
+soft_spot: "陈默——对手，也是管理员接班候选"
+misbelief: "以为理性能控制所有人，但陈默会用规则逼退他"
+contrast_habit: "极端理性的人，会在关键时刻感性——感性时往往在算命"
+tragedy_trigger: "总在感性后才意识到理性已经不够了"
+
+appearance: ""
+backstory: |
+  白烬会首领，极端理性，把末世当竞技场的高端玩家。
+  
+  掌握不明来源的高阶权限口令（借口令）。与灰盒有联系，与烬序有联系。
+  
+  对陈默说："你是管理员接班候选。"这句话像钉子钉在陈默脑子里。
+
+abilities:
+  - name: "借口令"
+    description: "能短时改写归属与复活判定。来源不明，与灰盒和烬序有联系。"
+
+arc:
+  - stage: "收编"
+    state: "亲临提出收编，陈默用规则逼退"
+    chapter: 26
+    moment_type: "性格展示"
+  - stage: "试探"
+    state: "试探灰盒边界，抛出管理员碎片诱饵"
+    chapter: 38
+    moment_type: "性格转变"
+  - stage: "正面交锋"
+    state: "展示借口令与复活额度，暗示陈默是管理员接班候选"
+    chapter: 45
+    moment_type: "性格展示"
+  - stage: "撕破脸"
+    state: "亮出底牌，说出Project FANQIE与烬序审计名单"
+    chapter: 49
+    moment_type: "最终抉择"
+  - stage: "夺走结算"
+    state: "趁陈默补丁生效后夺走部分权限"
+    chapter: 50
+    moment_type: "堕落滑落"
+
+relations:
+  - character: "陈默"
+    type: "对手"
+    description: "灰盒持有者，管理员接班候选"
+    dynamic: "镜像与对立"
+    tension_source: "漏洞持有者 vs 规则利用者；想控制他，但他会逼退我"
+  - character: "沈鸢"
+    type: "上下级"
+    description: "白烬会智囊，交易与挑拨"
+    dynamic: "命令与收集"
+    tension_source: "她收集灰盒波形，但不确定她的忠诚是否只是交易"
+  - character: "罗魇"
+    type: "上下级"
+    description: "白烬会执行官，近战压迫"
+    dynamic: "理性与压迫"
+    tension_source: "他负责清算，但清算的代价会让白烬会更像野兽"
+  - character: "杜阙"
+    type: "上下级"
+    description: "白烬会狙击手，远程点杀"
+    dynamic: "理性与精准"
+    tension_source: "他制造人心崩盘，但人心崩盘后白烬会也会失去控制"
+  - character: "魏成"
+    type: "附庸"
+    description: "投靠者，物资税控制者"
+    dynamic: "利用与被利用"
+    tension_source: "他投靠白烬会换庇护，但他的利用价值有限"
+
+cross_references:
+  related_settings:
+    - id: "power_001"
+      name: "灰盒调试器"
+      relevance: "对手——借口令与灰盒是两种不同的权限入口"
+    - id: "rule_002"
+      name: "观测权重机制"
+      relevance: "被记录者——规则利用者，不被清算"
+  related_factions:
+    - id: "faction_001"
+      name: "白烬会"
+      stance: "首领"
+    - id: "faction_004"
+      name: "审计者/烬序"
+      stance: "被烬序审计名单记录过，但不被清算"
+  related_characters:
+    - name: "陈默"
+      relation: "对手——管理员接班候选"
+  key_chapters: [26, 38, 45, 49, 50]
+  related_plot_nodes: []
+
+appearance_stats:
+  scene_count: 0
+  active_chapters: "26-50"
+  dominant_scene_types: []
+  tension_avg: 0
+
+notes: "核心反派，镜像对照。极端理性，持有借口令。"
+
+created: "2026-04-08"
+updated: "2026-04-08"

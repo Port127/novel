@@ -1,0 +1,110 @@
+# 关系快照
+# 由 /relationship-add 维护
+
+relations:
+  # 主角团
+  - pair: [陈默, 林知夏]
+    type: "队友"
+    dynamic: "救赎与被救赎"
+    tension_source: "她能净化污染，但自身被侵蚀；他能保护她，但观测权重会上涨"
+    strength: 4
+    last_updated: "2026-04-08"
+  - pair: [陈默, 宋行舟]
+    type: "僚机"
+    dynamic: "信任与试探"
+    tension_source: "愿意把命押在他身上，但不确定是否还有别的局"
+    strength: 3
+    last_updated: "2026-04-08"
+  - pair: [陈默, 韩冉]
+    type: "队友"
+    dynamic: "原则与妥协"
+    tension_source: "原则会在末世被迫妥协，妥协后会怀疑他"
+    strength: 3
+    last_updated: "2026-04-08"
+  - pair: [陈默, 周野]
+    type: "队友"
+    dynamic: "守护与牺牲"
+    tension_source: "以伤换命的代价累积到他无法承受"
+    strength: 4
+    last_updated: "2026-04-08"
+  - pair: [陈默, 许晚]
+    type: "队友"
+    dynamic: "救赎与感恩"
+    tension_source: "欠他命，但不确定这份感恩能撑多久"
+    strength: 3
+    last_updated: "2026-04-08"
+
+  # 对抗关系
+  - pair: [陈默, 秦烬]
+    type: "对手"
+    dynamic: "镜像与对立"
+    tension_source: "漏洞持有者 vs 规则利用者；想控制他，但他会逼退我"
+    strength: 5
+    last_updated: "2026-04-08"
+  - pair: [陈默, 魏成]
+    type: "对手"
+    dynamic: "人祸与清算"
+    tension_source: "他用规则外壳剥削，陈默用规则拔掉他"
+    strength: 3
+    last_updated: "2026-04-08"
+  - pair: [陈默, 郭启明]
+    type: "交易方"
+    dynamic: "灰色合作"
+    tension_source: "卖情报给他，也会把他的坐标卖给商会"
+    strength: 2
+    last_updated: "2026-04-08"
+
+  # 白烬会内部
+  - pair: [秦烬, 沈鸢]
+    type: "上下级"
+    dynamic: "命令与收集"
+    tension_source: "收集灰盒波形，但忠诚可能只是交易"
+    strength: 4
+    last_updated: "2026-04-08"
+  - pair: [秦烬, 罗魇]
+    type: "上下级"
+    dynamic: "理性与压迫"
+    tension_source: "负责清算，但清算代价让白烬会更像野兽"
+    strength: 4
+    last_updated: "2026-04-08"
+  - pair: [秦烬, 杜阙]
+    type: "上下级"
+    dynamic: "理性与精准"
+    tension_source: "制造人心崩盘，但人心崩盘后白烬会也会失去控制"
+    strength: 4
+    last_updated: "2026-04-08"
+  - pair: [秦烬, 魏成]
+    type: "投靠"
+    dynamic: "利用与被利用"
+    tension_source: "投靠后失去独立性，利用价值有限"
+    strength: 2
+    last_updated: "2026-04-08"
+
+  # 其他对抗
+  - pair: [罗魇, 陈默]
+    type: "对手"
+    dynamic: "压迫与被逼退"
+    tension_source: "他冻结救场，我记下他的名字"
+    strength: 4
+    last_updated: "2026-04-08"
+  - pair: [罗魇, 周野]
+    type: "对手"
+    dynamic: "压迫与牺牲"
+    tension_source: "他以伤换命，我记下他的名字"
+    strength: 3
+    last_updated: "2026-04-08"
+  - pair: [杜阙, 陈默]
+    type: "对手"
+    dynamic: "精准与被逼退"
+    tension_source: "点杀最弱的人，制造人心崩盘"
+    strength: 3
+    last_updated: "2026-04-08"
+  - pair: [沈鸢, 陈默]
+    type: "收集目标"
+    dynamic: "交易与挑拨"
+    tension_source: "每句话都在试探权限边界"
+    strength: 3
+    last_updated: "2026-04-08"
+
+total: 16
+updated: "2026-04-08"

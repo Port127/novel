@@ -1,0 +1,84 @@
+# 角色档案：周野
+# 由 /character-add 批量创建
+
+name: 周野
+aliases: []
+role: supporting
+archetype: ""
+narrative_function: 世界观展示 / 制造冲突
+
+first_appearance: "第5章"
+first_scene: ""
+
+profile:
+  age: ""
+  gender: "男"
+  occupation: "退伍安保"
+  affiliation: []
+  location: "海临城"
+
+traits: [能扛能打, 做事干脆]
+moral_spectrum: "正义"
+fatal_flaw: "以伤换命——每次硬仗都会留下代价，代价累积到他扛不住"
+obsession: "想守住据点，不想让里面的人死"
+soft_spot: "陈默——愿意用命换他的时间窗口"
+misbelief: "以为扛住就行，但有些仗扛不住"
+contrast_habit: "做事干脆的人，会在关键时刻犹豫——犹豫时往往在算命"
+tragedy_trigger: "总在以伤换命后才意识到身体已经垮了"
+
+appearance: ""
+backstory: |
+  退伍安保，近战坦系。
+  
+  能扛能打，做事干脆。负责硬仗与突围。
+  
+  第5章暗潮来临前求援，第25章清算日第二波以伤换命救场。
+
+abilities: []
+
+arc:
+  - stage: "求援"
+    state: "暗潮来临前向陈默求援"
+    chapter: 5
+    moment_type: "性格展示"
+  - stage: "战斗核心"
+    state: "成为据点硬仗与突围核心"
+    chapter: 16
+    moment_type: "成长顿悟"
+  - stage: "代价显现"
+    state: "清算日第二波以伤换命，罗魇记下他的名字"
+    chapter: 25
+    moment_type: "堕落滑落"
+
+relations:
+  - character: "陈默"
+    type: "队友"
+    description: "据点核心，战斗核心"
+    dynamic: "守护与牺牲"
+    tension_source: "以伤换命的代价累积到他无法承受"
+
+cross_references:
+  related_settings:
+    - id: "rule_004"
+      name: "据点体系"
+      relevance: "战斗核心——防守与突围"
+  related_factions:
+    - id: "faction_001"
+      name: "白烬会"
+      stance: "对抗方——罗魇记下他的名字"
+  related_characters:
+    - name: "陈默"
+      relation: "战斗核心"
+  key_chapters: [5, 16, 24, 25]
+  related_plot_nodes: []
+
+appearance_stats:
+  scene_count: 0
+  active_chapters: "5-50"
+  dominant_scene_types: []
+  tension_avg: 0
+
+notes: "近战坦系，负责硬仗与突围。"
+
+created: "2026-04-08"
+updated: "2026-04-08"

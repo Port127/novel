@@ -1,0 +1,89 @@
+# 角色档案：罗魇
+# 由 /character-add 批量创建
+
+name: 罗魇
+aliases: []
+role: antagonist
+archetype: ""
+narrative_function: 制造冲突
+
+first_appearance: "第25章"
+first_scene: ""
+
+profile:
+  age: ""
+  gender: "男"
+  occupation: "白烬会执行官"
+  affiliation: ["白烬会"]
+  location: "海临城"
+
+traits: [近战压迫感极强]
+moral_spectrum: "黑暗"
+fatal_flaw: "太强——强到会失去判断，失去判断后他会被算"
+obsession: "想清算据点，想让被围攻的人绝望投降"
+soft_spot: "秦烬——服从他的命令"
+misbelief: "以为强能守住，但陈默会用规则逼退他"
+contrast_habit: "压迫感极强的人，会在关键时刻犹豫——犹豫时往往在算命"
+tragedy_trigger: "总在被逼退后才意识到强已经不够了"
+
+appearance: ""
+backstory: |
+  白烬会执行官，近战压迫感极强。
+  
+  负责清算据点，负责让被围攻的人在绝望中选择投降。
+  
+  第25章清算日第二波强攻，周野以伤换命，陈默冻结救场反噬加重。罗魇记下陈默的名字。
+
+abilities: []
+
+arc:
+  - stage: "清算日"
+    state: "清算日第二波强攻据点"
+    chapter: 25
+    moment_type: "性格展示"
+  - stage: "记下名字"
+    state: "陈默冻结救场，记下他的名字"
+    chapter: 25
+    moment_type: "性格转变"
+
+relations:
+  - character: "秦烬"
+    type: "上下级"
+    description: "白烬会首领"
+    dynamic: "理性与压迫"
+    tension_source: "负责清算，但清算代价让白烬会更像野兽"
+  - character: "陈默"
+    type: "对手"
+    description: "记下他的名字"
+    dynamic: "压迫与被逼退"
+    tension_source: "他冻结救场，我记下他的名字"
+  - character: "周野"
+    type: "对手"
+    description: "以伤换命的人"
+    dynamic: "压迫与牺牲"
+    tension_source: "他以伤换命，我记下他的名字"
+
+cross_references:
+  related_settings: []
+  related_factions:
+    - id: "faction_001"
+      name: "白烬会"
+      stance: "执行官"
+  related_characters:
+    - name: "陈默"
+      relation: "对手——记下他的名字"
+    - name: "周野"
+      relation: "对手——以伤换命"
+  key_chapters: [25]
+  related_plot_nodes: []
+
+appearance_stats:
+  scene_count: 0
+  active_chapters: "25-50"
+  dominant_scene_types: []
+  tension_avg: 0
+
+notes: "白烬会执行官，负责清算据点。"
+
+created: "2026-04-08"
+updated: "2026-04-08"

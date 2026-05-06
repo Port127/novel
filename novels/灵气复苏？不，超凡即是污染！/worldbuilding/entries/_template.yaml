@@ -1,0 +1,29 @@
+# 设定条目模板
+# 由 /setting-add 创建
+
+id: ""
+name: ""
+category: ""
+status: tentative
+
+summary: ""
+
+description: ""
+
+rules: []
+constraints: []
+
+plot_links: []
+
+character_links: []
+
+setting_links: []
+
+lifecycle: []
+
+source: ""
+
+open_questions: []
+
+created: ""
+updated: ""

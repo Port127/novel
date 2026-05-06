@@ -1,0 +1,62 @@
+# 角色档案：田磊
+# 由 /character-add 批量创建
+
+name: 田磊
+aliases: []
+role: minor
+archetype: ""
+narrative_function: 世界观展示
+
+first_appearance: ""
+first_scene: ""
+
+profile:
+  age: ""
+  gender: "男"
+  occupation: "汽修师傅"
+  affiliation: []
+  location: "海临城"
+
+traits: [动手能力强]
+moral_spectrum: "正义"
+fatal_flaw: "太依赖硬件——硬件被破后他会失去价值感"
+obsession: "想让据点的设施活下去，不想让硬件崩盘"
+soft_spot: "据点的人——愿意用技术保护他们"
+misbelief: "以为硬件能守住，但有些仗硬件扛不住"
+contrast_habit: "动手能力强的人，会在关键时刻不动手——不动手时往往在算命"
+tragedy_trigger: "总在硬件被破后才意识到技术已经不够了"
+
+appearance: ""
+backstory: |
+  汽修师傅，动手能力强。
+  
+  负责车辆、发电、器械维护，是据点硬件底盘。后期负责修理台与炮塔。
+
+abilities: []
+
+arc: []
+
+relations: []
+
+cross_references:
+  related_settings:
+    - id: "rule_004"
+      name: "据点体系"
+      relevance: "工匠核心——修理台与炮塔"
+  related_factions: []
+  related_characters:
+    - name: "陈默"
+      relation: "工匠核心"
+  key_chapters: [41]
+  related_plot_nodes: []
+
+appearance_stats:
+  scene_count: 0
+  active_chapters: ""
+  dominant_scene_types: []
+  tension_avg: 0
+
+notes: "负责车辆、发电、器械维护，是据点硬件底盘。"
+
+created: "2026-04-08"
+updated: "2026-04-08"

@@ -1,0 +1,22 @@
+# Novel V2 Dependencies
+
+# YAML 处理
+pyyaml>=6.0
+
+# LLM 客户端（OpenAI 兼容接口）
+openai>=1.0
+
+# LLM 调用重试
+tenacity>=8.0
+
+# Token 计算（可选）
+tiktoken>=0.5
+
+# 环境变量加载
+python-dotenv>=1.0
+
+# CLI 参数解析
+click>=8.0
+
+# 数据验证
+pydantic>=2.0

@@ -1,0 +1,36 @@
+# 素材引用
+# 素材库已独立为 novel-material 项目
+# 路径：../novel-material/data/
+
+external_material_lib: ../novel-material
+
+local_materials: []
+
+referenced_materials:
+  - id: nm_novel_20260405_s4t1
+    name: "《三体1》地球往事"
+    author: 刘慈欣
+    status: refined
+    relevance: "硬科幻世界观构建参考、宏大叙事结构"
+    scenes_available: 40
+
+  - id: nm_novel_20260405_zhbk
+    name: "《我真没想重生啊》"
+    author: 柳岸花又明
+    status: refined
+    relevance: "都市异能类型最近、长篇连载节奏参考、日常与冲突切换技法"
+    scenes_available: 907
+
+  - id: nm_novel_20260406_dwrn
+    name: "《大王饶命》"
+    author: 会说话的肘子
+    status: refined
+    relevance: "都市异能类型、幽默与热血平衡、小团体互动技法"
+    scenes_available: 39
+
+  - id: nm_novel_20260408_bfg7
+    name: "《大奉打更人》"
+    author: 卖报小郎君
+    status: raw
+    relevance: "多势力博弈结构、权谋与战斗交织"
+    scenes_available: 0

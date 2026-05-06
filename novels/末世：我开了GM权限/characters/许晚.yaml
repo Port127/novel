@@ -1,0 +1,80 @@
+# 角色档案：许晚
+# 由 /character-add 批量创建
+
+name: 许晚
+aliases: []
+role: supporting
+archetype: ""
+narrative_function: 提供信息 / 世界观展示
+
+first_appearance: "第3章"
+first_scene: ""
+
+profile:
+  age: ""
+  gender: "女"
+  occupation: "大学生 / 短视频博主"
+  affiliation: []
+  location: "海临城"
+
+traits: [机敏会来事]
+moral_spectrum: "灰色"
+fatal_flaw: "太依赖感知和标记——感知被污染后会失去判断"
+obsession: "想证明自己不只是网红，想在这个末世里有价值"
+soft_spot: "陈默——第3章被救后成为情报核心"
+misbelief: "以为信息能控制局面，但有些信息是陷阱"
+contrast_habit: "机敏会来事的人，会在关键时刻沉默——沉默时往往在感知危险"
+tragedy_trigger: "总在感知后才意识到危险已经到眼前"
+
+appearance: ""
+backstory: |
+  大学生/短视频博主，机敏会来事。
+  
+  侦察、信息、无人机。后期感知/标记路线，负责情报与地图。
+  
+  第3章被陈默救下，成为据点情报核心。
+
+abilities:
+  - name: "感知/标记路线"
+    description: "负责情报与地图，无人机侦察。"
+
+arc:
+  - stage: "被救"
+    state: "第3章外出囤物资时被陈默救下"
+    chapter: 3
+    moment_type: "性格展示"
+  - stage: "情报核心"
+    state: "成为据点情报与地图核心"
+    chapter: 11
+    moment_type: "成长顿悟"
+  - stage: "感知者"
+    state: "后期走感知/标记路线"
+    chapter: TBD
+    moment_type: "性格转变"
+
+relations:
+  - character: "陈默"
+    type: "队友"
+    description: "救命恩人，据点核心"
+    dynamic: "救赎与感恩"
+    tension_source: "欠他命，但不确定这份感恩能撑多久"
+
+cross_references:
+  related_settings: []
+  related_factions: []
+  related_characters:
+    - name: "陈默"
+      relation: "被救者→情报核心"
+  key_chapters: [3, 11]
+  related_plot_nodes: []
+
+appearance_stats:
+  scene_count: 0
+  active_chapters: "3-50"
+  dominant_scene_types: []
+  tension_avg: 0
+
+notes: "侦察、信息、无人机，后期感知/标记路线。"
+
+created: "2026-04-08"
+updated: "2026-04-08"

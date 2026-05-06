@@ -1,0 +1,278 @@
+# 故事大纲（结构化版）
+# 由 /pipeline-outline-bootstrap 创建
+# 与 outline.md 互补：此文件为结构化数据，outline.md 为叙述性文档
+
+# 全书概要
+premise: "海临城被末世游戏《临界》吞噬，陈默手握灰盒调试器能改规则，但每次动用观测权重就涨。权力有代价，代价是深渊。"
+theme:
+  - 权力与代价
+  - 规则与漏洞
+  - 生存与秩序
+tone:
+  - 紧张
+  - 冷峻
+  - 热血
+  - 悬疑
+
+# ============================================================
+# 结构骨架
+# ============================================================
+structure:
+  - act: "第一阶段：生存奠基"
+    title: "从恐惧到规则玩家"
+    chapters: [1, 10]
+    arc: "陈默从被裁程序员变成末世的规则玩家，用做项目思维拆解恐惧，建立小队与篝火据点雏形"
+    key_event: "职业试炼，灰盒权限点首次可用"
+    turning_point: "归属锁定立威，宋行舟看出灰盒痕迹"
+    pacing_note: "快速推进，每章引入新规则与新人物，钩子密集"
+    
+  - act: "第二阶段：据点成型"
+    title: "从小队到据点治理"
+    chapters: [11, 25]
+    arc: "陈默从规则玩家变成据点核心，建立制度、接纳外人、源点攻坚、清算日防守"
+    key_event: "清算日防守，与白烬会首次正面交锋"
+    turning_point: "周野以伤换命，陈默冻结救场但反噬加重"
+    pacing_note: "中速推进，势力与人祸副本交织，据点制度立起来"
+    
+  - act: "第三阶段：远征天穹"
+    title: "从守住到攻城"
+    chapters: [26, 40]
+    arc: "陈默走出据点，直面跨区势力，夺取门票碎片，与秦烬正面交锋"
+    key_event: "门票碎片合成，城市领主令开幕"
+    turning_point: "陈默被标为高观测目标，全城追杀"
+    pacing_note: "加速推进，数据风暴、势力混战、规则博弈交织"
+    
+  - act: "第四阶段：主城入城"
+    title: "从攻城到改世界"
+    chapters: [41, 50]
+    arc: "陈默入城，记忆回廊揭示真相，补丁生效但代价兑现——权限清零、秦烬夺走结算"
+    key_event: "第一次补丁，暗潮削弱，清晨无暗潮的奇迹窗"
+    turning_point: "代价兑现：权限被清零一半，秦烬夺走结算，跨区联机开启"
+    pacing_note: "收束推进，真相揭示、代价兑现、钩子留白"
+
+# ============================================================
+# 多时间线（可选）
+# ============================================================
+timelines:
+  - name: "主线时间线"
+    description: "陈默从开服到入城的50天"
+    chapters: [1, 50]
+  - name: "回滚时间线"
+    description: "记忆回廊揭示的旧版本片段"
+    chapters: [48]
+    note: "重启次数：6，陈默在某个版本出现过"
+
+# ============================================================
+# 伏笔追踪
+# ============================================================
+foreshadowing:
+  - id: f001
+    plant_chapter: 1
+    plant_scene: "ch001"
+    plant_description: "黑色手环震动，CN-HL-07日志一闪而过"
+    payoff_chapter: 42
+    payoff_description: "Patch-07透露项目真相，记忆回廊揭示断片"
+    confidence: high
+    
+  - id: f002
+    plant_chapter: 2
+    plant_scene: "ch002"
+    plant_description: "系统提示观测编号CN-HL-07"
+    payoff_chapter: 48
+    payoff_description: "回廊尽头提示重启次数：6"
+    confidence: high
+    
+  - id: f003
+    plant_chapter: 15
+    plant_scene: "ch015"
+    plant_description: "影纹战靴被夺，红布条手臂有白烬会烙印"
+    payoff_chapter: 0
+    payoff_description: "战靴出现在后续敌人身上，追踪线索"
+    confidence: medium
+    
+  - id: f004
+    plant_chapter: 20
+    plant_scene: "ch020"
+    plant_description: "潮印徽记出现在精英掉落"
+    payoff_chapter: 34
+    payoff_description: "黑潮同盟收费口、潮印追猎威胁"
+    confidence: high
+    
+  - id: f005
+    plant_chapter: 26
+    plant_scene: "ch026"
+    plant_description: "秦烬丢下管理员碎片诱饵"
+    payoff_chapter: 49
+    payoff_description: "碎片与补丁的关系、Project FANQIE线索"
+    confidence: high
+    
+  - id: f006
+    plant_chapter: 30
+    plant_scene: "ch030"
+    plant_description: "沈鸢记录灰盒波形"
+    payoff_chapter: 45
+    payoff_description: "波形被出售、被审计者记录"
+    confidence: high
+    
+  - id: f007
+    plant_chapter: 42
+    plant_scene: "ch042"
+    plant_description: "Patch-07说：你是钥匙也是漏洞"
+    payoff_chapter: 0
+    payoff_description: "陈默身份的最终揭示"
+    confidence: medium
+
+# ============================================================
+# 节奏曲线
+# ============================================================
+pacing_curve:
+  - chapter: 1
+    tension: 3
+    note: "开服倒计时，引入世界规则"
+  - chapter: 2
+    tension: 4
+    note: "首次击杀，隐藏职业觉醒"
+  - chapter: 3
+    tension: 4
+    note: "外出囤物资，首次实战编译"
+  - chapter: 4
+    tension: 3
+    note: "医生加入，建立医疗底线"
+  - chapter: 5
+    tension: 5
+    note: "暗潮降临，据点雏形诞生"
+  - chapter: 6
+    tension: 2
+    note: "清点与喘息，发现精神污染"
+  - chapter: 7
+    tension: 3
+    note: "出发蓝光塔，沿路立威"
+  - chapter: 8
+    tension: 4
+    note: "职业试炼第一关"
+  - chapter: 9
+    tension: 4
+    note: "职业试炼第二关，限时排名"
+  - chapter: 10
+    tension: 4
+    note: "分配争议，归属锁定立威"
+  - chapter: 11
+    tension: 2
+    note: "据点升级，接纳外人"
+  - chapter: 12
+    tension: 3
+    note: "宋行舟上位，男二绑定"
+  - chapter: 13
+    tension: 3
+    note: "源点情报，远征筹备"
+  - chapter: 14
+    tension: 5
+    note: "源点攻坚，Boss击杀"
+  - chapter: 15
+    tension: 5
+    note: "掉落被夺，代价初显"
+  - chapter: 16
+    tension: 5
+    note: "白烬会夜袭，第一场硬战"
+  - chapter: 17
+    tension: 3
+    note: "魏成事件，人祸副本"
+  - chapter: 18
+    tension: 3
+    note: "副本入口，大型副本开启"
+  - chapter: 19
+    tension: 4
+    note: "裂隙迷雾，精神污染"
+  - chapter: 20
+    tension: 5
+    note: "精英击杀，冻结反噬"
+  - chapter: 21
+    tension: 4
+    note: "裂隙核心，系统校验"
+  - chapter: 22
+    tension: 2
+    note: "据点Ⅰ级，喘息与升级"
+  - chapter: 23
+    tension: 3
+    note: "清算日前夜，防御筹备"
+  - chapter: 24
+    tension: 5
+    note: "清算日第一波，污染者冲击"
+  - chapter: 25
+    tension: 5
+    note: "清算日第二波，罗魇强攻"
+  - chapter: 26
+    tension: 4
+    note: "秦烬出手，邀请与试探"
+  - chapter: 27
+    tension: 3
+    note: "研究管理员碎片，暂封存"
+  - chapter: 28
+    tension: 3
+    note: "节点反击，夺回资源点"
+  - chapter: 29
+    tension: 2
+    note: "封印箱，工程图纸解锁"
+  - chapter: 30
+    tension: 3
+    note: "沈鸢交易，三股势力盘"
+  - chapter: 31
+    tension: 3
+    note: "远征筹备，真路线假路线"
+  - chapter: 32
+    tension: 5
+    note: "区域Boss，钢骨巨犬"
+  - chapter: 33
+    tension: 4
+    note: "魏成末路，拔掉税权"
+  - chapter: 34
+    tension: 4
+    note: "天穹远征，黑潮收费口"
+  - chapter: 35
+    tension: 5
+    note: "数据风暴，尖塔外围"
+  - chapter: 36
+    tension: 4
+    note: "联盟与背刺，顾聿互助"
+  - chapter: 37
+    tension: 5
+    note: "门票碎片2/3，守关精英"
+  - chapter: 38
+    tension: 4
+    note: "秦烬邀请，试探灰盒边界"
+  - chapter: 39
+    tension: 5
+    note: "第三碎片争夺战，门票合成"
+  - chapter: 40
+    tension: 5
+    note: "城市领主令，全城追杀"
+  - chapter: 41
+    tension: 3
+    note: "据点Ⅱ级，围墙炮塔成形"
+  - chapter: 42
+    tension: 4
+    note: "Patch-07讯息，回滚真相"
+  - chapter: 43
+    tension: 4
+    note: "献祭规则，拆包分摊"
+  - chapter: 44
+    tension: 3
+    note: "入城试炼，门内世界"
+  - chapter: 45
+    tension: 4
+    note: "白烬会真面目，借口令展示"
+  - chapter: 46
+    tension: 4
+    note: "清扫者任务链"
+  - chapter: 47
+    tension: 4
+    note: "通行证争夺，规则杀人"
+  - chapter: 48
+    tension: 5
+    note: "记忆回廊，真相揭示"
+  - chapter: 49
+    tension: 5
+    note: "秦烬底牌，撕破脸"
+  - chapter: 50
+    tension: 5
+    note: "第一次补丁，代价兑现"

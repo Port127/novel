@@ -1,0 +1,81 @@
+# 角色档案：韩冉
+# 由 /character-add 批量创建
+
+name: 韩冉
+aliases: []
+role: supporting
+archetype: ""
+narrative_function: 制造冲突 / 提供信息
+
+first_appearance: "第12章"
+first_scene: ""
+
+profile:
+  age: ""
+  gender: "女"
+  occupation: "刑警"
+  affiliation: []
+  location: "海临城"
+
+traits: [直觉敏锐, 原则硬, 能在末世里迅速学会先活再谈对错]
+moral_spectrum: "正义"
+fatal_flaw: "原则硬——在末世里原则会被迫妥协，妥协后她会怀疑自己"
+obsession: "想守住最后的底线，不想变成'活着就没有底线'的人"
+soft_spot: "陈默——从旁观到入队，愿意把原则押在他身上"
+misbelief: "以为原则能守住，但末世的规则会逼人妥协"
+contrast_habit: "原则硬的人，会在关键时刻做出'不原则'的选择——但选择后会沉默很久"
+tragedy_trigger: "总在妥协后才意识到底线已经塌了"
+
+appearance: ""
+backstory: |
+  女刑警，直觉敏锐，原则硬。
+  
+  定位：外勤、追踪、审讯、执行。
+  
+  第12-15章间完成"从旁观到入队"的转折。第15章红布条夺走战靴后正式站队。
+
+abilities: []
+
+arc:
+  - stage: "旁观者"
+    state: "观察陈默，犹豫是否入队"
+    chapter: 12
+    moment_type: "性格展示"
+  - stage: "入队转折"
+    state: "红布条夺走战靴后正式站队"
+    chapter: 15
+    moment_type: "信念重建"
+  - stage: "执行者"
+    state: "审问俘虏确认污染者炸弹来源"
+    chapter: 23
+    moment_type: "成长顿悟"
+
+relations:
+  - character: "陈默"
+    type: "队友"
+    description: "据点核心，从旁观到并肩"
+    dynamic: "原则与妥协"
+    tension_source: "原则会在末世被迫妥协，妥协后会怀疑他"
+
+cross_references:
+  related_settings: []
+  related_factions:
+    - id: "faction_001"
+      name: "白烬会"
+      stance: "对抗方——红布条有白烬会烙印"
+  related_characters:
+    - name: "陈默"
+      relation: "从旁观到并肩"
+  key_chapters: [12, 15, 23, 24]
+  related_plot_nodes: []
+
+appearance_stats:
+  scene_count: 0
+  active_chapters: "12-50"
+  dominant_scene_types: []
+  tension_avg: 0
+
+notes: "女主2，定位：外勤、追踪、审讯、执行。"
+
+created: "2026-04-08"
+updated: "2026-04-08"

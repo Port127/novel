@@ -1,0 +1,5 @@
+# 情节索引
+# 自动聚合各章节场景的 plot_stage / plot_function 标签
+# 由 /chapter-create /chapter-update 维护
+
+entries: []

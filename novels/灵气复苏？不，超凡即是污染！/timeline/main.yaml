@@ -1,0 +1,5 @@
+# 时间线主文件
+# 记录故事中所有事件的时间节点
+# 时间范围（start/end）由 .novel/state.yaml 维护
+
+events: []

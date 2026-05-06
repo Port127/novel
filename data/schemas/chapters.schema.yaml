@@ -1,0 +1,51 @@
+# chapters/_index.yaml schema
+# 章节索引文件
+# 路径: novels/{project_id}/chapters/_index.yaml
+
+# 字段说明格式：
+# 字段名: 示例值                  # [R|O] | 字段说明
+# R = 必填, O = 可选
+# 示例值仅作格式参考，实际内容由用户/AI生成
+
+chapters: []                          # R | 章节列表
+
+# ──────────────────────────────────────────────
+# 章节结构定义
+# ──────────────────────────────────────────────
+
+# 每个章节包含：
+
+# === 基本信息 ===
+# chapter: 1                          # R | 章节号
+# title: ""                           # R | 章节标题
+# file: ""                            # R | 文件名（如 chapter_001.md）
+# status: ""                          # R | 状态
+#                                      # 可选值：planned/draft/written/revised
+#                                      # planned  = 已规划，有摘要，无正文
+#                                      # draft    = 有正文草稿
+#                                      # written  = 正文完成
+#                                      # revised  = 已润色
+# words: 0                            # R | 字数（自动统计）
+# summary: ""                         # R | 章节摘要
+
+# === 可选信息 ===
+# tension: 0                          # O | 张力值（1-5）
+# functions: []                       # O | 章节功能标签列表
+#                                      # 示例值类型：开局引入/转折推进/高潮爆发/过渡铺垫/收尾总结
+# characters: []                      # O | 出场人物列表
+# beat_ref:                           # O | 对应大纲节拍
+#   act: 0                            # 幕编号
+#   sequence: 0                       # 序列编号
+#   beat: 0                           # 节拍编号
+
+# ──────────────────────────────────────────────
+# 统计信息（自动生成）
+# ──────────────────────────────────────────────
+
+stats:
+  total: 0                            # R | 总计划章节数
+  planned: 0                          # R | 已规划数（status=planned）
+  draft: 0                            # R | 草稿数（status=draft）
+  written: 0                          # R | 已写数（status=written）
+  revised: 0                          # R | 已修改数（status=revised）
+  total_words: 0                      # R | 总字数

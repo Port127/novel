@@ -1,0 +1,69 @@
+# 角色档案：郭启明
+# 由 /character-add 批量创建
+
+name: 郭启明
+aliases: []
+role: minor
+archetype: ""
+narrative_function: 提供信息 / 制造冲突
+
+first_appearance: ""
+first_scene: ""
+
+profile:
+  age: ""
+  gender: "男"
+  occupation: "灰色商人"
+  affiliation: ["烬环商会"]
+  location: "海临城"
+
+traits: [爱占便宜但怕死, 常与陈默交易互坑]
+moral_spectrum: "灰色"
+fatal_flaw: "太贪——贪到会被更大的局利用"
+obsession: "想活下去，不想被清算"
+soft_spot: "钱——愿意用钱换命"
+misbelief: "以为钱能控制所有人，但有人在钱之外"
+contrast_habit: "爱占便宜的人，会在关键时刻吃亏——吃亏后更贪"
+tragedy_trigger: "总在贪后才意识到已经被更大的局利用"
+
+appearance: ""
+backstory: |
+  灰色商人，掌握黑市与情报。
+  
+  爱占便宜但怕死，常与陈默交易互坑。
+  
+  商会的中层节点。
+
+abilities: []
+
+arc: []
+
+relations:
+  - character: "陈默"
+    type: "交易方"
+    description: "交易互坑的对象"
+    dynamic: "灰色合作"
+    tension_source: "卖情报给他，也会把他的坐标卖给商会"
+
+cross_references:
+  related_settings: []
+  related_factions:
+    - id: "faction_002"
+      name: "烬环商会"
+      stance: "中层节点——灰色商人"
+  related_characters:
+    - name: "陈默"
+      relation: "交易互坑"
+  key_chapters: [30, 33, 42]
+  related_plot_nodes: []
+
+appearance_stats:
+  scene_count: 0
+  active_chapters: ""
+  dominant_scene_types: []
+  tension_avg: 0
+
+notes: "灰色商人，商会中层节点。"
+
+created: "2026-04-08"
+updated: "2026-04-08"

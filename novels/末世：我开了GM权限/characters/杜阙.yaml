@@ -1,0 +1,78 @@
+# 角色档案：杜阙
+# 由 /character-add 批量创建
+
+name: 杜阙
+aliases: []
+role: antagonist
+archetype: ""
+narrative_function: 制造冲突
+
+first_appearance: "第29章"
+first_scene: ""
+
+profile:
+  age: ""
+  gender: "男"
+  occupation: "白烬会狙击手"
+  affiliation: ["白烬会"]
+  location: "海临城"
+
+traits: [擅长远程点杀, 制造人心崩盘]
+moral_spectrum: "黑暗"
+fatal_flaw: "太精准——精准到会失去判断，失去判断后他会被算"
+obsession: "想点杀最弱的人，想制造人心崩盘"
+soft_spot: "秦烬——服从他的命令"
+misbelief: "以为精准能守住，但陈默会用规则逼退他"
+contrast_habit: "精准的人，会在关键时刻不精准——不精准时往往在算命"
+tragedy_trigger: "总在被逼退后才意识到精准已经不够了"
+
+appearance: ""
+backstory: |
+  白烬会狙击手，擅长远程点杀。
+  
+  他不杀最强的人，他杀最弱的人。他知道"人心崩盘"比"据点崩盘"更容易引发投降。
+  
+  第29章用狙击手盯哨兵，节点反击战。
+
+abilities: []
+
+arc:
+  - stage: "节点反击战"
+    state: "用狙击手盯哨兵"
+    chapter: 29
+    moment_type: "性格展示"
+
+relations:
+  - character: "秦烬"
+    type: "上下级"
+    description: "白烬会首领"
+    dynamic: "理性与精准"
+    tension_source: "制造人心崩盘，但人心崩盘后白烬会也会失去控制"
+  - character: "陈默"
+    type: "对手"
+    description: "据点核心"
+    dynamic: "精准与被逼退"
+    tension_source: "点杀最弱的人，制造人心崩盘"
+
+cross_references:
+  related_settings: []
+  related_factions:
+    - id: "faction_001"
+      name: "白烬会"
+      stance: "狙击手"
+  related_characters:
+    - name: "陈默"
+      relation: "对手"
+  key_chapters: [29]
+  related_plot_nodes: []
+
+appearance_stats:
+  scene_count: 0
+  active_chapters: "29-50"
+  dominant_scene_types: []
+  tension_avg: 0
+
+notes: "白烬会狙击手，不杀最强的人，杀最弱的人。"
+
+created: "2026-04-08"
+updated: "2026-04-08"

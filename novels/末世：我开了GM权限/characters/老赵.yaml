@@ -1,0 +1,62 @@
+# 角色档案：老赵
+# 由 /character-add 批量创建
+
+name: 老赵
+aliases: [赵国梁]
+role: supporting
+archetype: ""
+narrative_function: 世界观展示 / 提供信息
+
+first_appearance: ""
+first_scene: ""
+
+profile:
+  age: ""
+  gender: "男"
+  occupation: "片区民警"
+  affiliation: []
+  location: "海临城"
+
+traits: [三观正但不迂腐, 懂人情也懂规则]
+moral_spectrum: "正义"
+fatal_flaw: "太懂人情——在末世里人情会被迫妥协，妥协后秩序会崩"
+obsession: "想守住据点的秩序，不想让里面的人变成'规则外的野兽'"
+soft_spot: "据点的人——愿意用规则保护他们"
+misbelief: "以为秩序能守住，但末世的规则会逼人变野"
+contrast_habit: "三观正的人，会在关键时刻做出'不正'的选择——但选择后会解释很久"
+tragedy_trigger: "总在秩序崩塌后才意识到规则已经失效"
+
+appearance: ""
+backstory: |
+  片区民警，三观正但不迂腐，懂人情也懂规则。
+  
+  后期成为据点秩序与治理核心。负责岗哨与审讯。
+
+abilities: []
+
+arc: []
+
+relations: []
+
+cross_references:
+  related_settings:
+    - id: "rule_004"
+      name: "据点体系"
+      relevance: "秩序核心——岗哨与审讯"
+  related_factions: []
+  related_characters:
+    - name: "陈默"
+      relation: "秩序核心"
+  key_chapters: []
+  related_plot_nodes: []
+
+appearance_stats:
+  scene_count: 0
+  active_chapters: ""
+  dominant_scene_types: []
+  tension_avg: 0
+
+notes: "后期成为据点秩序与治理核心。"
+
+created: "2026-04-08"
+updated: "2026-04-08"

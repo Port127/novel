@@ -1,0 +1,49 @@
+# 设定条目模板
+# 由 /setting-add 创建
+
+id: ""                    # 唯一标识，格式：{category}_{序号}，如 rule_001, faction_002
+name: ""                  # 设定名称
+category: ""              # world_rule | power_system | faction | geography | lore | terminology | species | artifact
+status: tentative         # tentative（待确认）| confirmed（已确认）| deprecated（已废弃）
+
+summary: ""               # 一句话概括，方便索引时快速扫描
+
+description: ""           # 详细描述
+
+# 规则与约束（适用于 world_rule / power_system）
+rules: []
+constraints: []
+# - "规则/约束条目"
+
+# 剧情关联：这条设定服务于哪些剧情点
+plot_links: []
+# - node: ""              # 关联的大纲节点 id
+#   role: ""              # 这条设定在该节点中的作用
+
+# 角色关联：哪些角色受此设定影响
+character_links: []
+# - character: ""
+#   relation: ""          # 受限于 / 受益于 / 违反了 / 利用了
+
+# 设定间依赖：这条设定依赖或被依赖的其他设定
+setting_links: []
+# - target_id: ""         # 关联设定的 id
+#   relation: ""          # depends_on（依赖） / extends（扩展） / conflicts_with（冲突） / supersedes（取代）
+#   note: ""              # 关系说明
+
+# 生命周期记录
+lifecycle: []
+# - from: tentative       # 旧状态
+#   to: confirmed         # 新状态
+#   reason: ""            # 提升/废弃原因
+#   date: ""
+
+# 来源追溯
+source: ""                # 设定来源，如 "drafts/1.md L39-41" 或 "用户口述"
+
+# 开放问题：这条设定尚未解决的模糊点
+open_questions: []
+# - "尚未明确的问题"
+
+created: ""
+updated: ""

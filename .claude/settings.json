@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)"
+    ],
+    "deny": []
+  },
+  "autoApprove": [
+    "Read(*)",
+    "Edit(*)",
+    "Write(*)"
+  ]
+}

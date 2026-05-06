@@ -1,0 +1,62 @@
+# 角色档案：程雪
+# 由 /character-add 批量创建
+
+name: 程雪
+aliases: []
+role: minor
+archetype: ""
+narrative_function: 世界观展示
+
+first_appearance: ""
+first_scene: ""
+
+profile:
+  age: ""
+  gender: "女"
+  occupation: "社区团购团长"
+  affiliation: []
+  location: "海临城"
+
+traits: [嘴硬心细, 擅长把散人拧成流程]
+moral_spectrum: "正义"
+fatal_flaw: "太依赖流程——流程被破后她会失去控制感"
+obsession: "想让据点的分配活下去，不想让资源崩盘"
+soft_spot: "据点的人——愿意用流程保护他们"
+misbelief: "以为流程能守住，但有些事流程扛不住"
+contrast_habit: "嘴硬心细的人，会在关键时刻心软——心软后嘴更硬"
+tragedy_trigger: "总在流程崩盘后才意识到分配已经不够了"
+
+appearance: ""
+backstory: |
+  社区团购团长，末世后转后勤与分配。
+  
+  嘴硬心细，擅长把散人拧成流程。负责账簿与贡献值。
+
+abilities: []
+
+arc: []
+
+relations: []
+
+cross_references:
+  related_settings:
+    - id: "rule_004"
+      name: "据点体系"
+      relevance: "后勤核心——账簿与贡献值"
+  related_factions: []
+  related_characters:
+    - name: "陈默"
+      relation: "后勤核心"
+  key_chapters: []
+  related_plot_nodes: []
+
+appearance_stats:
+  scene_count: 0
+  active_chapters: ""
+  dominant_scene_types: []
+  tension_avg: 0
+
+notes: "负责后勤与分配，账簿与贡献值。"
+
+created: "2026-04-08"
+updated: "2026-04-08"

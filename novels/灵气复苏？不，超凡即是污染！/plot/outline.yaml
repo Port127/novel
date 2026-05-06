@@ -1,0 +1,154 @@
+# 故事大纲（结构化版）
+# 与 outline.md 互补：此文件为结构化数据，outline.md 为叙述性文档
+
+# 全书概要
+premise: "一个在灵气复苏中沉默80年的普通人，他残缺的未来神体穿越回了过去。年轻的赵宋不知道脑海深处住着一个正在消散的自己，不知道所有人对他的认知都落后真相一个身位，不知道他必须在变强和变得不像人之间反复踩钢丝。"
+theme: [身份, 代价, 继承, 存在的本质, 自由意志与宿命]
+tone: [冷峻, 紧迫, 偶有温情, 宏大渐显]
+
+# ============================================================
+# 结构骨架（六季弹性框架）
+# ============================================================
+structure:
+  - act: "第一季"
+    title: "雾中人"
+    chapters: [1, 150]
+    word_target: "30-50万"
+    arc: "觉醒与生存——以三阶空间系的伪装在小团体中立足，初次接触脑中的声音"
+    key_event: "觉醒误读事件、第一次失控、脑中声音第一次清晰出现"
+    turning_point: "从'我有一个奇怪的力量'到'我脑子里有另一个人'"
+    protagonist_state: "不自知的概念者，刚毅但稚嫩，对异常充满困惑"
+    world_state: "超凡者散落，势力未成形，社会仍在适应灵气复苏"
+    dream_line: "极少触发，仅1-2次模糊碎片"
+    pacing_note: "节奏偏稳，重在世界建立和角色关系铺设，爆发点控制在中后段"
+
+  - act: "第二季"
+    title: "裂变"
+    chapters: [151, 300]
+    word_target: "30-50万"
+    arc: "势力化浪潮与身份暴露——修补匠和恒序局成型，小团体分化，赵宋被识别为异常"
+    key_event: "概念一词被公开提出、小团体第一次重大分化、蚀渊首次猎杀行动"
+    turning_point: "从'我不是三阶'到'世界知道了概念者的存在'"
+    protagonist_state: "半自知的概念者，对脑中声音从恐惧转向警惕合作"
+    world_state: "修补匠和恒序局成型，蚀渊暗中活动，归零神教初露端倪"
+    dream_line: "开始出现清晰片段，第一次沉浸式体验"
+    pacing_note: "节奏加快，外部压力显著增大，人际关系开始产生裂痕"
+
+  - act: "第三季"
+    title: "深水区"
+    chapters: [301, 500]
+    word_target: "40-60万"
+    arc: "情感核心季——未来赵宋身份揭露，赵宋面对'要不要成为他'的核心抉择"
+    key_event: "未来赵宋身份揭露、完整梦境段落（恒序局记忆）、五大势力全面角力"
+    turning_point: "从'脑中有个声音'到'那是未来的我，他正在消散'"
+    protagonist_state: "时间锚定者（刚自知），内心剧烈动荡"
+    world_state: "五大势力全部活跃，概念者成为核心争夺目标"
+    dream_line: "较完整的记忆段落，开始出现人格混淆"
+    pacing_note: "外部节奏高强度，内部情感线达到第一个巅峰"
+
+  - act: "第四季"
+    title: "代价"
+    chapters: [501, 700]
+    word_target: "40-60万"
+    arc: "浮士德交易全面展开——主动追求污染换取真相，但每一步都在改变自己"
+    key_event: "恒序局线索深度展开、长篇沉浸梦境、归零神教全球灾害、消散倒计时终末"
+    turning_point: "从'我选择知道'到'知道的代价比我想的更重'"
+    protagonist_state: "认知方式开始被污染改变，人格混淆成为实际问题"
+    world_state: "全球灾害级事件，势力格局剧变"
+    dream_line: "长篇沉浸式梦境，代价显著"
+    pacing_note: "最沉重的一季，倒计时的紧迫感贯穿始终"
+
+  - act: "第五季"
+    title: "独行"
+    chapters: [701, 900]
+    word_target: "40-60万"
+    arc: "中场转折——未来赵宋消散，神体归属，赵宋独自面对使命"
+    key_event: "未来赵宋消散、神体完全继承、终极目标从概念变为行动"
+    turning_point: "从'继承者'到'主导者'"
+    protagonist_state: "独自承重，脑海中的沉默比声音更沉"
+    world_state: "人与人的冲突升级到人与宇宙规则的冲突"
+    dream_line: "最后的梦境——未来赵宋决定回到过去的那一刻。此后梦境线关闭"
+    pacing_note: "前段沉郁，后段重新点燃。赵宋的成长在这一季完成质变"
+
+  - act: "第六季+"
+    title: "重塑"
+    chapters: [901, "TBD"]
+    word_target: "50万+"
+    arc: "弹性终章——两宇宙融合的重塑，不可名状的更深层面，最终选择"
+    key_event: "TBD"
+    turning_point: "TBD"
+    protagonist_state: "完整的赵宋——融合了80年遗产和自己的意志"
+    world_state: "宇宙尺度"
+    dream_line: "关闭或以新形式回响"
+    pacing_note: "弹性区间，根据连载实际发展填充"
+
+# ============================================================
+# 伏笔追踪
+# ============================================================
+foreshadowing:
+  - id: f001
+    plant_chapter: 1
+    plant_description: "觉醒时的咔嚓声——所有人误判为空间破碎"
+    payoff_chapter: TBD
+    payoff_description: "真相揭示：那是神体降临撞入现实的声音"
+    confidence: high
+
+  - id: f002
+    plant_chapter: TBD
+    plant_description: "赵宋偶尔的反应速度和判断力超出自身水平——不自觉地受到未来赵宋潜意识影响"
+    payoff_chapter: TBD
+    payoff_description: "理解脑中声音的存在后回溯这些瞬间"
+    confidence: high
+
+  - id: f003
+    plant_chapter: TBD
+    plant_description: "第一次模糊梦境碎片——某个画面和一种无来由的情绪"
+    payoff_chapter: TBD
+    payoff_description: "后续清晰梦境中重新经历同一场景，补完全部细节"
+    confidence: high
+
+  - id: f004
+    plant_chapter: TBD
+    plant_description: "小团体中某成员对赵宋的异常表现出过度关注"
+    payoff_chapter: TBD
+    payoff_description: "该成员后来的势力归属与对赵宋的态度转变"
+    confidence: medium
+
+  - id: f005
+    plant_chapter: TBD
+    plant_description: "未来赵宋对话中某些词被卡住、说不出口"
+    payoff_chapter: TBD
+    payoff_description: "赵宋污染加深后，这些词终于能被传递——内容比预期更重"
+    confidence: high
+
+# ============================================================
+# 节奏曲线（季度级）
+# ============================================================
+pacing_curve:
+  - chapter_range: "第一季前半"
+    tension: 2
+    note: "世界建立、角色铺设、日常中的不安"
+  - chapter_range: "第一季后半"
+    tension: 4
+    note: "第一次失控、声音出现、信任裂痕"
+  - chapter_range: "第二季前半"
+    tension: 3
+    note: "势力化带来的新格局、升级与代价"
+  - chapter_range: "第二季后半"
+    tension: 5
+    note: "裂变事件、小团体分化、概念者曝光"
+  - chapter_range: "第三季"
+    tension: 4-5
+    note: "情感高强度、身份揭露、五方角力"
+  - chapter_range: "第四季"
+    tension: 5
+    note: "全季高压、倒计时、浮士德交易"
+  - chapter_range: "第五季前半"
+    tension: 3
+    note: "消散后的沉默、独自消化"
+  - chapter_range: "第五季后半"
+    tension: 5
+    note: "重新点燃、以主导者身份面对终极任务"
+  - chapter_range: "第六季+"
+    tension: TBD
+    note: "弹性区间"

@@ -1,106 +1,251 @@
-# AI 小说写作系统
+# Novel V2
 
-面向长篇连载与多项目管理的写作工作台。  
-你可以把它当成"小说生产系统"：既能写内容，也能管章节、关系、素材、风格与风险。
+小说写作工具，支持交互式创作和 CLI 操作。
 
----
+## 项目定位
 
-## 角色导航（先看这里）
+- **novel-material**（上游）：素材检索库，存储已有小说的结构化分析结果
+- **novel-v2**（本项目）：写作工具，用于创作新小说
 
-| 你是谁 | 先看文档 | 先跑 3 个命令 |
-|------|---------|---------------|
-| 作者（专注写作） | `README-AUTHOR.md` | `/novel-switch` → `/chapter-create` → `/chapter-review` |
-| 编辑/主编（控进度风险） | `README-EDITOR.md` | `/chapter-board` → `/project-weekly-report 最近7天 --view manager` → `/novel-kpi 最近30天` |
-| 新人/搭建者（看全貌） | 本文件 + `docs/SPEC.md` | `/novel-init` → `/novel-status` → `/novel-doctor` |
+## 核心功能
 
----
+| 功能 | 说明 |
+|------|------|
+| 项目管理 | 创建/删除/查看写作项目 |
+| 设定生成 | AI 生成世界观、大纲、人物设定 |
+| 章节规划 | 将大纲转化为章节摘要和张力曲线 |
+| 正文写作 | AI 生成、续写、改写章节内容 |
+| 导出 | 导出 TXT/Markdown/EPUB 格式 |
 
-## Harness 导航
+## 使用方式
 
-- **想看写一章正文的完整节奏？** → `docs/USAGE-GUIDE.md` §二（从开工到归档的七步流程）
-- **不知道用什么命令？** → `docs/USAGE-GUIDE.md`（场景使用指南）
-- 场景使用指南：`docs/USAGE-GUIDE.md`
-- Agent 地图：`AGENTS.md`
-- 架构边界：`ARCHITECTURE.md`
-- 完整命令参考：`docs/SPEC.md`（见"Skill清单"）
+### 方式一：交互式对话（推荐）
 
----
+直接和 Claude 对话，Claude 会调用 Skill 交互式创作：
 
-## 能力地图
+```
+"帮我写个大纲"
+→ Claude 询问核心想法 → 逐步细化 → 生成大纲 → 展示调整
 
-> 一句话理解：从"写出来"到"写得稳、可复盘、可扩展"。
+"帮我设计人物"
+→ Claude 询问主角设定 → 反派 → 配角 → 生成人物 → 展示关系网络
 
-| 能力域 | 解决什么问题 | 代表命令 |
-|------|--------------|---------|
-| 项目与运营 | 多书管理、周报复盘、健康体检、Skill 变更管理 | `/novel-switch` `/novel-doctor` `/skill-doctor` `/project-weekly-report` `/novel-kpi` |
-| 流程编排 | 把常用写作流程打包成场景预设，少记命令 | `/pipeline-outline-bootstrap` `/pipeline-note-triage` `/pipeline-draft-polish`（共 8 个） |
-| 章节生产 | 新章创建、AI 初稿、多版本对比、状态推进、结构打磨 | `/chapter-create` `/chapter-draft --alt` `/chapter-compare` `/chapter-review` |
-| 钩子/伏笔 | 伏笔分级登记、截止追踪、回收与放弃管理 | `/hook-add` `/hook-query` `/hook-resolve` |
-| 角色关系 | 角色设定、关系维护、关系演进与跳变检查 | `/character-add` `/relationship-log` `/relationship-evolution` `/relationship-check` |
-| 世界观与设定 | 设定管理、设定演化与有效期、世界观审查 | `/setting-add --supersedes` `/setting-edit --evolve` `/worldbuilding-review` |
-| 素材库检索 | 从已拆解的小说中找参考场景、人物原型、技法案例 | `/material-search` `/material-apply` `/material-manage` |
-| 文风质量 | 去 AI 感、人物对白区分、风格调优 | `/anti-ai-check` `/anti-ai-rewrite` `/voice-check` `/rewrite` |
-| 合规风控 | 借鉴留痕、风险检查、阶段报告 | `/inspiration-log` `/inspiration-check` `/inspiration-report` |
+"规划章节"
+→ Claude 确认大纲 → 生成章节计划 → 展示张力曲线
 
-如果你是新用户，建议先只用三个域：
-
-1. 章节生产（先把内容写出来）
-2. 素材消化与设定（把想法落地成可查的设定）
-3. 文风质量（出稿前做最低限度质检）
-
----
-
-## 这套系统适合谁
-
-- 同时写多本书，需要频繁切换项目的人
-- 连载作者，需要稳定推进章节与节奏的人
-- 有素材积累习惯，希望做检索和复用的人
-- 在意"去 AI 感"、借鉴风险、人物一致性的人
-
----
-
-## 快速开始（5 分钟）
-
-```bash
-# 1) 创建项目
-/novel-init 《书名》 类型
-
-# 2) 初始化剧情结构（从素材推导，或手动指定）
-/plot-init
-
-# 3) 添加主角色
-/character-add 张三 主角 25岁 剑客 隐忍坚毅
-
-# 4) 创建第一章
-/chapter-create ch001 主角在危机中被迫离开故土
-
-# 5) 开始写作前检查
-/novel-status
+"写第1章"
+→ Claude 确认章节信息 → 询问写作方向 → 生成正文 → 展示调整选项
 ```
 
----
+### 方式二：CLI + 草稿
 
-## 必用命令（10 个，日常优先）
+有草稿时直接调用脚本生成：
 
-1. `/novel-switch [项目名]`：切换当前写作项目
-2. `/novel-status`：查看当前项目状态
-3. `/chapter-create [章节ID] [目标]`：新建章节并初始化元数据
-4. `/chapter-update [章节ID] --status [状态]`：推进章节状态
-5. `/chapter-review [章节ID]`：审查章节并给修订建议
-6. `/plot-suggest [描述]`：卡文时获取剧情建议
-7. `/character-edit [角色名] [修改内容]`：修正角色设定
-8. `/anti-ai-check [章节ID]`：检测 AI 痕迹
-9. `/consistency-check`：全项目一致性检查
-10. `/novel-doctor`：项目健康诊断
+```bash
+# 从草稿生成大纲
+python scripts/generate.py outline <project_id> --from-draft "废柴逆袭故事..."
 
-> 完整命令清单（含参数说明）见 `docs/SPEC.md` → Skill清单  
-> 按场景查找命令见 `docs/USAGE-GUIDE.md`
+# 从 notes.yaml 读取草稿
+python scripts/generate.py outline <project_id> --from-draft notes.yaml
 
----
+# 从文件读取草稿
+python scripts/generate.py outline <project_id> --from-draft my_idea.txt
+```
 
-## 进一步阅读
+### 方式三：纯 CLI 操作
 
-- 作者极简版：`README-AUTHOR.md`
-- 编辑/主编版：`README-EDITOR.md`
-- 场景使用指南：`docs/USAGE-GUIDE.md`
-- 设计规范与命令参考：`docs/SPEC.md`
+```bash
+# 创建项目
+python scripts/project.py create "我的小说" --genre 修仙 --author 作者名
+
+# 生成设定（需要 LLM_API_KEY）
+python scripts/generate.py world <project_id>
+python scripts/generate.py outline <project_id> --chapters 50
+python scripts/generate.py character <project_id>
+
+# 规划章节
+python scripts/generate.py chapter <project_id>
+
+# 写作正文
+python scripts/write.py new <project_id> 1
+python scripts/write.py continue <project_id> 1 --length 1000
+python scripts/write.py revise <project_id> 1 --mode polish
+
+# 查看统计
+python scripts/stats.py <project_id> --detail
+
+# 导出
+python scripts/export.py <project_id> --format txt
+```
+
+## 安装配置
+
+```bash
+# 安装依赖
+pip install -r requirements.txt
+
+# 配置环境变量
+cp .env.example .env
+# 编辑 .env，填入：
+# - LLM_API_KEY（必须，用于 AI 生成）
+# - LLM_API_BASE（可选，默认 OpenAI）
+# - LLM_MODEL（可选，默认 gpt-4o-mini）
+```
+
+## 目录结构
+
+```
+novel-v2/
+├── novels/                    # 写作项目目录
+│   └── {project_id}/          # 单个项目
+│       ├── project.yaml       # 项目元信息
+│       ├── settings/          # 设定文件
+│       │   ├── worldbuilding.yaml  # 世界观
+│       │   ├── characters.yaml     # 人物
+│       │   ├── outline.yaml        # 大纲
+│       │   └── notes.yaml          # 草稿/笔记
+│       ├── chapters/          # 章节正文
+│       │   ├── _index.yaml    # 章节索引
+│       │   ├── chapter_001.md # 正文
+│       │   └── ...
+│       ├── drafts/            # 草稿文件夹
+│       ├── exports/           # 导出文件
+│       └── history/           # AI 生成历史记录
+│
+├── scripts/                   # CLI 脚本
+│   ├── project.py             # 项目管理
+│   ├── generate.py            # AI 生成设定
+│   ├── write.py               # 章节写作
+│   ├── stats.py               # 统计查看
+│   ├── search.py              # 检索参考（调用 novel-material）
+│   ├── export.py              # 导出
+│   └── utils/
+│       └── llm_client.py      # LLM 客户端
+│
+├── data/schemas/              # YAML Schema 定义
+│   ├── project.schema.yaml
+│   ├── worldbuilding.schema.yaml
+│   ├── characters.schema.yaml
+│   ├── outline.schema.yaml
+│   └── chapters.schema.yaml
+│
+└── .claude/skills/            # Claude Code Skills
+    ├── generate-outline/SKILL.md
+    ├── generate-character/SKILL.md
+    ├── generate-chapter/SKILL.md
+    ├── write-chapter/SKILL.md
+    ├── show-project/SKILL.md
+    └── export-novel/SKILL.md
+```
+
+## 技能说明
+
+| 技能 | 触发时机 | 功能 |
+|------|----------|------|
+| `generate-outline` | "生成大纲"、"规划情节"、"帮我写大纲" | 交互式生成小说大纲 |
+| `generate-character` | "设计人物"、"创建主角"、"帮我设计角色" | 交互式生成人物设定 |
+| `generate-chapter` | "规划章节"、"转化章节"、"把大纲变成章节" | 将大纲转化为章节计划 |
+| `write-chapter` | "写第X章"、"生成正文"、"帮我写这一章" | 交互式写作章节正文 |
+| `show-project` | "查看项目"、"项目进度"、"显示统计" | 展示项目详情和进度 |
+| `export-novel` | "导出小说"、"导出TXT"、"生成文件" | 导出为各种格式 |
+
+## 草稿系统
+
+### 草稿来源
+
+| 来源 | 使用方式 |
+|------|----------|
+| `settings/notes.yaml` | 项目内的草稿区，Skill 自动读取 |
+| 直接提供内容 | `--from-draft "废柴逆袭故事..."` |
+| 外部文件 | `--from-draft path/to/file.txt` |
+
+### notes.yaml 示例
+
+```yaml
+# 写作笔记/草稿
+idea: |
+  废柴逆袭故事
+  主角资质差但意志坚定
+  预计50章
+
+outline_draft: |
+  第1幕：困境与转机（1-15章）
+  主角入门受挫，获得秘籍
+  
+character_draft: |
+  主角：李青云，废柴逆袭型
+  反派：陈长老，觊觎秘籍
+```
+
+## CLI 命令速查
+
+### 项目管理
+
+```bash
+python scripts/project.py create "书名" --genre 类型 --author 作者
+python scripts/project.py list
+python scripts/project.py show <project_id>
+python scripts/project.py delete <project_id>
+```
+
+### 设定生成
+
+```bash
+# 世界观
+python scripts/generate.py world <project_id> [--prompt "描述"]
+
+# 大纲
+python scripts/generate.py outline <project_id> [--chapters 50] [--from-draft 草稿]
+
+# 人物
+python scripts/generate.py character <project_id> [--from-draft 草稿]
+
+# 章节规划
+python scripts/generate.py chapter <project_id>
+```
+
+### 章节写作
+
+```bash
+# 生成新章节
+python scripts/write.py new <project_id> <章节号> [--prompt "方向"]
+
+# 续写
+python scripts/write.py continue <project_id> <章节号> [--length 1000]
+
+# 改写（polish/expand/condense/rewrite）
+python scripts/write.py revise <project_id> <章节号> [--mode polish]
+```
+
+### 统计与导出
+
+```bash
+python scripts/stats.py <project_id> [--detail]
+python scripts/export.py <project_id> [--format txt|md|epub]
+```
+
+## 状态流转
+
+### 项目状态
+
+```
+planning → drafting → revising → completed
+```
+
+### 章节状态
+
+```
+planned（已规划）→ draft（草稿）→ written（已完成）→ revised（已润色）
+```
+
+| 状态 | 说明 |
+|------|------|
+| planned | 有摘要，无正文 |
+| draft | 有正文（< 1500 字）|
+| written | 正文完成（≥ 1500 字）|
+| revised | 已润色修改 |
+
+## 文档导航
+
+- **[数据 Schema](data/schemas/)**：YAML 文件字段定义
+- **[Skills 定义](.claude/skills/)**：交互式生成技能说明书
