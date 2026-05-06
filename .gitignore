@@ -8,6 +8,12 @@ oh-my-harness.md
 .DS_Store
 toos-skills/
 
+# Secrets
+.env
+
+# Novel data
+novels/
+
 .cursor/rules/novel-project-context.mdc
 .cursor/rules/novel-core-constraints.mdc
 
