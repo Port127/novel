@@ -23,9 +23,20 @@ description: 此技能仅在用户明确调用"/generate-chapter"或直接提及
 
 ### 3. 生成章节计划
 
-```bash
-python scripts/generate.py chapter {project_id} --from-outline
-```
+**Agent 直接生成**（不调用脚本）：
+
+1. 基于大纲的节拍，转化为章节摘要
+2. 每章包含：number、title、summary、tension、status
+3. 生成 `chapters/_index.yaml`
+
+**生成方式**：
+- Agent 使用 Write/Edit 工具直接写入 YAML 文件
+- 不调用任何脚本，Agent 已连接 LLM
+
+**转化规则**：
+- 每个节拍对应一个章节
+- 摘要来自节拍的 description
+- 张力值来自节拍的 tension
 
 ### 4. 展示与调整
 

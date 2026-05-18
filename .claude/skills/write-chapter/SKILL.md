@@ -27,9 +27,15 @@ description: 此技能仅在用户明确调用"/write-chapter"或直接提及技
 
 ### 4. 生成正文
 
-```bash
-python scripts/write.py new {project_id} {num} --prompt "{方向}"
-```
+**Agent 直接生成**（不调用脚本）：
+
+1. 基于章节摘要和上下文，直接编写正文
+2. 字数建议：2000-3000 字/章
+3. 保持风格一致、人物性格匹配、张力匹配
+
+**生成方式**：
+- Agent 使用 Write/Edit 工具直接写入 Markdown 文件
+- 不调用任何脚本，Agent 已连接 LLM
 
 ### 5. 展示正文
 
@@ -37,15 +43,23 @@ python scripts/write.py new {project_id} {num} --prompt "{方向}"
 
 ### 6. 续写/改写选项
 
-不满意时可选：续写（500/1000字）、改写（润色/扩充/精简/重写）。
+不满意时可选：
+- **续写**：Agent 在已有正文基础上继续写作（指定字数）
+- **改写**：Agent 修改已有正文（润色/扩充/精简/重写）
 
-## 调用脚本
+**改写方式**：
+- Agent 使用 Edit 工具修改 Markdown 文件
+- 不调用任何脚本，Agent 已连接 LLM
 
-```bash
-python scripts/write.py new {project_id} {num} --prompt "方向"
-python scripts/write.py continue {project_id} {num} --length 1000
-python scripts/write.py revise {project_id} {num} --mode polish
-```
+## 生成方式
+
+**Agent 直接生成**（不调用脚本）：
+
+- 生成正文：Agent 使用 Write 工具写入 Markdown
+- 续写正文：Agent 使用 Edit 工具追加内容
+- 改写正文：Agent 使用 Edit 工具修改内容
+
+**注意**：Agent 已连接 LLM，不调用任何脚本。
 
 ## 参考
 

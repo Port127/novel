@@ -1,0 +1,208 @@
+# 完善度标准定义
+# 每个设定文件必填字段清单，用于判断可否进入下一阶段
+
+worldbuilding:
+  description: 世界观设定完善度标准
+  required_fields:
+    - path: power_system.name
+      description: 力量体系名称
+      type: string
+      required: true
+    - path: power_system.ranks
+      description: 力量等级体系
+      type: list
+      min_items: 3
+      required: true
+    - path: factions
+      description: 势力组织
+      type: list
+      min_items: 1
+      required: true
+    - path: locations
+      description: 关键地点
+      type: list
+      min_items: 1
+      required: true
+  optional_fields:
+    - path: lore.history
+      description: 世界历史
+      type: list
+    - path: lore.artifacts
+      description: 重要物品
+      type: list
+    - path: lore.terminology
+      description: 术语定义
+      type: list
+  completeness_threshold: 80
+  calculation_method: field_count
+  notes: |
+    世界观是小说设定的根基，必须包含力量体系、势力、地点才能支撑后续人物和大纲。
+
+characters:
+  description: 人物设定完善度标准
+  required_fields:
+    - path: characters
+      description: 人物列表
+      type: list
+      min_items: 1
+      required: true
+    - path: characters[].name
+      description: 人物姓名（主角必须有）
+      type: string
+      required_for: protagonist
+    - path: characters[].role
+      description: 角色类型
+      type: string
+      allowed_values: [protagonist, antagonist, supporting, minor]
+      required: true
+    - path: characters[].traits
+      description: 性格特征（主角/反派必须有）
+      type: list
+      min_items: 2
+      required_for: [protagonist, antagonist]
+    - path: characters[].arc
+      description: 人物弧线（主角必须有）
+      type: string
+      required_for: protagonist
+  optional_fields:
+    - path: characters[].psychology
+      description: 心理维度（fatal_flaw/obsession/soft_spot/misbelief）
+      type: dict
+    - path: characters[].relationships
+      description: 人物关系
+      type: list
+  completeness_threshold: 70
+  calculation_method: role_weighted
+  notes: |
+    人物设定必须包含主角和至少1个其他角色，主角必须有性格特征和人物弧线。
+
+outline:
+  description: 大纲设定完善度标准
+  required_fields:
+    - path: premise
+      description: 故事核心设定（一句话概括）
+      type: string
+      min_length: 20
+      required: true
+    - path: acts
+      description: 幕结构
+      type: list
+      min_items: 3
+      required: true
+    - path: acts[].title
+      description: 每幕标题
+      type: string
+      required: true
+    - path: acts[].sequences
+      description: 每幕序列
+      type: list
+      min_items: 2
+      required: true
+    - path: acts[].sequences[].beats
+      description: 每序列节拍
+      type: list
+      min_items: 5
+      required: true
+    - path: acts[].sequences[].beats[].chapter
+      description: 节拍对应章节号
+      type: integer
+      required: true
+    - path: acts[].sequences[].beats[].description
+      description: 节拍描述
+      type: string
+      min_length: 30
+      required: true
+  optional_fields:
+    - path: hooks
+      description: 伏笔-回收链
+      type: list
+    - path: pacing_curve
+      description: 节奏曲线
+      type: list
+    - path: theme
+      description: 主题标签
+      type: list
+    - path: tone
+      description: 基调标签
+      type: list
+  completeness_threshold: 85
+  calculation_method: field_count
+  notes: |
+    大纲必须包含 premise + 至少3幕 + 每幕至少2序列 + 每序列至少5节拍，且节拍必须有章节号和详细描述。
+
+chapters:
+  description: 章节规划完善度标准（用于 write-chapter 前置检查）
+  required_fields:
+    - path: chapters
+      description: 章节列表
+      type: list
+      min_items: 1
+      required: true
+    - path: chapters[].number
+      description: 章节号
+      type: integer
+      required: true
+    - path: chapters[].title
+      description: 章节标题
+      type: string
+      required: true
+    - path: chapters[].summary
+      description: 章节摘要
+      type: string
+      min_length: 50
+      required: true
+    - path: chapters[].tension
+      description: 张力值
+      type: integer
+      min_value: 1
+      max_value: 5
+      required: true
+  optional_fields:
+    - path: chapters[].characters
+      description: 出场人物
+      type: list
+    - path: chapters[].notes
+      description: 写作备注
+      type: string
+  completeness_threshold: 100
+  calculation_method: target_chapter
+  notes: |
+    章节规划必须包含目标章节的摘要和张力值才能开始写正文。
+
+# 完善度计算方法说明
+calculation_methods:
+  field_count:
+    description: 按字段填写比例计算
+    formula: "(已填写必填字段数 / 必填字段总数) * 100"
+  role_weighted:
+    description: 按角色类型权重计算
+    formula: |
+      protagonist 完善度 * 0.5 +
+      antagonist 完善度 * 0.3 +
+      supporting 完善度 * 0.2
+  target_chapter:
+    description: 只检查目标章节是否完善
+    formula: "目标章节必填字段全部填写则为 100%"
+
+# 前置依赖关系
+dependency_chain:
+  - stage: 1
+    setting_type: worldbuilding
+    prerequisite: null
+    threshold: 80
+  - stage: 2
+    setting_type: characters
+    prerequisite: worldbuilding
+    threshold: 70
+  - stage: 3
+    setting_type: outline
+    prerequisite: [worldbuilding, characters]
+    threshold: 85
+  - stage: 4
+    setting_type: chapters
+    prerequisite: outline
+    threshold: 100  # 只检查目标章节
+  - stage: 5
+    setting_type: content  # 正文
+    prerequisite: chapters
+    threshold: null  # 正文不检查完善度
