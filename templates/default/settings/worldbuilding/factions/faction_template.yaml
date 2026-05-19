@@ -1,0 +1,12 @@
+# 单势力档案模板
+faction_id: ""                    # [R] 势力ID
+name: ""                          # [R] 势力名称
+type: ""                          # [R] 势力类型（宗门/王朝/公司/家族/军团/教会/帮派/组织）
+stance: ""                        # [R] 立场（正派/中立/反派/不确定）
+description: ""                   # [R] 势力描述
+
+territory: ""                     # [O] 势力范围
+key_figures: []                   # [O] 关键人物
+history: []                       # [O] 势力历史
+goals: []                         # [O] 势力目标
+conflicts: []                     # [O] 与其他势力的冲突

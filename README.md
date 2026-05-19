@@ -55,18 +55,20 @@ python scripts/generate.py outline <project_id> --from-draft my_idea.txt
 ### 方式三：纯 CLI 操作
 
 ```bash
-# 创建项目
-python scripts/project.py create "我的小说" --genre 修仙 --author 作者名
+# 创建项目（使用模板）
+python scripts/project.py create "我的小说" --genre 修仙 --author 作者名 --template default
 
-# 生成设定（需要 LLM_API_KEY）
-python scripts/generate.py world <project_id>
-python scripts/generate.py outline <project_id> --chapters 50
-python scripts/generate.py character <project_id>
+# 查看项目列表
+python scripts/project.py list
 
-# 规划章节
-python scripts/generate.py chapter <project_id>
+# 查看项目详情
+python scripts/project.py show <project_id>
 
-# 写作正文
+# 使用 Skills 完成设定（推荐）
+# /create-novel — Pipeline 流程入口
+# /generate-outline — 生成大纲
+# /generate-character — 生成人物
+# /write-chapter — 写作正文
 python scripts/write.py new <project_id> 1
 python scripts/write.py continue <project_id> 1 --length 1000
 python scripts/write.py revise <project_id> 1 --mode polish
@@ -96,28 +98,48 @@ cp .env.example .env
 
 ```
 novel-v2/
+├── templates/                 # 项目模板
+│   └── default/               # 默认模板（800章规模）
+│       ├── project.yaml       # 项目元信息模板
+│       ├── settings/          # 设定模板（模块化目录）
+│       │   ├── worldbuilding/
+│       │   ├── characters/
+│       │   ├── outline/
+│       │   └── chapters/
+│       └── content/chapters/  # 正文目录模板
+│
 ├── novels/                    # 写作项目目录
 │   └── {project_id}/          # 单个项目
 │       ├── project.yaml       # 项目元信息
-│       ├── settings/          # 设定文件
-│       │   ├── worldbuilding.yaml  # 世界观
-│       │   ├── characters.yaml     # 人物
-│       │   ├── outline.yaml        # 大纲
-│       │   └── notes.yaml          # 草稿/笔记
-│       ├── chapters/          # 章节正文
-│       │   ├── _index.yaml    # 章节索引
-│       │   ├── chapter_001.md # 正文
-│       │   └── ...
+│       ├── settings/          # 设定文件（模块化目录）
+│       │   ├── worldbuilding/
+│       │   │   ├── power_system.yaml
+│       │   │   ├── factions/_index.yaml + faction_*.yaml
+│       │   │   ├── locations/_index.yaml + location_*.yaml
+│       │   │   └── lore/*.yaml
+│       │   ├── characters/
+│       │   │   ├── protagonist/protagonist.yaml
+│       │   │   ├── antagonist/_index.yaml + antagonist_*.yaml
+│       │   │   ├── supporting/_index.yaml + supporting_*.yaml
+│       │   │   └── relationships.yaml
+│       │   ├── outline/
+│       │   │   ├── premise.yaml
+│       │   │   ├── acts/_index.yaml + act_*.yaml
+│       │   │   ├── hooks.yaml
+│       │   │   └── pacing.yaml
+│       │   ├── chapters/
+│       │   │   ├── _index.yaml
+│       │   │   └── chapter_template.yaml
+│       │   └── notes.yaml     # 草稿/笔记
+│       ├── content/chapters/  # 章节正文
+│       │   └── chapter_*.md
 │       ├── drafts/            # 草稿文件夹
 │       ├── exports/           # 导出文件
 │       └── history/           # AI 生成历史记录
 │
-├── scripts/                   # CLI 脚本
+├── scripts/                   # CLI 脚本（管理工具）
 │   ├── project.py             # 项目管理
-│   ├── generate.py            # AI 生成设定
-│   ├── write.py               # 章节写作
 │   ├── stats.py               # 统计查看
-│   ├── search.py              # 检索参考（调用 novel-material）
 │   ├── export.py              # 导出
 │   └── utils/
 │       └── llm_client.py      # LLM 客户端
@@ -182,16 +204,21 @@ character_draft: |
 ### 项目管理
 
 ```bash
-python scripts/project.py create "书名" --genre 类型 --author 作者
+python scripts/project.py create "书名" --genre 类型 --author 作者 --template default
 python scripts/project.py list
 python scripts/project.py show <project_id>
 python scripts/project.py delete <project_id>
 ```
 
-### 设定生成
+### 设定生成（通过 Skills）
 
 ```bash
-# 世界观
+# 使用 Skills 交互式生成（推荐）
+# /create-novel — Pipeline 流程入口
+# /generate-outline — 生成大纲
+# /generate-character — 生成人物
+# /generate-chapter — 章节规划
+# /write-chapter — 写作正文
 python scripts/generate.py world <project_id> [--prompt "描述"]
 
 # 大纲

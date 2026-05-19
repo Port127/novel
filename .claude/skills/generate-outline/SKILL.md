@@ -7,6 +7,22 @@ description: 此技能仅在用户明确调用"/generate-outline"或直接提及
 
 交互式生成小说大纲设定。
 
+## Pipeline 位置
+
+此 Skill 属于 Pipeline 流程的一部分：
+
+| 阶段 | Skill |
+|------|-------|
+| 1 | nm + Agent 交互 |
+| 2 | generate-character |
+| 3 | generate-outline ← 本 Skill |
+| 4 | generate-chapter |
+| 5 | write-chapter |
+
+**推荐入口**：使用 `/create-novel` 自动引导 Pipeline 流程。
+
+---
+
 ## 工作流程
 
 ### 1. 确认项目
@@ -51,7 +67,11 @@ python scripts/utils/completeness_check.py {project_id} characters
 
 **Agent 直接生成**（不调用脚本）：
 
-1. 基于用户确认的内容，直接编写 `settings/outline.yaml`
+1. 基于用户确认的内容，直接编写 `settings/outline/` 目录各文件：
+   - `premise.yaml`（核心设定）
+   - `acts/act_*.yaml`（各幕结构）
+   - `hooks.yaml`（伏笔-回收）
+   - `pacing.yaml`（节奏曲线）
 2. 包含：premise、acts、sequences、beats
 3. 每个节拍有：chapter（章节号）、title、description、tension（张力值）
 

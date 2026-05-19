@@ -2,6 +2,7 @@
 完善度检查工具
 
 读取 completeness.schema.yaml，计算设定文件完善度，判断是否可进入下一阶段。
+支持模块化目录结构。
 """
 
 import yaml
@@ -19,38 +20,31 @@ def load_completeness_schema() -> Dict:
         return yaml.safe_load(f)
 
 
-def load_setting_file(project_id: str, setting_type: str) -> Dict:
-    """加载设定文件"""
-    setting_path = Path(__file__).parent.parent.parent / "novels" / project_id / "settings" / f"{setting_type}.yaml"
-    if not setting_path.exists():
+def load_yaml(file_path: Path) -> Dict:
+    """加载 YAML 文件"""
+    if not file_path.exists():
         return {}
-
     try:
-        with open(setting_path, 'r', encoding='utf-8') as f:
+        with open(file_path, 'r', encoding='utf-8') as f:
             data = yaml.safe_load(f)
             return data if data else {}
     except yaml.YAMLError as e:
-        print(f"警告: {setting_type}.yaml 解析错误: {e}")
+        print(f"警告: {file_path} 解析错误: {e}")
         return {}
 
 
+def get_settings_dir(project_id: str) -> Path:
+    """获取设定目录"""
+    return Path(__file__).parent.parent.parent / "novels" / project_id / "settings"
+
+
 def check_field_exists(data: Dict, field_path: str) -> Tuple[bool, Optional[str]]:
-    """
-    检查字段是否存在且有效
-
-    Args:
-        data: 设定数据
-        field_path: 字段路径（如 power_system.name）
-
-    Returns:
-        (是否存在, 缺失原因)
-    """
+    """检查字段是否存在且有效"""
     parts = field_path.split('.')
     current = data
 
     for part in parts:
         if part.endswith('[]'):
-            # 列表字段
             list_name = part[:-2]
             if list_name not in current:
                 return False, f"字段 {list_name} 不存在"
@@ -64,7 +58,6 @@ def check_field_exists(data: Dict, field_path: str) -> Tuple[bool, Optional[str]
                 return False, f"字段 {part} 不存在"
             current = current[part]
 
-    # 检查值是否有效
     if current is None:
         return False, f"字段 {field_path} 为 null"
     if isinstance(current, str) and current.strip() == '':
@@ -76,35 +69,63 @@ def check_field_exists(data: Dict, field_path: str) -> Tuple[bool, Optional[str]
 
 
 def check_worldbuilding_completeness(project_id: str) -> Dict:
-    """检查世界观完善度"""
+    """检查世界观完善度（模块化结构）"""
     schema = load_completeness_schema()
-    worldbuilding_config = schema.get('worldbuilding', {})
-    setting_data = load_setting_file(project_id, 'worldbuilding')
+    wb_config = schema.get('worldbuilding', {})
+    wb_dir = get_settings_dir(project_id) / "worldbuilding"
 
-    required_fields = worldbuilding_config.get('required_fields', [])
-    threshold = worldbuilding_config.get('completeness_threshold', 80)
-
+    threshold = wb_config.get('completeness_threshold', 80)
     checked_fields = []
     missing_fields = []
 
-    for field_def in required_fields:
-        field_path = field_def['path']
-        exists, reason = check_field_exists(setting_data, field_path)
-
+    # 检查力量体系
+    power_system = load_yaml(wb_dir / "power_system.yaml")
+    power_checks = [
+        ('name', '力量体系名称'),
+        ('type', '力量体系类型'),
+        ('levels', '等级划分'),
+    ]
+    for field, desc in power_checks:
+        exists, reason = check_field_exists(power_system, field)
         checked_fields.append({
-            'path': field_path,
+            'path': f'power_system.{field}',
             'exists': exists,
             'reason': reason,
-            'description': field_def.get('description', '')
+            'description': desc
         })
-
         if not exists:
-            missing_fields.append(field_path)
+            missing_fields.append(f'power_system.{field}')
+
+    # 检查势力
+    factions_index = load_yaml(wb_dir / "factions" / "_index.yaml")
+    factions = factions_index.get("factions", [])
+    factions_exists = len(factions) >= 3
+    checked_fields.append({
+        'path': 'factions/_index.yaml',
+        'exists': factions_exists,
+        'reason': None if factions_exists else '势力少于3个',
+        'description': '势力列表'
+    })
+    if not factions_exists:
+        missing_fields.append('factions (需≥3个)')
+
+    # 检查地点
+    locations_index = load_yaml(wb_dir / "locations" / "_index.yaml")
+    locations = locations_index.get("locations", [])
+    locations_exists = len(locations) >= 1
+    checked_fields.append({
+        'path': 'locations/_index.yaml',
+        'exists': locations_exists,
+        'reason': None if locations_exists else '地点为空',
+        'description': '地点列表'
+    })
+    if not locations_exists:
+        missing_fields.append('locations (需≥1个)')
 
     # 计算完善度
-    total_required = len(required_fields)
-    filled_count = total_required - len(missing_fields)
-    completeness = (filled_count / total_required) * 100 if total_required > 0 else 0
+    total_checks = len(checked_fields)
+    filled_count = total_checks - len(missing_fields)
+    completeness = (filled_count / total_checks) * 100 if total_checks > 0 else 0
 
     return {
         'setting_type': 'worldbuilding',
@@ -118,62 +139,64 @@ def check_worldbuilding_completeness(project_id: str) -> Dict:
 
 
 def check_characters_completeness(project_id: str) -> Dict:
-    """检查人物完善度"""
+    """检查人物完善度（模块化结构）"""
     schema = load_completeness_schema()
-    characters_config = schema.get('characters', {})
-    setting_data = load_setting_file(project_id, 'characters')
+    chars_config = schema.get('characters', {})
+    chars_dir = get_settings_dir(project_id) / "characters"
 
-    threshold = characters_config.get('completeness_threshold', 70)
-
-    # 检查人物列表是否存在
-    if 'characters' not in setting_data or not setting_data['characters']:
-        return {
-            'setting_type': 'characters',
-            'completeness': 0,
-            'threshold': threshold,
-            'is_complete': False,
-            'checked_fields': [],
-            'missing_fields': ['characters'],
-            'summary': f"人物完善度: 0% (阈值: {threshold}%) - 人物列表为空"
-        }
-
-    characters_list = setting_data['characters']
+    threshold = chars_config.get('completeness_threshold', 70)
     checked_fields = []
     missing_fields = []
 
     # 检查主角
-    protagonist = None
-    for char in characters_list:
-        if char.get('role') == 'protagonist':
-            protagonist = char
-            break
-
-    if not protagonist:
-        missing_fields.append('characters[].role=protagonist')
+    protagonist = load_yaml(chars_dir / "protagonist" / "protagonist.yaml")
+    protagonist_checks = [
+        ('name', '主角姓名'),
+        ('traits', '性格特征'),
+        ('psychology.fatal_flaw', '关键缺陷'),
+        ('arc.type', '弧线类型'),
+    ]
+    for field, desc in protagonist_checks:
+        exists, reason = check_field_exists(protagonist, field)
         checked_fields.append({
-            'path': 'characters[].role=protagonist',
-            'exists': False,
-            'reason': '不存在主角',
-            'description': '必须有主角'
+            'path': f'protagonist.{field}',
+            'exists': exists,
+            'reason': reason,
+            'description': desc
         })
-    else:
-        # 检查主角必填字段
-        required_for_protagonist = ['name', 'traits', 'arc']
-        for field in required_for_protagonist:
-            exists, reason = check_field_exists({'character': protagonist}, f'character.{field}')
-            checked_fields.append({
-                'path': f'protagonist.{field}',
-                'exists': exists,
-                'reason': reason,
-                'description': f'主角必填: {field}'
-            })
-            if not exists:
-                missing_fields.append(f'protagonist.{field}')
+        if not exists:
+            missing_fields.append(f'protagonist.{field}')
 
-    # 计算完善度（角色权重）
-    total_required = 5  # characters列表 + protagonist.name + traits + arc + role
-    filled_count = total_required - len(missing_fields)
-    completeness = (filled_count / total_required) * 100
+    # 检查反派
+    antagonist_index = load_yaml(chars_dir / "antagonist" / "_index.yaml")
+    antagonists = antagonist_index.get("antagonists", [])
+    antagonists_exists = len(antagonists) >= 1
+    checked_fields.append({
+        'path': 'antagonist/_index.yaml',
+        'exists': antagonists_exists,
+        'reason': None if antagonists_exists else '无反派',
+        'description': '反派列表'
+    })
+    if not antagonists_exists:
+        missing_fields.append('antagonists (需≥1个)')
+
+    # 检查配角
+    supporting_index = load_yaml(chars_dir / "supporting" / "_index.yaml")
+    supporting = supporting_index.get("supporting_characters", [])
+    supporting_exists = len(supporting) >= 3
+    checked_fields.append({
+        'path': 'supporting/_index.yaml',
+        'exists': supporting_exists,
+        'reason': None if supporting_exists else '配角少于3个',
+        'description': '配角列表'
+    })
+    if not supporting_exists:
+        missing_fields.append('supporting (需≥3个)')
+
+    # 计算完善度
+    total_checks = len(checked_fields)
+    filled_count = total_checks - len(missing_fields)
+    completeness = (filled_count / total_checks) * 100 if total_checks > 0 else 0
 
     return {
         'setting_type': 'characters',
@@ -187,42 +210,64 @@ def check_characters_completeness(project_id: str) -> Dict:
 
 
 def check_outline_completeness(project_id: str) -> Dict:
-    """检查大纲完善度"""
+    """检查大纲完善度（模块化结构）"""
     schema = load_completeness_schema()
     outline_config = schema.get('outline', {})
-    setting_data = load_setting_file(project_id, 'outline')
+    outline_dir = get_settings_dir(project_id) / "outline"
 
     threshold = outline_config.get('completeness_threshold', 85)
-
-    # 检查 premise
     checked_fields = []
     missing_fields = []
 
-    premise_exists = 'premise' in setting_data and setting_data['premise'] and len(setting_data['premise']) >= 20
+    # 检查 premise
+    premise = load_yaml(outline_dir / "premise.yaml")
+    premise_statement = premise.get("premise_statement", "")
+    premise_exists = len(premise_statement) >= 50
     checked_fields.append({
-        'path': 'premise',
+        'path': 'premise.premise_statement',
         'exists': premise_exists,
-        'reason': None if premise_exists else 'premise不存在或长度不足20',
-        'description': '故事核心设定'
+        'reason': None if premise_exists else 'premise不足50字',
+        'description': '核心设定'
     })
     if not premise_exists:
-        missing_fields.append('premise')
+        missing_fields.append('premise (需≥50字)')
 
     # 检查 acts
-    acts_exists = 'acts' in setting_data and isinstance(setting_data['acts'], list) and len(setting_data['acts']) >= 3
+    acts_index = load_yaml(outline_dir / "acts" / "_index.yaml")
+    acts = acts_index.get("acts", [])
+    acts_exists = len(acts) >= 3
     checked_fields.append({
-        'path': 'acts',
+        'path': 'acts/_index.yaml',
         'exists': acts_exists,
-        'reason': None if acts_exists else 'acts不存在或少于3幕',
+        'reason': None if acts_exists else '幕少于3个',
         'description': '幕结构'
     })
     if not acts_exists:
-        missing_fields.append('acts')
+        missing_fields.append('acts (需≥3幕)')
+
+    # 检查每幕是否有节拍
+    beats_count = 0
+    for act_info in acts:
+        act_file = outline_dir / "acts" / act_info.get("path", "")
+        if act_file.exists():
+            act_data = load_yaml(act_file)
+            for seq in act_data.get("sequences", []):
+                beats_count += len(seq.get("beats", []))
+
+    beats_exists = beats_count >= 15  # 至少15个节拍
+    checked_fields.append({
+        'path': 'acts[].beats',
+        'exists': beats_exists,
+        'reason': None if beats_exists else '节拍少于15个',
+        'description': '节拍总数'
+    })
+    if not beats_exists:
+        missing_fields.append('beats (需≥15个)')
 
     # 计算完善度
-    total_required = 2  # premise + acts（简化计算）
-    filled_count = total_required - len(missing_fields)
-    completeness = (filled_count / total_required) * 100
+    total_checks = len(checked_fields)
+    filled_count = total_checks - len(missing_fields)
+    completeness = (filled_count / total_checks) * 100 if total_checks > 0 else 0
 
     return {
         'setting_type': 'outline',
@@ -236,24 +281,7 @@ def check_outline_completeness(project_id: str) -> Dict:
 
 
 def check_completeness(project_id: str, setting_type: str) -> Dict:
-    """
-    检查设定文件完善度
-
-    Args:
-        project_id: 项目ID
-        setting_type: worldbuilding/characters/outline
-
-    Returns:
-        {
-            'setting_type': str,
-            'completeness': float,
-            'threshold': int,
-            'is_complete': bool,
-            'checked_fields': list,
-            'missing_fields': list,
-            'summary': str
-        }
-    """
+    """检查设定文件完善度"""
     if setting_type == 'worldbuilding':
         return check_worldbuilding_completeness(project_id)
     elif setting_type == 'characters':
@@ -265,35 +293,19 @@ def check_completeness(project_id: str, setting_type: str) -> Dict:
 
 
 def check_all_dependencies(project_id: str) -> Dict:
-    """
-    检查所有前置依赖完善度
-
-    Returns:
-        {
-            'project_id': str,
-            'worldbuilding': dict,
-            'characters': dict,
-            'outline': dict,
-            'can_generate_outline': bool,
-            'can_generate_chapter': bool,
-            'can_write_content': bool,
-            'blockers': list
-        }
-    """
+    """检查所有前置依赖完善度"""
     worldbuilding_result = check_completeness(project_id, 'worldbuilding')
     characters_result = check_completeness(project_id, 'characters')
     outline_result = check_completeness(project_id, 'outline')
 
     blockers = []
 
-    # 检查是否可以生成大纲
     can_generate_outline = worldbuilding_result['is_complete'] and characters_result['is_complete']
     if not worldbuilding_result['is_complete']:
         blockers.append(f"世界观完善度不足: {worldbuilding_result['completeness']}% (需 ≥ {worldbuilding_result['threshold']}%)")
     if not characters_result['is_complete']:
         blockers.append(f"人物完善度不足: {characters_result['completeness']}% (需 ≥ {characters_result['threshold']}%)")
 
-    # 检查是否可以生成章节
     can_generate_chapter = outline_result['is_complete']
     if not outline_result['is_complete']:
         blockers.append(f"大纲完善度不足: {outline_result['completeness']}% (需 ≥ {outline_result['threshold']}%)")
@@ -305,7 +317,7 @@ def check_all_dependencies(project_id: str) -> Dict:
         'outline': outline_result,
         'can_generate_outline': can_generate_outline,
         'can_generate_chapter': can_generate_chapter,
-        'can_write_content': True,  # 正文只检查目标章节
+        'can_write_content': True,
         'blockers': blockers
     }
 

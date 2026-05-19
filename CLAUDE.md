@@ -129,7 +129,7 @@ Skills → Agent 交互讨论 → 直接生成 YAML/Markdown → 不调用脚本
    ↓
 5. 汇总展示，用户确认
    ↓
-6. Agent 直接生成 outline.yaml
+6. Agent 直接生成 outline/ 目录各文件
    ↓
 7. 展示结果，询问是否调整
 ```
@@ -155,7 +155,7 @@ Skills → Agent 交互讨论 → 直接生成 YAML/Markdown → 不调用脚本
    ↓
 5. 汇总展示，用户确认
    ↓
-6. Agent 直接生成 characters.yaml
+6. Agent 直接生成 characters/ 目录各文件
    ↓
 7. 展示结果，询问是否调整
 ```
@@ -242,7 +242,7 @@ Skills → Agent 交互讨论 → 直接生成 YAML/Markdown → 不调用脚本
 ### 项目管理
 
 ```bash
-python scripts/project.py create "书名" --genre 修仙 --author 作者名
+python scripts/project.py create "书名" --genre 修仙 --author 作者名 --template default
 python scripts/project.py list
 python scripts/project.py show <project_id>
 python scripts/project.py delete <project_id>
@@ -269,13 +269,27 @@ python scripts/export.py <project_id> --format txt|md|epub
 ```
 novels/{project_id}/
 ├── project.yaml           # 项目元信息
-├── settings/              # 设定文件
-│   ├── worldbuilding.yaml
-│   ├── characters.yaml
-│   ├── outline.yaml
+├── settings/              # 设定文件（模块化目录）
+│   ├── worldbuilding/
+│   │   ├── power_system.yaml
+│   │   ├── factions/_index.yaml + faction_*.yaml
+│   │   ├── locations/_index.yaml + location_*.yaml
+│   │   └── lore/*.yaml
+│   ├── characters/
+│   │   ├── protagonist/protagonist.yaml
+│   │   ├── antagonist/_index.yaml + antagonist_*.yaml
+│   │   ├── supporting/_index.yaml + supporting_*.yaml
+│   │   └── relationships.yaml
+│   ├── outline/
+│   │   ├── premise.yaml
+│   │   ├── acts/_index.yaml + act_*.yaml
+│   │   ├── hooks.yaml
+│   │   └── pacing.yaml
+│   ├── chapters/
+│   │   ├── _index.yaml
+│   │   └── chapter_template.yaml
 │   └── notes.yaml         # 草稿/笔记
-├── chapters/              # 章节正文
-│   ├── _index.yaml
+├── content/chapters/      # 章节正文
 │   └── chapter_*.md
 ├── drafts/                # 草稿文件夹
 ├── exports/               # 导出文件

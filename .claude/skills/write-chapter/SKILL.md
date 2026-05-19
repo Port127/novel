@@ -7,6 +7,22 @@ description: 此技能仅在用户明确调用"/write-chapter"或直接提及技
 
 交互式写作章节正文。
 
+## Pipeline 位置
+
+此 Skill 属于 Pipeline 流程的一部分：
+
+| 阶段 | Skill |
+|------|-------|
+| 1 | nm + Agent 交互 |
+| 2 | generate-character |
+| 3 | generate-outline |
+| 4 | generate-chapter |
+| 5 | write-chapter ← 本 Skill |
+
+**推荐入口**：使用 `/create-novel` 自动引导 Pipeline 流程。
+
+---
+
 ## 前提条件
 
 章节已规划（`chapters/_index.yaml` 中有摘要）。未规划则引导使用 generate-chapter。

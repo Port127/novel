@@ -1,0 +1,16 @@
+# 单幕结构模板
+act_number: 1                     # [R] 幕编号
+name: ""                          # [R] 幕名称
+
+chapter_range:                    # [R] 章节范围
+  start: 1
+  end: 100
+
+arc: ""                           # [R] 本幕叙事弧线
+
+sequences: []                     # [R] 序列列表（至少2个）
+
+turning_point:                    # [O] 转折点
+  chapter: 100
+  type: ""
+  description: ""

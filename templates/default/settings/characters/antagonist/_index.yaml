@@ -1,0 +1,5 @@
+# 反派索引模板
+antagonists: []                   # 反派列表（创建时填充）
+
+completeness: 0%
+min_required: 1                   # 最少反派数

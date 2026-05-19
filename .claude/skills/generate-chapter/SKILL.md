@@ -7,9 +7,25 @@ description: 此技能仅在用户明确调用"/generate-chapter"或直接提及
 
 交互式规划章节结构。
 
+## Pipeline 位置
+
+此 Skill 属于 Pipeline 流程的一部分：
+
+| 阶段 | Skill |
+|------|-------|
+| 1 | nm + Agent 交互 |
+| 2 | generate-character |
+| 3 | generate-outline |
+| 4 | generate-chapter ← 本 Skill |
+| 5 | write-chapter |
+
+**推荐入口**：使用 `/create-novel` 自动引导 Pipeline 流程。
+
+---
+
 ## 前提条件
 
-大纲已生成（`settings/outline.yaml` 非空）。未生成则引导使用 generate-outline。
+大纲已生成（`settings/outline/acts/_index.yaml` 非空）。未生成则引导使用 generate-outline。
 
 ## 工作流程
 

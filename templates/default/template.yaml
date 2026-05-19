@@ -1,0 +1,21 @@
+# 模板元信息
+template_name: default
+template_version: 1.0
+description: 默认小说项目模板（800章 × 4000字规模）
+
+structure:
+  settings:
+    - worldbuilding/
+    - characters/
+    - outline/
+    - chapters/
+  content:
+    - chapters/
+
+pipeline:
+  stages:
+    - 1-worldbuilding
+    - 2-characters
+    - 3-outline
+    - 4-chapter-planning
+    - 5-writing
