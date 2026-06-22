@@ -1,6 +1,6 @@
-# Antigravity 全局 Agent 规则
+# 全局 Agent 规则 (Codex / Antigravity)
 
-本文件适用于当前用户的所有 Antigravity 项目。项目内更具体的 `AGENTS.md` 可以补充规则，但不得无故降低以下中文沟通与提交要求。
+本文件适用于当前用户的所有 Agent 项目（包括 Codex 和 Antigravity）。项目内更具体的 `AGENTS.md` 可以补充规则，但不得无故降低以下中文沟通与提交要求。
 
 ## 语言与沟通规范
 
