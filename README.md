@@ -37,22 +37,25 @@
 → Claude 确认章节信息 → 询问写作方向 → 生成正文 → 展示调整选项
 ```
 
-### 方式二：CLI + 草稿
+### 方式二：CLI 命令行工具
 
-有草稿时直接调用脚本生成：
+通过全新重构的 CLI 工具进行项目管理：
 
 ```bash
-# 从草稿生成大纲
-python scripts/generate.py outline <project_id> --from-draft "废柴逆袭故事..."
+# 1. 环境安装
+make install
 
-# 从 notes.yaml 读取草稿
-python scripts/generate.py outline <project_id> --from-draft notes.yaml
+# 2. 创建新项目
+novel new my_project_name --genre 修仙 --author "作者名"
 
-# 从文件读取草稿
-python scripts/generate.py outline <project_id> --from-draft my_idea.txt
-```
+# 3. 列出所有项目
+novel list
 
-### 方式三：纯 CLI 操作
+# 4. 查看项目详情
+novel show nv_xxxxxxxx
+
+# 5. 删除项目
+novel delete nv_xxxxxxxx
 
 ```bash
 # 创建项目（使用模板）
@@ -65,19 +68,6 @@ python scripts/project.py list
 python scripts/project.py show <project_id>
 
 # 使用 Skills 完成设定（推荐）
-# /create-novel — Pipeline 流程入口
-# /generate-outline — 生成大纲
-# /generate-character — 生成人物
-# /write-chapter — 写作正文
-python scripts/write.py new <project_id> 1
-python scripts/write.py continue <project_id> 1 --length 1000
-python scripts/write.py revise <project_id> 1 --mode polish
-
-# 查看统计
-python scripts/stats.py <project_id> --detail
-
-# 导出
-python scripts/export.py <project_id> --format txt
 ```
 
 ## 安装配置
