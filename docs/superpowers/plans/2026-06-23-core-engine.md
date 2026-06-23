@@ -1,35 +1,35 @@
-# Core Engine Implementation Plan
+# 核心引擎实施计划 (Core Engine Implementation Plan)
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build a robust, dual-engine backend (automated generation + human-in-the-loop) for novel-v2, completely unconstrained by previous legacy structures.
+**目标 (Goal):** 为 novel-v2 构建一个强健的、双引擎驱动的后端（自动化生成 + 人在环路），彻底抛开之前的历史遗留结构包袱。
 
-**Architecture:** A native Python pipeline (`src/novel/core/`) using OpenAI SDK + Pydantic for structured generation, a state-machine QA loop, and a text-based ContextBuilder.
+**架构 (Architecture):** 位于 `src/novel/core/` 的原生 Python 流水线，使用 OpenAI SDK + Pydantic 进行结构化生成，原生状态机实现质量审查循环 (QA loop)，以及基于纯文本的上下文构建器 (ContextBuilder)。
 
-**Tech Stack:** Python 3.10+, OpenAI Python SDK, Pydantic, Pytest
+**技术栈 (Tech Stack):** Python 3.10+, OpenAI Python SDK, Pydantic, Pytest
 
-## Global Constraints
+## 全局约束 (Global Constraints)
 
-- **Context Window & Token Limit Strategy:** To avoid conversational token limits and context exhaustion:
-  1. The execution of this plan MUST use **subagent-driven-development**. The main agent should dispatch a fresh subagent for each isolated Task to ensure clean context.
-  2. If the main chat approaches token limits at any point, the user can start a **brand new conversation**. In the new chat, simply tell the agent: "Read `docs/superpowers/plans/2026-06-23-core-engine.md` and continue from the first unchecked task." The plan acts as the permanent state storage.
-- TDD required: Write a failing test first, run it, implement the code, run it to pass, then commit.
-- Do not fear breaking the old project structure.
+- **上下文与 Token 限制策略:** 为了避免对话 Token 限制和上下文耗尽：
+  1. 本计划的执行**必须**使用 **subagent-driven-development**（子智能体驱动开发）。主智能体应为每个独立的 Task 派生一个全新的子智能体执行，以确保上下文干净。
+  2. 如果主聊天窗口在任何时候逼近 Token 限制，您可以直接开启一个**全新的对话**。在新聊天中，只需告诉智能体：“读取 `docs/superpowers/plans/2026-06-23-core-engine.md` 文件，并从第一个未勾选的任务继续执行。” 该计划文件将作为永久的状态存储。
+- TDD（测试驱动开发）要求：先编写会失败的测试，运行它，实现代码，再次运行使测试通过，然后提交 (commit)。
+- 放手去干，不要担心破坏旧的项目结构。
 
 ---
 
-### Task 1: Environment & Dead Code Purge
+### 任务 1: 环境配置与死代码清理 (Task 1: Environment & Dead Code Purge)
 
-**Files:**
-- Create: `tests/test_config.py`
-- Modify: `src/novel/config/settings.py`
-- Delete: `scripts/utils/__init__.py`
+**文件 (Files):**
+- 创建 (Create): `tests/test_config.py`
+- 修改 (Modify): `src/novel/config/settings.py`
+- 删除 (Delete): `scripts/utils/__init__.py`
 
-**Interfaces:**
-- Consumes: Environment variables (`.env`)
-- Produces: `Settings` object with `OPENAI_API_KEY`
+**接口定义 (Interfaces):**
+- 消费 (Consumes): 环境变量 (`.env`)
+- 产出 (Produces): 包含 `OPENAI_API_KEY` 的 `Settings` 对象
 
-- [ ] **Step 1: Write failing test for config**
+- [ ] **步骤 1: 编写 Config 的失败测试**
 
 ```python
 # tests/test_config.py
@@ -49,15 +49,15 @@ def test_settings_loads_openai_api_key(monkeypatch):
     assert settings.OPENAI_API_KEY.get_secret_value() == "sk-test-123"
 ```
 
-- [ ] **Step 2: Run test to verify failure**
+- [ ] **步骤 2: 运行测试并确认失败**
 
-Run: `pytest tests/test_config.py -v`
-Expected: FAIL or passing if config already matches, but ensures test runs.
+运行: `pytest tests/test_config.py -v`
+预期结果: 失败（如果配置已经匹配则通过，但确保它能运行）
 
-- [ ] **Step 3: Implement Settings and Purge dead code**
+- [ ] **步骤 3: 实现 Settings 并清理死代码**
 
 ```bash
-# Clean up dead code that causes ImportError
+# 清理导致 ImportError 的死代码
 rm -f scripts/utils/__init__.py
 rm -f scripts/utils/llm_client.py
 ```
@@ -84,12 +84,12 @@ def get_settings() -> Settings:
     return Settings()
 ```
 
-- [ ] **Step 4: Run test to verify passing**
+- [ ] **步骤 4: 运行测试并确认通过**
 
-Run: `pytest tests/test_config.py -v`
-Expected: PASS
+运行: `pytest tests/test_config.py -v`
+预期结果: 通过 (PASS)
 
-- [ ] **Step 5: Commit changes**
+- [ ] **步骤 5: 提交更改 (Commit)**
 
 ```bash
 git add tests/test_config.py src/novel/config/settings.py
@@ -99,16 +99,16 @@ git commit -m "refactor(config): purge dead llm_client and standardise OPENAI_AP
 
 ---
 
-### Task 2: Base LLM Client
+### 任务 2: 基础 LLM 客户端 (Task 2: Base LLM Client)
 
-**Files:**
-- Create: `src/novel/core/llm/client.py`
-- Create: `tests/core/llm/test_client.py`
+**文件 (Files):**
+- 创建: `src/novel/core/llm/client.py`
+- 创建: `tests/core/llm/test_client.py`
 
-**Interfaces:**
-- Produces: `async def generate_text(prompt: str, system: str = "", model: str = "gpt-4o-mini") -> str`
+**接口定义 (Interfaces):**
+- 产出 (Produces): `async def generate_text(prompt: str, system: str = "", model: str = "gpt-4o-mini") -> str`
 
-- [ ] **Step 1: Write failing test**
+- [ ] **步骤 1: 编写失败测试**
 
 ```python
 # tests/core/llm/test_client.py
@@ -131,12 +131,12 @@ async def test_generate_text(monkeypatch):
     assert res == "mocked"
 ```
 
-- [ ] **Step 2: Run test to verify failure**
+- [ ] **步骤 2: 运行测试并确认失败**
 
-Run: `pytest tests/core/llm/test_client.py -v`
-Expected: FAIL with ModuleNotFoundError
+运行: `pytest tests/core/llm/test_client.py -v`
+预期结果: 失败 (ModuleNotFoundError)
 
-- [ ] **Step 3: Implement client.py**
+- [ ] **步骤 3: 实现 client.py**
 
 ```python
 # src/novel/core/llm/client.py
@@ -154,12 +154,12 @@ async def generate_text(prompt: str, system: str = "", model: str = "gpt-4o-mini
     return response.choices[0].message.content
 ```
 
-- [ ] **Step 4: Run test to verify passing**
+- [ ] **步骤 4: 运行测试并确认通过**
 
-Run: `pytest tests/core/llm/test_client.py -v`
-Expected: PASS
+运行: `pytest tests/core/llm/test_client.py -v`
+预期结果: 通过 (PASS)
 
-- [ ] **Step 5: Commit changes**
+- [ ] **步骤 5: 提交更改 (Commit)**
 
 ```bash
 git add src/novel/core/llm/client.py tests/core/llm/test_client.py
@@ -168,17 +168,17 @@ git commit -m "feat(llm): base async openai client"
 
 ---
 
-### Task 3: Structured Generator with Self-Healing
+### 任务 3: 带自愈重试的结构化生成器 (Task 3: Structured Generator with Self-Healing)
 
-**Files:**
-- Create: `src/novel/core/llm/structured.py`
-- Create: `tests/core/llm/test_structured.py`
+**文件 (Files):**
+- 创建: `src/novel/core/llm/structured.py`
+- 创建: `tests/core/llm/test_structured.py`
 
-**Interfaces:**
-- Consumes: `generate_text`
-- Produces: `async def generate_structured(prompt: str, schema: Type[BaseModel], system: str = "", retries: int = 2) -> BaseModel`
+**接口定义 (Interfaces):**
+- 消费 (Consumes): `generate_text`
+- 产出 (Produces): `async def generate_structured(prompt: str, schema: Type[BaseModel], system: str = "", retries: int = 2) -> BaseModel`
 
-- [ ] **Step 1: Write failing test**
+- [ ] **步骤 1: 编写失败测试**
 
 ```python
 # tests/core/llm/test_structured.py
@@ -204,12 +204,12 @@ async def test_generate_structured_retry_fail(monkeypatch):
         await generate_structured("Q", DummySchema, retries=1)
 ```
 
-- [ ] **Step 2: Run test to verify failure**
+- [ ] **步骤 2: 运行测试并确认失败**
 
-Run: `pytest tests/core/llm/test_structured.py -v`
-Expected: FAIL
+运行: `pytest tests/core/llm/test_structured.py -v`
+预期结果: 失败 (FAIL)
 
-- [ ] **Step 3: Implement structured.py**
+- [ ] **步骤 3: 实现 structured.py**
 
 ```python
 # src/novel/core/llm/structured.py
@@ -236,12 +236,12 @@ async def generate_structured(prompt: str, schema: Type[T], system: str = "", re
             current_prompt = prompt + f"\n\nLast attempt failed: {e}\nFix the JSON."
 ```
 
-- [ ] **Step 4: Run test to verify passing**
+- [ ] **步骤 4: 运行测试并确认通过**
 
-Run: `pytest tests/core/llm/test_structured.py -v`
-Expected: PASS
+运行: `pytest tests/core/llm/test_structured.py -v`
+预期结果: 通过 (PASS)
 
-- [ ] **Step 5: Commit changes**
+- [ ] **步骤 5: 提交更改 (Commit)**
 
 ```bash
 git add src/novel/core/llm/structured.py tests/core/llm/test_structured.py
@@ -250,16 +250,16 @@ git commit -m "feat(llm): structured pydantic generation with self-healing retri
 
 ---
 
-### Task 4: Memory Context Builder
+### 任务 4: 记忆与上下文构建器 (Task 4: Memory Context Builder)
 
-**Files:**
-- Create: `src/novel/core/memory/context_builder.py`
-- Create: `tests/core/memory/test_context_builder.py`
+**文件 (Files):**
+- 创建: `src/novel/core/memory/context_builder.py`
+- 创建: `tests/core/memory/test_context_builder.py`
 
-**Interfaces:**
-- Produces: `def build_chapter_context(project_dir: str) -> str`
+**接口定义 (Interfaces):**
+- 产出 (Produces): `def build_chapter_context(project_dir: str) -> str`
 
-- [ ] **Step 1: Write failing test**
+- [ ] **步骤 1: 编写失败测试**
 
 ```python
 # tests/core/memory/test_context_builder.py
@@ -276,12 +276,12 @@ def test_build_chapter_context(tmp_path):
     assert "magic" in ctx
 ```
 
-- [ ] **Step 2: Run test to verify failure**
+- [ ] **步骤 2: 运行测试并确认失败**
 
-Run: `pytest tests/core/memory/test_context_builder.py -v`
-Expected: FAIL
+运行: `pytest tests/core/memory/test_context_builder.py -v`
+预期结果: 失败 (FAIL)
 
-- [ ] **Step 3: Implement context_builder.py**
+- [ ] **步骤 3: 实现 context_builder.py**
 
 ```python
 # src/novel/core/memory/context_builder.py
@@ -300,12 +300,12 @@ def build_chapter_context(project_dir: str) -> str:
     return "\n\n".join(context_parts)
 ```
 
-- [ ] **Step 4: Run test to verify passing**
+- [ ] **步骤 4: 运行测试并确认通过**
 
-Run: `pytest tests/core/memory/test_context_builder.py -v`
-Expected: PASS
+运行: `pytest tests/core/memory/test_context_builder.py -v`
+预期结果: 通过 (PASS)
 
-- [ ] **Step 5: Commit changes**
+- [ ] **步骤 5: 提交更改 (Commit)**
 
 ```bash
 git add src/novel/core/memory/context_builder.py tests/core/memory/test_context_builder.py
@@ -314,17 +314,17 @@ git commit -m "feat(memory): text based context assembler"
 
 ---
 
-### Task 5: QA Workflow Loop
+### 任务 5: QA 质量工作流循环 (Task 5: QA Workflow Loop)
 
-**Files:**
-- Create: `src/novel/core/workflow/qa_loop.py`
-- Create: `tests/core/workflow/test_qa_loop.py`
+**文件 (Files):**
+- 创建: `src/novel/core/workflow/qa_loop.py`
+- 创建: `tests/core/workflow/test_qa_loop.py`
 
-**Interfaces:**
-- Consumes: `generate_structured`
-- Produces: `async def run_qa_loop(draft: str, context: str) -> str`
+**接口定义 (Interfaces):**
+- 消费: `generate_structured`
+- 产出: `async def run_qa_loop(draft: str, context: str) -> str`
 
-- [ ] **Step 1: Write failing test**
+- [ ] **步骤 1: 编写失败测试**
 
 ```python
 # tests/core/workflow/test_qa_loop.py
@@ -344,12 +344,12 @@ async def test_qa_loop_passes(monkeypatch):
     assert res == "Good text"
 ```
 
-- [ ] **Step 2: Run test to verify failure**
+- [ ] **步骤 2: 运行测试并确认失败**
 
-Run: `pytest tests/core/workflow/test_qa_loop.py -v`
-Expected: FAIL
+运行: `pytest tests/core/workflow/test_qa_loop.py -v`
+预期结果: 失败 (FAIL)
 
-- [ ] **Step 3: Implement qa_loop.py**
+- [ ] **步骤 3: 实现 qa_loop.py**
 
 ```python
 # src/novel/core/workflow/qa_loop.py
@@ -372,12 +372,12 @@ async def run_qa_loop(draft: str, context: str, max_iterations: int = 2) -> str:
     return current_text
 ```
 
-- [ ] **Step 4: Run test to verify passing**
+- [ ] **步骤 4: 运行测试并确认通过**
 
-Run: `pytest tests/core/workflow/test_qa_loop.py -v`
-Expected: PASS
+运行: `pytest tests/core/workflow/test_qa_loop.py -v`
+预期结果: 通过 (PASS)
 
-- [ ] **Step 5: Commit changes**
+- [ ] **步骤 5: 提交更改 (Commit)**
 
 ```bash
 git add src/novel/core/workflow/qa_loop.py tests/core/workflow/test_qa_loop.py
@@ -386,15 +386,15 @@ git commit -m "feat(workflow): implement state-machine QA loop for self-correcti
 
 ---
 
-### Task 6: CLI Headless Entrypoint
+### 任务 6: CLI 无头执行入口 (Task 6: CLI Headless Entrypoint)
 
-**Files:**
-- Create: `scripts/generate_engine.py`
+**文件 (Files):**
+- 创建: `scripts/generate_engine.py`
 
-**Interfaces:**
-- Produces: CLI tool to trigger generation and stop for Human-in-the-Loop review
+**接口定义 (Interfaces):**
+- 产出: 触发自动化生成并在 Human-in-the-Loop（人在环路）审查点暂停的 CLI 工具。
 
-- [ ] **Step 1: Implement generate_engine.py**
+- [ ] **步骤 1: 实现 generate_engine.py**
 
 ```python
 # scripts/generate_engine.py
@@ -423,7 +423,7 @@ if __name__ == '__main__':
     run()
 ```
 
-- [ ] **Step 2: Commit changes**
+- [ ] **步骤 2: 提交更改 (Commit)**
 
 ```bash
 git add scripts/generate_engine.py

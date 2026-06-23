@@ -38,3 +38,11 @@
 - <执行的命令或检查>
 - <通过结果，或未执行测试的原因>
 ```
+
+## 自动化工作流与 Superpower 规则
+
+- **强制应用 Superpower 工作流**：在接收到任何非微小的开发任务、架构设计或新功能请求时，不需要用户明确指示，Agent 必须强制执行以下流程：
+  1. 自动触发并应用 `brainstorming` 技能，探讨并编写 Specs 文档，并请求用户审查。
+  2. 在用户审查 Specs 通过后，自动触发 `writing-plans` 技能编写极度详尽的 TDD 实施计划，并请求用户审查。
+  3. 计划通过后，主动向用户提供 `subagent-driven-development` 或 `executing-plans` 两种执行方式供选择。
+- **无商量余地**：绝不允许“因为觉得项目太简单”或“这是一个小功能”而跳过上述 `brainstorming` (设计) 和 `writing-plans` (计划) 流程。必须严格产出 `docs/superpowers/specs/...` 和 `docs/superpowers/plans/...`。
