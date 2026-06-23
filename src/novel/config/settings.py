@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: SecretStr
     PROJECTS_DIR: str = "./novels"
     TEMPLATES_DIR: str = "./templates"
+    DATABASE_URL: str | None = None
     
     model_config = SettingsConfigDict(
         env_file=".env", 
