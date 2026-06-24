@@ -3,13 +3,14 @@ import json
 import sys
 from unittest.mock import AsyncMock, patch, MagicMock
 
-# Mock asyncpg before importing novel.core.memory.pg_context_engine
-sys.modules['asyncpg'] = MagicMock()
-
-from novel.core.memory.pg_context_engine import retrieve_context
+@pytest.fixture(autouse=True)
+def mock_asyncpg():
+    with patch.dict("sys.modules", {"asyncpg": MagicMock()}):
+        yield
 
 @pytest.mark.asyncio
-async def test_retrieve_context():
+async def test_retrieve_context(mock_asyncpg):
+    from novel.core.memory.pg_context_engine import retrieve_context
     with patch("novel.core.memory.pg_context_engine.get_pool") as mock_get_pool:
         mock_pool = MagicMock()
         mock_get_pool.return_value = mock_pool
@@ -37,10 +38,9 @@ async def test_retrieve_context():
         assert "project_id = $1" in query_call
 
 @pytest.mark.asyncio
-async def test_store_context():
+async def test_store_context(mock_asyncpg):
     from novel.core.memory.pg_context_engine import store_context
-    with patch("novel.core.memory.pg_context_engine.get_pool") as mock_get_pool, \
-         patch("novel.core.memory.pg_context_engine.generate_embedding") as mock_generate_embedding:
+    with patch("novel.core.memory.pg_context_engine.get_pool") as mock_get_pool:
         
         mock_pool = MagicMock()
         mock_get_pool.return_value = mock_pool
@@ -55,14 +55,13 @@ async def test_store_context():
         mock_transaction_context.__aenter__.return_value = AsyncMock()
         mock_connection.transaction = MagicMock(return_value=mock_transaction_context)
         
-        mock_generate_embedding.return_value = [0.1, 0.2, 0.3]
+        chunks_with_embeddings = [
+            ("Chunk 1", [0.1, 0.2, 0.3]),
+            ("Chunk 2", [0.4, 0.5, 0.6])
+        ]
         
-        mock_client = AsyncMock()
-        markdown_content = "Chunk 1\n\nChunk 2"
+        await store_context("proj_2", "cat_1", "file.md", chunks_with_embeddings)
         
-        await store_context(mock_client, "proj_2", "cat_1", "file.md", markdown_content)
-        
-        assert mock_generate_embedding.call_count == 2
         assert mock_connection.execute.call_count == 2
         
         # Check first insert
