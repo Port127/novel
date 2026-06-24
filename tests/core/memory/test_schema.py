@@ -1,15 +1,16 @@
 import sys
-from unittest.mock import MagicMock
-
-# Mock asyncpg before importing modules that depend on it
-sys.modules["asyncpg"] = MagicMock()
-
 import pytest
-from unittest.mock import AsyncMock, patch
-from novel.core.memory.schema import init_schema
+from unittest.mock import MagicMock, AsyncMock, patch
+
+@pytest.fixture(autouse=True)
+def mock_asyncpg():
+    with patch.dict("sys.modules", {"asyncpg": MagicMock()}):
+        yield
 
 @pytest.mark.asyncio
-async def test_init_schema():
+async def test_init_schema(mock_asyncpg):
+    from novel.core.memory.schema import init_schema
+    
     with patch("novel.core.memory.schema.get_pool") as mock_get_pool:
         mock_pool = MagicMock()
         mock_get_pool.return_value = mock_pool
