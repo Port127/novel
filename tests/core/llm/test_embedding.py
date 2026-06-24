@@ -1,10 +1,5 @@
-import sys
-from unittest.mock import AsyncMock, MagicMock
 import pytest
-
-# Mock openai module to avoid ModuleNotFoundError when running tests without real credentials/installation
-sys.modules["openai"] = MagicMock()
-
+from unittest.mock import AsyncMock
 from novel.core.llm.embedding import generate_embedding
 
 @pytest.mark.asyncio
@@ -21,3 +16,19 @@ async def test_generate_embedding():
         model="text-embedding-3-small",
         input="Test context"
     )
+
+@pytest.mark.asyncio
+async def test_generate_embedding_empty_text():
+    mock_client = AsyncMock()
+    with pytest.raises(ValueError, match="Text for embedding cannot be empty"):
+        await generate_embedding(mock_client, "   ")
+        
+@pytest.mark.asyncio
+async def test_generate_embedding_malformed_response():
+    mock_client = AsyncMock()
+    mock_response = AsyncMock()
+    mock_response.data = []  # Empty data
+    mock_client.embeddings.create.return_value = mock_response
+    
+    with pytest.raises(RuntimeError, match="Received malformed embedding response from OpenAI"):
+        await generate_embedding(mock_client, "Test")
