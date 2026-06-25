@@ -15,6 +15,7 @@ nm skill 可在多个阶段使用：
 | 1 | 检索同类题材世界观参考 |
 | 2 | 检索同类人物塑造参考 |
 | 3 | 检索同类大纲结构参考 |
+| 4 | 检索同类章节写法参考 |
 
 **推荐入口**：使用 `/create-novel` 自动引导 Pipeline 流程。
 
@@ -40,13 +41,15 @@ nm skill 可在多个阶段使用：
 
 | 能力 | 方法 | 说明 |
 |------|------|------|
-| 分类查询 | 读 `material_index.yaml` | 按 genre/elements/style/quality 筛选候选素材 |
+| 素材列表 | 执行 `nm material list` | 查已入库素材列表 |
 | 入库数量检查 | 执行 `nm material list --genre` | 查某类型已入库数量 |
 | 章节检索 | 执行 `nm search chapter` | 语义搜索同类章节写法 |
 | 大纲检索 | 执行 `nm search outline` | 查同类大纲结构 |
 | 人物检索 | 执行 `nm search character` | 查同类人物塑造 |
 | 世界观检索 | 执行 `nm search world` | 查同类世界观设定 |
-| 素材列表 | 执行 `nm material list` | 查已入库素材列表 |
+| 事件检索 | 执行 `nm search event` | 查同类事件场景 |
+| 细纲检索 | 执行 `nm search detail` | 查同类细纲结构 |
+| 深度分析检索 | 执行 `nm search insight` | 查 chapter_insights 深度分析 |
 
 ### ⛔ 不包含的能力
 
@@ -65,40 +68,168 @@ nm skill 可在多个阶段使用：
 素材库项目相对于写作项目的位置：
 
 ```
-../{素材库项目}/
+../novel-material/
 ```
 
-关键文件：
-- `../{素材库项目}/data/material_index.yaml` — 分类结果索引
-- `../{素材库项目}/data/novels/` — 已入库素材目录
+关键目录：
+- `../novel-material/data/novels/` — 已入库素材目录
+- `../novel-material/data/novels/{material_id}/` — 单个素材的完整数据
+
+---
+
+## 检索命令详情
+
+### 1. 章节检索
+
+```bash
+cd ../novel-material
+nm search chapter "开局困境" \
+  [--genre 玄幻] \
+  [--function 引入] \
+  [--tension-min 3] \
+  [--element 穿越] \
+  [--style 快节奏] \
+  [--plot-point 激励事件] \
+  [--mode quality|exact] \
+  [--limit 10] \
+  [--json]
+```
+
+**返回内容**：
+- 章节摘要
+- 功能标签（引入/发展/高潮/收尾）
+- 张力值（1-5）
+- 元素标签
+- 风格标签
+- 结构角色（激励事件/转折点/高潮）
+
+### 2. 大纲检索
+
+```bash
+cd ../novel-material
+nm search outline \
+  [--query 关键词] \
+  [--genre 玄幻] \
+  [--element 系统] \
+  [--structure 三幕式] \
+  [--mode quality|exact] \
+  [--limit 5] \
+  [--json]
+```
+
+**返回内容**：
+- 大纲结构（幕 → 序列 → 节拍）
+- 前提设定
+- 元素标签
+
+### 3. 人物检索
+
+```bash
+cd ../novel-material
+nm search character \
+  [--query 关键词] \
+  [--name 角色名] \
+  [--archetype 导师] \
+  [--role 主角|反派] \
+  [--genre 玄幻] \
+  [--mode quality|exact] \
+  [--limit 10] \
+  [--json]
+```
+
+**返回内容**：
+- 人物小传
+- 原型类型
+- 角色定位
+- 出场章节
+- 互动模式
+
+### 4. 世界观检索
+
+```bash
+cd ../novel-material
+nm search world "力量体系" \
+  [--dimension 修炼|势力|地理] \
+  [--genre 玄幻] \
+  [--importance 核心|次要] \
+  [--mode quality|exact] \
+  [--limit 5] \
+  [--json]
+```
+
+**返回内容**：
+- 世界观设定
+- 维度分类
+- 重要性标记
+- 关联章节
+
+### 5. 事件检索
+
+```bash
+cd ../novel-material
+nm search event "主角被压制后反杀" \
+  [--setting 战斗|修炼|社交] \
+  [--emotion 紧张|轻松|悲伤] \
+  [--mode quality|exact] \
+  [--limit 10] \
+  [--json]
+```
+
+**返回内容**：
+- 事件描述
+- 场景类型
+- 情绪基调
+- 所在章节
+
+### 6. 细纲检索
+
+```bash
+cd ../novel-material
+nm search detail \
+  [--query 关键词] \
+  [--genre 玄幻] \
+  [--act 1] \
+  [--mode quality|exact] \
+  [--limit 10] \
+  [--json]
+```
+
+**返回内容**：
+- 细纲结构
+- 幕号
+- 详细描述
+
+### 7. 深度分析检索
+
+```bash
+cd ../novel-material
+nm search insight "主角成长弧线" \
+  [--mode quality|exact] \
+  [--limit 10] \
+  [--json]
+```
+
+**返回内容**：
+- chapter_insights 深度分析
+- 题材感知洞察
+- 冲突设计
+- 读者期待
+- 写作启示
+
+---
+
+## 检索模式
+
+| 模式 | 说明 | 适用场景 |
+|------|------|---------|
+| `quality` | 默认模式，质量优先，三路召回 + RRF | 大多数场景 |
+| `exact` | 精确匹配，基于关键词 | 需要精确匹配时 |
 
 ---
 
 ## 使用流程
 
-### 1. 分类查询
-
-**目的**：从素材库筛选候选素材。
-
-**方法**：读取 `material_index.yaml`，按用户需求筛选。
-
-**筛选维度**：
-- `genre_primary` / `genre_secondary` — 题材类型
-- `elements` — 核心元素（穿越、系统、修仙、凡人流...）
-- `style` — 写作风格（narrative: 慢热/快节奏，pace: 紧凑/舒缓，tone: 冷峻/轻松）
-- `quality.score` — 质量评分（1-5，可按此排序）
-- `download_count` — 下载量（可按此排序）
-
-**示例输出**：
-```
-筛选结果：玄幻 + 穿越 + 系统，共 23 本候选
-按 quality.score 排序前 5：
-  - {书名} (score: 4.5, elements: 穿越/系统/杀伐果断)
-  - {书名} (score: 4.3, elements: 穿越/系统/极道修炼)
-  - ...
-```
-
-### 2. 入库数量检查
+### 1. 入库数量检查
 
 **目的**：判断某类型素材是否充足。
 
@@ -113,7 +244,7 @@ nm skill 可在多个阶段使用：
 建议：入库不足，需补充
 ```
 
-### 3. 入库建议
+### 2. 入库建议
 
 **目的**：提示用户补充素材。
 
@@ -125,46 +256,19 @@ nm skill 可在多个阶段使用：
 建议入库：{候选列表}
 
 请切换到素材库项目执行入库：
-  cd ../{素材库项目}
+  cd ../novel-material
   nm pipeline full {文件路径}
 ```
 
 **不自动执行入库**，只提示用户。
 
-### 4. 检索参考
+### 3. 检索参考
 
 **目的**：获取具体写作参考。
 
 **方法**：切换到素材库项目，执行检索命令。
 
 **前提**：目标素材已入库（否则返回空）。
-
----
-
-## CLI 命令速览
-
-执行命令需先切换到素材库项目：
-
-```bash
-cd ../{素材库项目}
-nm {命令}
-```
-
-### 检索命令
-
-```bash
-nm search chapter {关键词} [--limit N]    # 章节检索（语义搜索）
-nm search outline [--genre] [--query]     # 大纲检索
-nm search character [--archetype]         # 人物检索
-nm search world {关键词} [--dimension]    # 世界观检索
-```
-
-### 素材列表
-
-```bash
-nm material list                          # 列出所有已入库素材
-nm material list --genre {类型}           # 按题材筛选
-```
 
 ---
 
@@ -175,18 +279,18 @@ nm material list --genre {类型}           # 按题材筛选
 **用户意图**：写一本"玄幻 + 穿越 + 系统"的小说，找参考素材。
 
 **执行步骤**：
-1. 读 `material_index.yaml`
-2. 筛选：`genre_primary=玄幻` + `elements` 包含 `穿越`、`系统`
-3. 按 `quality.score` 排序 → 返回候选列表
-4. 执行 `nm material list --genre 玄幻` → 查已入库数量
-5. 判断是否充足 → 建议入库（如有需要）
+1. 切换到素材库项目：`cd ../novel-material`
+2. 执行：`nm material list --genre 玄幻`
+3. 判断是否充足 → 建议入库（如有需要）
+4. 执行：`nm search outline --genre 玄幻 --element 穿越 --element 系统`
+5. 返回大纲结构参考
 
 ### 场景 B：写具体章节，找同类写法
 
 **用户意图**：写第 1 章"开局困境"，找同类章节参考。
 
 **执行步骤**：
-1. 切换到素材库项目：`cd ../{素材库项目}`
+1. 切换到素材库项目：`cd ../novel-material`
 2. 执行：`nm search chapter "开局困境" --limit 10`
 3. 返回章节摘要 + 功能标签 + 张力值
 4. 用户 + Agent 糅合参考 → 写自己的章节
@@ -196,10 +300,20 @@ nm material list --genre {类型}           # 按题材筛选
 **用户意图**：写一个"导师型人物"，找参考。
 
 **执行步骤**：
-1. 切换到素材库项目：`cd ../{素材库项目}`
+1. 切换到素材库项目：`cd ../novel-material`
 2. 执行：`nm search character --archetype 导师`
 3. 返回人物小传 + 出场章节 + 互动模式
 4. 用户 + Agent 糅合参考 → 写自己的人物
+
+### 场景 D：深度分析参考
+
+**用户意图**：了解同类小说的写作技巧和读者期待。
+
+**执行步骤**：
+1. 切换到素材库项目：`cd ../novel-material`
+2. 执行：`nm search insight "主角被压制后反杀"`
+3. 返回深度分析 + 题材感知洞察
+4. 用户 + Agent 理解写作启示 → 应用到自己的作品
 
 ---
 
@@ -213,6 +327,9 @@ nm material list --genre {类型}           # 按题材筛选
 | outline | 大纲结构（幕→序列→节拍） | 理解节奏设计，糅合到自己的大纲 |
 | character | 人物小传 + 出场章节 + 互动模式 | 理解人物弧线，糅合到自己的人物 |
 | world | 世界观设定 + 关联章节 | 理解设定逻辑，糅合到自己的世界观 |
+| event | 事件描述 + 场景类型 + 情绪基调 | 理解事件设计，糅合到自己的情节 |
+| detail | 细纲结构 + 幕号 | 理解细节安排，糅合到自己的细纲 |
+| insight | 深度分析 + 题材感知 | 理解写作技巧，应用到自己的作品 |
 
 **处理原则**：
 1. 展示结构化摘要（不是原文复制）
@@ -225,7 +342,7 @@ nm material list --genre {类型}           # 按题材筛选
 ## 完成检查清单
 
 执行 nm skill 时确认：
-- [ ] 已读取 `material_index.yaml` 或执行 nm 命令
+- [ ] 已执行 nm 命令
 - [ ] 已按用户需求筛选/检索
 - [ ] 已检查已入库数量
 - [ ] 数量不足时已提示入库建议（不自动执行）
