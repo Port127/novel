@@ -14,3 +14,10 @@ def test_settings_loads_openai_api_key(monkeypatch):
     get_settings.cache_clear()
     settings = get_settings()
     assert settings.OPENAI_API_KEY.get_secret_value() == "sk-test-123"
+
+def test_settings_novel_material_dir(monkeypatch):
+    monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
+    monkeypatch.setenv("NOVEL_MATERIAL_DIR", "../novel-material-test")
+    get_settings.cache_clear()
+    settings = get_settings()
+    assert settings.NOVEL_MATERIAL_DIR == "../novel-material-test"

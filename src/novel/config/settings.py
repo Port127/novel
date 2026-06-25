@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     PROJECTS_DIR: str = "./novels"
     TEMPLATES_DIR: str = "./templates"
     DATABASE_URL: str | None = None
+    NOVEL_MATERIAL_DIR: str | None = None
     
     model_config = SettingsConfigDict(
         env_file=".env", 
