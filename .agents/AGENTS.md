@@ -70,17 +70,18 @@ Skills → Agent 交互讨论 → 直接生成 YAML/Markdown → 不调用脚本
 
 ### CLI 是管理工具
 
-管理类操作**通过 CLI 脚本完成**，因为：
+管理类操作**通过 CLI 命令完成**，因为：
 
 - 机械操作，无需创意参与
 - 执行明确，结果可预期
 - **只做文件系统操作，不调用 LLM**
 
-| CLI | 用途 |
-|-----|------|
-| `project.py` | 创建/删除/查看项目 |
-| `stats.py` | 统计字数、章数、进度 |
-| `export.py` | 导出 TXT/MD/EPUB |
+| 命令 | 用途 |
+|------|------|
+| `novel new` | 创建项目 |
+| `novel list` | 列出项目 |
+| `novel show` | 查看详情 |
+| `novel delete` | 删除项目 |
 
 ### nm 是素材检索入口
 
@@ -242,7 +243,7 @@ Skills → Agent 交互讨论 → 直接生成 YAML/Markdown → 不调用脚本
    ↓
 2. 询问导出格式（txt/md/epub）
    ↓
-3. 调用 export.py 导出
+3. Agent 生成导出文件
    ↓
 4. 展示导出路径
 ```
@@ -329,17 +330,12 @@ novels/{project_id}/
 ```
 novel/
 ├── novels/                    # 写作项目目录
-├── src/novel/                 # V3 核心引擎及 CLI
-│   ├── project.py             # 项目管理
-│   ├── stats.py               # 统计查看
-│   ├── export.py              # 导出
-│   └── utils/
-│       └── completeness_check.py  # 完善度检查
+├── src/novel/                 # 核心引擎
 ├── data/schemas/              # YAML Schema 定义
 └── .agents/skills/            # Agent Skills
 ```
 
-**注意**：generate.py、write.py、llm_client.py 已删除，Skills 直接生成内容。
+**核心原则**：创作类操作全部通过 Skills 完成，Agent 直接生成内容，不调用脚本。
 
 ---
 

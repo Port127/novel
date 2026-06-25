@@ -90,10 +90,7 @@ cp .env.example .env
 ```
 novel/
 ├── novels/                    # 写作项目目录
-├── src/novel/                 # 核心引擎及 CLI
-│   ├── project.py             # 项目管理
-│   ├── stats.py               # 统计查看
-│   └── export.py              # 导出
+├── src/novel/                 # 核心引擎
 ├── data/schemas/              # YAML Schema 定义
 └── .agents/skills/            # Agent Skills
 ```
