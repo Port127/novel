@@ -4,8 +4,9 @@
 
 ## 相关文档
 
-- [CLAUDE.md](../CLAUDE.md) — 项目规则与快速开始
+- [.agents/AGENTS.md](../.agents/AGENTS.md) — Agent 规则与工作流
 - [README.md](../README.md) — 项目入口与功能说明
+- [docs/USER_MANUAL.md](USER_MANUAL.md) — 用户使用手册
 - [data/schemas/](../data/schemas/) — YAML Schema 定义
 
 ---
@@ -484,7 +485,7 @@ planned → draft → written → revised
 | 顺序 | 文档 | 检查项 |
 |------|------|--------|
 | 1 | REQUIREMENTS.md | 需求描述是否更新？"不做"项是否调整？成功标准是否变化？ |
-| 2 | CLAUDE.md | CLI 命令是否更新？目录结构是否变化？状态流转是否调整？ |
+| 2 | .agents/AGENTS.md | CLI 命令是否更新？目录结构是否变化？状态流转是否调整？ |
 | 3 | README.md | 功能列表是否更新？使用示例是否有效？ |
 | 4 | data/schemas/ | YAML 结构是否更新？字段说明是否完整？ |
-| 5 | .claude/skills/ | Skill 流程是否更新？询问步骤是否调整？ |
+| 5 | .agents/skills/ | Skill 流程是否更新？询问步骤是否调整？ |
