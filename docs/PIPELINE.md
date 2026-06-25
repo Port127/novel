@@ -45,7 +45,7 @@
 
 **完善度检查**：
 ```bash
-python scripts/utils/completeness_check.py {project_id} worldbuilding --modules
+novel generate (内建检查) {project_id} worldbuilding --modules
 ```
 
 **阈值**：
@@ -74,7 +74,7 @@ python scripts/utils/completeness_check.py {project_id} worldbuilding --modules
 
 **完善度检查**：
 ```bash
-python scripts/utils/completeness_check.py {project_id} characters --modules
+novel generate (内建检查) {project_id} characters --modules
 ```
 
 **阈值**：
@@ -103,7 +103,7 @@ python scripts/utils/completeness_check.py {project_id} characters --modules
 
 **完善度检查**：
 ```bash
-python scripts/utils/completeness_check.py {project_id} outline --modules
+novel generate (内建检查) {project_id} outline --modules
 ```
 
 **阈值**：
@@ -128,7 +128,7 @@ python scripts/utils/completeness_check.py {project_id} outline --modules
 
 **完善度检查**：
 ```bash
-python scripts/utils/completeness_check.py {project_id} chapters --target {章节号}
+novel generate (内建检查) {project_id} chapters --target {章节号}
 ```
 
 **阈值**：

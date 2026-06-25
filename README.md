@@ -59,13 +59,13 @@ novel delete nv_xxxxxxxx
 
 ```bash
 # 创建项目（使用模板）
-python scripts/project.py create "我的小说" --genre 修仙 --author 作者名 --template default
+novel new "我的小说" --genre 修仙 --author 作者名 --template default
 
 # 查看项目列表
-python scripts/project.py list
+novel list
 
 # 查看项目详情
-python scripts/project.py show <project_id>
+novel show <project_id>
 
 # 使用 Skills 完成设定（推荐）
 ```
@@ -127,7 +127,7 @@ novel-v2/
 │       ├── exports/           # 导出文件
 │       └── history/           # AI 生成历史记录
 │
-├── scripts/                   # CLI 脚本（管理工具）
+├── src/novel/                 # V3 核心引擎及 CLI
 │   ├── project.py             # 项目管理
 │   ├── stats.py               # 统计查看
 │   ├── export.py              # 导出
@@ -194,10 +194,10 @@ character_draft: |
 ### 项目管理
 
 ```bash
-python scripts/project.py create "书名" --genre 类型 --author 作者 --template default
-python scripts/project.py list
-python scripts/project.py show <project_id>
-python scripts/project.py delete <project_id>
+novel new "书名" --genre 类型 --author 作者 --template default
+novel list
+novel show <project_id>
+novel delete <project_id>
 ```
 
 ### 设定生成（通过 Skills）
@@ -209,36 +209,36 @@ python scripts/project.py delete <project_id>
 # /generate-character — 生成人物
 # /generate-chapter — 章节规划
 # /write-chapter — 写作正文
-python scripts/generate.py world <project_id> [--prompt "描述"]
+novel generate world <project_id> [--prompt "描述"]
 
 # 大纲
-python scripts/generate.py outline <project_id> [--chapters 50] [--from-draft 草稿]
+novel generate outline <project_id> [--chapters 50] [--from-draft 草稿]
 
 # 人物
-python scripts/generate.py character <project_id> [--from-draft 草稿]
+novel generate character <project_id> [--from-draft 草稿]
 
 # 章节规划
-python scripts/generate.py chapter <project_id>
+novel generate chapter <project_id>
 ```
 
 ### 章节写作
 
 ```bash
 # 生成新章节
-python scripts/write.py new <project_id> <章节号> [--prompt "方向"]
+novel write new <project_id> <章节号> [--prompt "方向"]
 
 # 续写
-python scripts/write.py continue <project_id> <章节号> [--length 1000]
+novel write continue <project_id> <章节号> [--length 1000]
 
 # 改写（polish/expand/condense/rewrite）
-python scripts/write.py revise <project_id> <章节号> [--mode polish]
+novel write revise <project_id> <章节号> [--mode polish]
 ```
 
 ### 统计与导出
 
 ```bash
-python scripts/stats.py <project_id> [--detail]
-python scripts/export.py <project_id> [--format txt|md|epub]
+novel stats <project_id> [--detail]
+novel export <project_id> [--format txt|md|epub]
 ```
 
 ## 状态流转

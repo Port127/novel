@@ -46,3 +46,14 @@
   2. 在用户审查 Specs 通过后，自动触发 `writing-plans` 技能编写极度详尽的 TDD 实施计划，并请求用户审查。
   3. 计划通过后，主动向用户提供 `subagent-driven-development` 或 `executing-plans` 两种执行方式供选择。
 - **无商量余地**：绝不允许“因为觉得项目太简单”或“这是一个小功能”而跳过上述 `brainstorming` (设计) 和 `writing-plans` (计划) 流程。必须严格产出 `docs/superpowers/specs/...` 和 `docs/superpowers/plans/...`。
+
+## 强制前置思考（拦截规则）
+
+在输出任何实施计划（Implementation Plan）或调用 `write_to_file` / `replace_file_content` 等修改工具之前，你**必须**在思考或回复的开头明确输出以下格式的自检块：
+
+```superpower-check
+1. 当前处于流程的第几步？(1. Specs / 2. TDD Plans / 3. Execution)
+2. 用户是否已经明确审查 (review) 并批准了上一步的输出？(是/否)
+3. 如果未获明确批准，我接下来直接写代码或跑命令的行为是否违规？(是/否)
+```
+【系统红线】：只有当自检块显示“已获用户批准（第2项为是）”，你才可以继续往下调用工具；否则必须主动停下等待用户。

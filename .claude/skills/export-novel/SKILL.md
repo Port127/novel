@@ -24,7 +24,7 @@ TXT / Markdown / EPUB（需 pandoc）
 ### 4. 执行导出
 
 ```bash
-python scripts/export.py {project_id} --format {format}
+novel export {project_id} --format {format}
 ```
 
 ### 5. 展示结果

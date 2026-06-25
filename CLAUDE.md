@@ -242,22 +242,22 @@ Skills → Agent 交互讨论 → 直接生成 YAML/Markdown → 不调用脚本
 ### 项目管理
 
 ```bash
-python scripts/project.py create "书名" --genre 修仙 --author 作者名 --template default
-python scripts/project.py list
-python scripts/project.py show <project_id>
-python scripts/project.py delete <project_id>
+novel new "书名" --genre 修仙 --author 作者名 --template default
+novel list
+novel show <project_id>
+novel delete <project_id>
 ```
 
 ### 统计查看
 
 ```bash
-python scripts/stats.py <project_id> [--detail]
+novel stats <project_id> [--detail]
 ```
 
 ### 导出
 
 ```bash
-python scripts/export.py <project_id> --format txt|md|epub
+novel export <project_id> --format txt|md|epub
 ```
 
 ---
@@ -301,7 +301,7 @@ novels/{project_id}/
 ```
 novel/
 ├── novels/                    # 写作项目目录
-├── scripts/                   # CLI 脚本（只做管理操作，不调用 LLM）
+├── src/novel/                 # V3 核心引擎及 CLI
 │   ├── project.py             # 项目管理
 │   ├── stats.py               # 统计查看
 │   ├── export.py              # 导出
@@ -389,9 +389,9 @@ planned → draft → written → revised
 
 **完善度检查命令**：
 ```bash
-python scripts/utils/completeness_check.py {project_id} worldbuilding
-python scripts/utils/completeness_check.py {project_id} characters
-python scripts/utils/completeness_check.py {project_id} outline
+novel generate (内建检查) {project_id} worldbuilding
+novel generate (内建检查) {project_id} characters
+novel generate (内建检查) {project_id} outline
 ```
 
 ---

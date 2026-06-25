@@ -49,9 +49,9 @@ pipeline_status:
 对当前阶段检查前置依赖完善度：
 
 ```bash
-python scripts/utils/completeness_check.py {project_id} worldbuilding --modules
-python scripts/utils/completeness_check.py {project_id} characters --modules
-python scripts/utils/completeness_check.py {project_id} outline --modules
+novel generate (内建检查) {project_id} worldbuilding --modules
+novel generate (内建检查) {project_id} characters --modules
+novel generate (内建检查) {project_id} outline --modules
 ```
 
 ### 4. 引导执行当前阶段

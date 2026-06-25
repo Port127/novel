@@ -1,6 +1,9 @@
 import click
 import sys
+import asyncio
 from novel.pipeline.project_manager import ProjectManager
+from novel.pipeline.generation_pipeline import generate_worldbuilding, generate_characters, generate_outline
+from novel.pipeline.writing_pipeline import write_new_chapter
 
 @click.group()
 def cli():
@@ -68,6 +71,53 @@ def show(project_id: str):
     click.echo(f"Author: {data.get('author')}")
     click.echo(f"Genre: {data.get('genre')}")
     click.echo("=" * 60)
+
+
+@cli.group()
+def generate():
+    """Generate settings (world, character, outline)."""
+    pass
+
+@generate.command("world")
+@click.argument("project_id")
+@click.option("--prompt", default="", help="Prompt for worldbuilding")
+def gen_world(project_id: str, prompt: str):
+    """Generate worldbuilding settings."""
+    click.echo("Generating worldbuilding...")
+    res = asyncio.run(generate_worldbuilding(project_id, prompt))
+    click.secho(f"✅ Generated worldbuilding:\n{res}", fg="green")
+
+@generate.command("character")
+@click.argument("project_id")
+@click.option("--prompt", default="", help="Prompt for characters")
+def gen_character(project_id: str, prompt: str):
+    """Generate character settings."""
+    click.echo("Generating characters...")
+    res = asyncio.run(generate_characters(project_id, prompt))
+    click.secho(f"✅ Generated characters:\n{res}", fg="green")
+
+@generate.command("outline")
+@click.argument("project_id")
+def gen_outline(project_id: str):
+    """Generate novel outline."""
+    click.echo("Generating outline...")
+    res = asyncio.run(generate_outline(project_id))
+    click.secho(f"✅ Generated outline:\n{res}", fg="green")
+
+@cli.group()
+def write():
+    """Write chapter content."""
+    pass
+
+@write.command("new")
+@click.argument("project_id")
+@click.argument("chapter_id")
+@click.option("--prompt", default="", help="Directions for the chapter")
+def write_new(project_id: str, chapter_id: str, prompt: str):
+    """Write a new chapter."""
+    click.echo(f"Writing Chapter {chapter_id}...")
+    res = asyncio.run(write_new_chapter(project_id, chapter_id, prompt))
+    click.secho(f"✅ Chapter written:\n{res[:500]}...", fg="green")
 
 if __name__ == "__main__":
     cli()

@@ -27,7 +27,7 @@ description: 此技能仅在用户明确调用"/generate-outline"或直接提及
 
 ### 1. 确认项目
 
-运行 `python scripts/project.py list` 查看项目列表。如果用户未指定项目，询问选择。
+运行 `novel list` 查看项目列表。如果用户未指定项目，询问选择。
 
 ### 2. 检查前置完善度（强制）
 
@@ -35,8 +35,8 @@ description: 此技能仅在用户明确调用"/generate-outline"或直接提及
 
 调用完善度检查：
 ```bash
-python scripts/utils/completeness_check.py {project_id} worldbuilding
-python scripts/utils/completeness_check.py {project_id} characters
+novel generate (内建检查) {project_id} worldbuilding
+novel generate (内建检查) {project_id} characters
 ```
 
 检查结果处理：
