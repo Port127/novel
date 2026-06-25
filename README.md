@@ -13,11 +13,14 @@ AI 辅助小说写作工具，支持交互式创作和 CLI 管理。
 
 | 功能 | 说明 | 入口 |
 |------|------|------|
-| 世界观设定 | 力量体系、势力、地点 | `/create-novel` + `/nm` |
-| 人物设计 | 主角、反派、配角档案 | `/generate-character` |
-| 大纲规划 | 幕 → 序列 → 节拍结构 | `/generate-outline` |
-| 章节规划 | 大纲转章节摘要 + 张力曲线 | `/generate-chapter` |
-| 正文写作 | 生成、续写、改写 | `/write-chapter` |
+| 选题侦察 | 品类选择 + 选题分析 | `/scout-topic` |
+| 世界观设计 | 力量体系、势力、地点 | `/worldbuilding` + `/nm` |
+| 人设设计 | 主角、反派、配角档案 | `/design-character` |
+| 大纲设计 | 幕 → 序列 → 节拍结构 | `/design-outline` |
+| 细纲设计 | 大纲转章节节拍表 | `/design-chapters` |
+| 黄金三章 | 前3章结构验证 | `/golden-chapters` |
+| 付费卡点 | 最优切割点分析 | `/paywall-design` |
+| 日更写作 | 生成 + 质量门禁 | `/daily-write` |
 | 素材检索 | 参考同类小说 | `/nm` |
 | 导出 | TXT/Markdown/EPUB | `/export-novel` |
 
@@ -28,14 +31,17 @@ AI 辅助小说写作工具，支持交互式创作和 CLI 管理。
 直接和 Agent 对话，交互式完成创作：
 
 ```
-"帮我创建一部修仙小说"
-→ /create-novel 引导流程 → 世界观 → 人物 → 大纲 → 章节
+"帮我选个品类"
+→ /scout-topic → 选择品类 → 分析市场 → 选题报告
+
+"帮我设计世界观"
+→ /worldbuilding → 逐步讨论 → 生成设定文件
 
 "帮我设计主角"
-→ /generate-character → 逐步询问 → 生成人物档案
+→ /design-character → 逐步询问 → 爽感评估 → 生成人物档案
 
 "写第1章"
-→ /write-chapter → 确认摘要 → 生成正文 → 调整
+→ /daily-write → 确认摘要 → 生成正文 → 质量门禁 → 定稿
 ```
 
 ### 方式二：CLI 命令行管理

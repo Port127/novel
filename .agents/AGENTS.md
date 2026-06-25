@@ -57,14 +57,15 @@ Skills → Agent 交互讨论 → 直接生成 YAML/Markdown → 不调用脚本
 
 | Skill | 用途 | 交互流程 | 前置依赖 |
 |-------|------|----------|---------|
-| `create-novel` | 统一入口（推荐）| 依赖检查 → 流程引导 → 按顺序完成 | 无 |
-| `revise-setting` | 修订设定 | 选择类型 → 冲突检查 → 同步修订 | 设定存在 |
-| `generate-outline` | 生成大纲 | 完善度检查 → 核心设定 → 结构 → 确认 | 世界观+人物 ≥ 阈值 |
-| `generate-character` | 生成人物 | 完善度检查 → 主角 → 反派 → 配角 → 确认 | 世界观 ≥ 阈值 |
-| `generate-chapter` | 章节规划 | 确认大纲 → 转化章纲 → 张力曲线 | 大纲完善 |
-| `write-chapter` | 写正文 | 确认摘要 → 询问方向 → 生成 → 调整 | 章节规划存在 |
-| `show-project` | 查看进度 | 确认项目 → 展示状态统计 | 无 |
-| `export-novel` | 导出作品 | 确认项目 → 选择格式 → 导出 | 无 |
+| `scout-topic` | 选题侦察 | 选择品类 → 分析市场 → 选题报告 | 无 |
+| `worldbuilding` | 世界观设计 | 品类适配 → 交互讨论 → 生成设定 | 品类已选择 |
+| `design-character` | 人设设计 | 分层设计 → 爽感评估 → 生成档案 | 品类已选择 |
+| `design-outline` | 大纲设计 | 交互设计 → 节奏分析 → 生成大纲 | 品类+世界观 |
+| `design-chapters` | 细纲设计 | 章节拆分 → 节拍表 → 结构检查 | 大纲已完成 |
+| `golden-chapters` | 黄金三章 | 逐章生成 → 结构验证 → 生成报告 | 品类+人设+细纲 |
+| `paywall-design` | 付费卡点 | 卡点分析 → 过渡章设计 → 生成报告 | 大纲+黄金三章 |
+| `daily-write` | 日更写作 | 确认摘要 → 生成正文 → 质量门禁 → 定稿 | 章节已规划 |
+| `export-novel` | 导出作品 | 确认项目 → 选择格式 → 导出 | 正文已完成 |
 | `nm` | 素材检索 | 检索素材库（章节/大纲/人物/世界观/事件/细纲/深度分析）| 无 |
 
 ### CLI 是管理工具
@@ -91,152 +92,145 @@ Skills → Agent 交互讨论 → 直接生成 YAML/Markdown → 不调用脚本
 
 ## Skills 详情
 
-### /create-novel — 创作流程管理（推荐入口）
+### 完整创作流程（9 阶段）
 
-**核心原则**：小说应该"生长和演进"，而非"一次性生成"。
+```
+阶段0：选题侦察 (/scout-topic)
+    ↓
+阶段1：世界观设计 (/worldbuilding)
+    ↓ 完善度 ≥ 80%
+阶段2：人设设计 (/design-character)
+    ↓ 完善度 ≥ 70%
+阶段3：大纲设计 (/design-outline)
+    ↓ 完善度 ≥ 85%
+阶段4：细纲设计 (/design-chapters)
+    ↓ 目标章节完善度 = 100%
+阶段5：黄金三章锻造 (/golden-chapters)
+    ↓
+阶段6：付费卡点设计 (/paywall-design)
+    ↓
+阶段7：日更写作 (/daily-write)
+    ↓
+阶段8：导出作品 (/export-novel)
+```
+
+### /scout-topic — 选题侦察
 
 **交互流程：**
 
 ```
-1. 检查项目状态（planning/drafting/revising/completed）
+1. 选择目标品类（玄幻/都市/系统文等）
    ↓
-2. 检查依赖完善度（worldbuilding/characters/outline）
+2. 分析目标平台和读者群体
    ↓
-3. 根据状态引导用户进入正确阶段
+3. 推荐标签组合
    ↓
-4. 跳阶段时阻止并提示缺失设定
+4. 输出 settings/scout_report.yaml
 ```
 
-**流程阶段**：
+### /worldbuilding — 世界观设计
 
-| 阶段 | 设定类型 | 前置依赖 | 完善度阈值 |
-|------|---------|---------|-----------|
-| 1 | 世界观 | 无 | 80% |
-| 2 | 人物 | 世界观完善 | 70% |
-| 3 | 大纲 | 世界观+人物完善 | 85% |
-| 4 | 章节规划 | 大纲完善 | 100% |
-| 5 | 正文 | 章节规划存在 | - |
-
-**使用建议**：新项目推荐使用此 Skill，它会引导你逐步完成设定。
-
-### /revise-setting — 修订设定
+**前置依赖**：品类已选择
 
 **交互流程：**
 
 ```
-1. 选择设定类型（世界观/人物/大纲）
+1. 基于品类推荐世界观框架
    ↓
-2. 展示当前设定
+2. 逐步讨论力量体系、社会结构、基础规则
    ↓
-3. 询问修订内容
-   ↓
-4. 冲突检查（检查与其他设定的引用关系）
-   ↓
-5. 处理冲突（同步修订 / 取消）
-   ↓
-6. 完善度重新检查
+3. 生成 settings/worldbuilding/ 目录
 ```
 
-**冲突检查**：修订势力 → 检查人物关联；修订人物 → 检查大纲引用。
+### /design-character — 人设设计
 
-### /generate-outline — 生成大纲
+**前置依赖**：品类已选择
 
 **交互流程：**
 
 ```
-1. 确认项目（选择或创建）
+1. 分层设计主角、反派、配角
    ↓
-2. 检查前置完善度（强制）
-   - worldbuilding ≥ 80% ?
-   - characters ≥ 70% ?
-   - 不满足 → 提示缺失字段，引导先完成前置设定
+2. 爽感评估（打脸指数/CP感/反派恶心度）
    ↓
-3. 检查草稿来源（notes.yaml 或用户描述）
-   ↓
-4. 逐步询问：
-   - 核心设定：一句话概括故事
-   - 主角设定：名字、起点、终点
-   - 冲突设计：外部冲突、内部冲突
-   - 结构规划：章数、幕数
-   ↓
-5. 汇总展示，用户确认
-   ↓
-6. Agent 直接生成 outline/ 目录各文件
-   ↓
-7. 展示结果，询问是否调整
+3. 生成 settings/characters/ 目录
 ```
 
-### /generate-character — 生成人物
+### /design-outline — 大纲设计
+
+**前置依赖**：品类+世界观
 
 **交互流程：**
 
 ```
-1. 确认项目
+1. 交互式设计整体故事走向
    ↓
-2. 检查前置完善度（强制）
-   - worldbuilding ≥ 80% ?
-   - 不满足 → 提示缺失字段，引导先完成世界观设定
+2. 节奏检测和张力曲线分析
    ↓
-3. 检查已有世界观设定
-   ↓
-4. 逐步询问：
-   - 主角：名字、性格、起点状态、终点状态
-   - 反派：动机、与主角的冲突
-   - 关键配角：功能定位、人物弧线
-   - 人物关系：核心关系、张力来源
-   ↓
-5. 汇总展示，用户确认
-   ↓
-6. Agent 直接生成 characters/ 目录各文件
-   ↓
-7. 展示结果，询问是否调整
+3. 生成 settings/outline/ 目录
 ```
 
-### /generate-chapter — 章节规划
+### /design-chapters — 细纲设计
+
+**前置依赖**：大纲已完成
 
 **交互流程：**
 
 ```
-1. 确认项目
+1. 按大纲拆分章节
    ↓
-2. 检查大纲是否存在
+2. 每章生成节拍表
    ↓
-3. 确认章数范围
+3. 检查结构合理性
    ↓
-4. Agent 直接生成 chapters/_index.yaml
-   ↓
-5. 展示张力曲线，询问是否调整
+4. 生成 settings/chapters/_index.yaml
 ```
 
-### /write-chapter — 写正文
+### /golden-chapters — 黄金三章锻造
+
+**前置依赖**：品类+人设+细纲
 
 **交互流程：**
 
 ```
-1. 确认项目和章节号
+1. 按品类模板逐章生成前三章
    ↓
-2. 展示章节摘要和上下文
+2. 结构验证（首冲突/人设/金手指/小高潮）
    ↓
-3. 询问写作方向（可选）
-   ↓
-4. Agent 直接生成正文 Markdown
-   ↓
-5. 展示正文，询问：
-   - 接受？
-   - 续写？
-   - 改写（润色/扩展/精简）？
-   ↓
-6. 根据用户选择继续操作
+3. 生成 content/chapter_001-003.md
 ```
 
-### /show-project — 查看进度
+### /paywall-design — 付费卡点设计
+
+**前置依赖**：大纲+黄金三章
 
 **交互流程：**
 
 ```
-1. 确认项目
+1. 分析大纲找最优切割点
    ↓
-2. 展示：基本信息 + 统计 + 设定状态 + 章节进度
+2. 设计过渡章节奏（免费末章+付费首章）
+   ↓
+3. 生成 paywall_report.yaml
+```
+
+### /daily-write — 日更写作
+
+**前置依赖**：章节已规划
+
+**交互流程：**
+
+```
+1. 选择章节，检查衔接
+   ↓
+2. 生成正文（2000-3000 字/章）
+   ↓
+3. 质量门禁流水线：
+   - 事实核查（角色/时间/地点一致性）
+   - 去AI味（五层检测，≥ 60 分）
+   - 钩子审查（悬念强度/冲突密度，≥ 60 分）
+   ↓
+4. 通过所有门禁后定稿，写入 content/chapter_*.md
 ```
 
 ### /export-novel — 导出作品
@@ -359,10 +353,10 @@ planning → drafting → revising → completed
 
 | 状态 | 说明 | 允许操作 |
 |------|------|---------|
-| planning | 设定阶段 | Skills: generate-outline, generate-character, generate-chapter |
-| drafting | 写作阶段 | Skills: write-chapter |
-| revising | 修改阶段 | Skills: write-chapter (改写模式) |
-| completed | 完成 | CLI: export |
+| planning | 设定阶段 | Skills: worldbuilding, design-character, design-outline, design-chapters |
+| drafting | 写作阶段 | Skills: golden-chapters, paywall-design, daily-write |
+| revising | 修改阶段 | Skills: daily-write (改写模式) |
+| completed | 完成 | Skills: export-novel |
 
 ### 章节状态
 
