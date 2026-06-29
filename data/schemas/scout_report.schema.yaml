@@ -1,0 +1,198 @@
+# scout_report.schema.yaml
+# 选题侦察报告 schema
+# 对应文件: settings/scout_report.yaml
+
+type: object
+required:
+  - platform
+  - genre
+  - target_audience
+  - premise
+  - recommended_tags
+
+properties:
+  # ──────────────────────────────────────
+  # 基础信息
+  # ──────────────────────────────────────
+  platform:
+    type: string
+    description: 目标发布平台（番茄小说、起点、晋江等）
+  
+  channel:
+    type: string
+    description: 频道（男频/女频）
+    enum: [男频, 女频]
+  
+  genre:
+    type: string
+    description: 品类（都市、玄幻、系统、言情等）
+  
+  target_audience:
+    type: string
+    description: 目标读者群体描述
+
+  # ──────────────────────────────────────
+  # 核心设定
+  # ──────────────────────────────────────
+  premise:
+    type: string
+    description: 一句话前提（50字以上的故事概述）
+    minLength: 50
+  
+  core_hooks:
+    type: array
+    description: 核心钩子列表
+    items:
+      type: object
+      required: [name, description, hook_type]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        hook_type:
+          type: string
+
+  # ──────────────────────────────────────
+  # 标签组合
+  # ──────────────────────────────────────
+  recommended_tags:
+    type: object
+    required: [primary]
+    properties:
+      primary:
+        type: array
+        description: 主要标签（3-6个）
+        items: { type: string }
+        minItems: 3
+        maxItems: 6
+      secondary:
+        type: array
+        description: 次要标签
+        items: { type: string }
+  
+  tag_analysis:
+    type: object
+    description: 标签分析详情
+  
+  competition_analysis:
+    type: object
+    description: 竞争分析
+    properties:
+      overall_competition:
+        type: number
+        minimum: 0
+        maximum: 1
+      overall_potential:
+        type: number
+        minimum: 0
+        maximum: 1
+      reasoning:
+        type: string
+      market_window:
+        type: string
+
+  # ──────────────────────────────────────
+  # 品类感知的必要元素声明（新增）
+  # ──────────────────────────────────────
+  required_elements:
+    type: object
+    description: |
+      这本小说声明"需要什么元素"。质量门禁据此动态检查。
+      如果未声明，skill 使用品类默认值（见 spec Section 10.6）。
+    properties:
+      worldbuilding:
+        type: object
+        description: 世界观必需元素
+        properties:
+          required:
+            type: array
+            description: 必需元素列表
+            items: { type: string }
+            examples:
+              - [era_details, locations, social_rules]  # 都市
+              - [power_system, factions, locations]      # 玄幻
+          optional:
+            type: array
+            description: 可选元素列表
+            items: { type: string }
+      
+      characters:
+        type: object
+        description: 角色必需类型
+        additionalProperties:
+          type: string
+          enum: [required, optional]
+        examples:
+          - protagonist: required
+            love_interest: required
+            rival: optional
+          - protagonist: required
+            villain: required
+            supporting_cast: required
+      
+      opening_hook:
+        type: object
+        description: 开篇钩子类型
+        properties:
+          type:
+            type: string
+            description: 钩子类型
+            enum:
+              - golden_finger      # 玄幻/系统文：金手指展示
+              - reborn_advantage   # 都市重生：重生优势
+              - meet_cute          # 言情：相遇/化学反应
+              - conflict           # 通用：300字内冲突
+              - mystery_hook       # 悬疑：谜团钩子
+          description:
+            type: string
+            description: 具体描述（如"前世记忆+行业洞察"）
+      
+      structure:
+        type: object
+        description: 故事结构类型
+        properties:
+          type:
+            type: string
+            description: 结构类型
+            enum: [三幕式, 起承转合, 英雄之旅]
+          target_arcs:
+            type: integer
+            description: 目标卷数/弧数
+            minimum: 1
+          beats_per_arc:
+            type: array
+            description: 每弧的章节数（可选）
+            items: { type: integer }
+
+  # ──────────────────────────────────────
+  # 其他（自由扩展）
+  # ──────────────────────────────────────
+  heroine_framework:
+    type: object
+    description: 女主定位框架（如适用）
+  
+  song_mechanics:
+    type: object
+    description: 歌曲机制（如适用，特定品类）
+  
+  dual_track_structure:
+    type: object
+    description: 双线结构（如适用）
+  
+  risks:
+    type: array
+    description: 风险提示
+    items:
+      type: object
+      properties:
+        type:
+          type: string
+        severity:
+          type: string
+          enum: [低, 低-中, 中, 中-高, 高]
+        description:
+          type: string
+        mitigation:
+          type: array
+          items: { type: string }
