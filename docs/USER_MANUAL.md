@@ -58,7 +58,7 @@ novel list
 **交互流程**：
 1. 基于品类推荐世界观框架
 2. 逐步讨论力量体系、社会结构、基础规则
-3. 生成 `settings/worldbuilding/` 目录
+3. 生成 `settings/worldbuilding.yaml`
 
 ### /design-character — 人设设计
 
@@ -67,7 +67,7 @@ novel list
 **交互流程**：
 1. 分层设计主角、反派、配角
 2. 爽感评估（打脸指数/CP感/反派恶心度）
-3. 生成 `settings/characters/` 目录
+3. 生成 `settings/characters.yaml`
 
 ### /design-outline — 大纲设计
 
@@ -76,7 +76,7 @@ novel list
 **交互流程**：
 1. 交互式设计整体故事走向
 2. 节奏检测和张力曲线分析
-3. 生成 `settings/outline/` 目录
+3. 生成 `settings/outline.yaml` + `settings/arcs.yaml`
 
 ### /design-chapters — 细纲设计
 
@@ -86,7 +86,7 @@ novel list
 1. 按大纲拆分章节
 2. 每章生成节拍表
 3. 检查结构合理性
-4. 生成 `settings/chapters/_index.yaml`
+4. 生成 `settings/chapters_index.yaml`
 
 ### /golden-chapters — 黄金三章锻造
 

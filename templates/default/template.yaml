@@ -1,16 +1,19 @@
 # 模板元信息
 template_name: default
-template_version: 1.0
-description: 默认小说项目模板（800章 × 4000字规模）
+template_version: 2.0
+description: 默认小说项目模板（扁平化结构）
 
 structure:
   settings:
-    - worldbuilding/
-    - characters/
-    - outline/
-    - chapters/
+    - worldbuilding.yaml      # 世界观设定
+    - characters.yaml         # 人物设定
+    - outline.yaml            # 大纲
+    - arcs.yaml               # 细纲（Arc结构）
+    - pacing.yaml             # 节奏规划
+    - chapters_index.yaml     # 章节索引
+    - notes.yaml              # 草稿/笔记
   content:
-    - chapters/
+    - chapters/               # 正文（按章节）
 
 pipeline:
   stages:

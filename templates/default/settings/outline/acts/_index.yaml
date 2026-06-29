@@ -1,5 +1,0 @@
-# 幕索引模板
-acts: []                          # 幕列表（创建时填充）
-
-completeness: 0%
-min_required: 3                   # 最少幕数

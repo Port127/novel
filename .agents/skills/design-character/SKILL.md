@@ -77,12 +77,12 @@ design = await skill.design_character(
 
 ### 5. 生成人物文件
 
-Agent 直接生成 `settings/characters/` 目录各文件：
+Agent 直接生成 `settings/characters.yaml`：
 
-- `protagonist/protagonist.yaml`（主角）
-- `antagonist/antagonist_*.yaml`（反派）
-- `supporting/supporting_*.yaml`（配角）
-- `relationships.yaml`（关系网络）
+- 主角设定
+- 反派设定
+- 配角设定
+- 关系网络
 
 ### 6. 展示与调整
 
@@ -92,10 +92,7 @@ Agent 直接生成 `settings/characters/` 目录各文件：
 
 ## 输出文件
 
-- `settings/characters/protagonist/protagonist.yaml`
-- `settings/characters/antagonist/antagonist_*.yaml`
-- `settings/characters/supporting/supporting_*.yaml`
-- `settings/characters/relationships.yaml`
+- `settings/characters.yaml`
 
 ## 参考
 

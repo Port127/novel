@@ -1,0 +1,47 @@
+# 人物设定模板
+# [R] = 必填字段，[O] = 可选字段
+
+# 主角
+protagonist:                  # [R]
+  name: ""                    # 姓名
+  archetype: ""               # 人物原型（废柴逆袭/天才型/导师型/其他）
+  description: ""             # 核心描述
+  traits: []                  # 性格特征
+  psychology:                 # 心理维度
+    fatal_flaw: ""            # 关键缺陷
+    obsession: ""             # 执念
+    soft_spot: ""             # 软肋
+    misbelief: ""             # 误判
+  arc:                        # 人物弧线
+    type: ""                  # 弧线类型（成长/堕落/悲剧/探索/扁平）
+    start: ""                 # 起点状态
+    end: ""                   # 终点状态
+  appearance:                 # 外貌描述
+    age: ""
+    gender: ""
+    features: []
+
+# 女主（可多个）
+heroines: []                  # [O] 女主列表
+# 每个女主包含：
+#   name, age, appearance, personality, background
+#   archetype（角色原型）
+#   function_in_story（故事功能）
+#   relationship_to_mc（与男主关系）
+#   romance_arc（感情线）
+#   dungeon_participation（副本参与）
+
+# 配角
+supporting_characters: []     # [O] 配角列表
+# 每个配角包含：
+#   name, role, description, traits, arc
+
+# 反派
+antagonists: []               # [O] 反派列表
+# 每个反派包含：
+#   name, type, motivation, methods, conflict_with_protagonist
+
+# 关系网络
+relationships: []             # [O] 人物关系
+# 每条关系包含：
+#   from, to, type, description

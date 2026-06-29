@@ -1,7 +1,0 @@
-# 核心设定模板
-premise_statement: ""             # [R] 核心前提（一句话概括，≥50字）
-themes: []                        # [R] 主题标签（至少2个）
-tones: []                         # [O] 基调标签
-
-target_chapters: 800              # [R] 目标章数
-target_words_per_chapter: 4000    # [R] 目标单章字数

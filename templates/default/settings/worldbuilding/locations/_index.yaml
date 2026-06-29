@@ -1,5 +1,0 @@
-# 地点索引模板
-locations: []                     # 地点列表（创建时填充）
-
-completeness: 0%
-min_required: 1                   # 最少地点数

@@ -140,7 +140,7 @@ Skills → Agent 交互讨论 → 直接生成 YAML/Markdown → 不调用脚本
    ↓
 2. 逐步讨论力量体系、社会结构、基础规则
    ↓
-3. 生成 settings/worldbuilding/ 目录
+3. 生成 settings/worldbuilding.yaml
 ```
 
 ### /design-character — 人设设计
@@ -154,7 +154,7 @@ Skills → Agent 交互讨论 → 直接生成 YAML/Markdown → 不调用脚本
    ↓
 2. 爽感评估（打脸指数/CP感/反派恶心度）
    ↓
-3. 生成 settings/characters/ 目录
+3. 生成 settings/characters.yaml
 ```
 
 ### /design-outline — 大纲设计
@@ -168,7 +168,7 @@ Skills → Agent 交互讨论 → 直接生成 YAML/Markdown → 不调用脚本
    ↓
 2. 节奏检测和张力曲线分析
    ↓
-3. 生成 settings/outline/ 目录
+3. 生成 settings/outline.yaml + settings/arcs.yaml
 ```
 
 ### /design-chapters — 细纲设计
@@ -184,7 +184,7 @@ Skills → Agent 交互讨论 → 直接生成 YAML/Markdown → 不调用脚本
    ↓
 3. 检查结构合理性
    ↓
-4. 生成 settings/chapters/_index.yaml
+4. 生成 settings/chapters_index.yaml
 ```
 
 ### /golden-chapters — 黄金三章锻造
@@ -298,26 +298,19 @@ novel export <project_id> --format txt|md|epub
 ```
 novels/{project_id}/
 ├── project.yaml           # 项目元信息
-├── settings/              # 设定文件（模块化目录）
-│   ├── worldbuilding/
-│   │   ├── power_system.yaml
-│   │   ├── factions/_index.yaml + faction_*.yaml
-│   │   ├── locations/_index.yaml + location_*.yaml
-│   │   └── lore/*.yaml
-│   ├── characters/
-│   │   ├── protagonist/protagonist.yaml
-│   │   ├── antagonist/_index.yaml + antagonist_*.yaml
-│   │   ├── supporting/_index.yaml + supporting_*.yaml
-│   │   └── relationships.yaml
-│   ├── outline/
-│   │   ├── premise.yaml
-│   │   ├── acts/_index.yaml + act_*.yaml
-│   │   ├── hooks.yaml
-│   │   └── pacing.yaml
-│   ├── chapters/
-│   │   ├── _index.yaml
-│   │   └── chapter_template.yaml
+├── settings/              # 设定文件（扁平化结构）
+│   ├── worldbuilding.yaml # 世界观设定
+│   ├── characters.yaml    # 人物设定
+│   ├── outline.yaml       # 大纲
+│   ├── arcs.yaml          # 细纲（Arc结构）
+│   ├── pacing.yaml        # 节奏规划
+│   ├── chapters_index.yaml # 章节索引
 │   └── notes.yaml         # 草稿/笔记
+├── references/            # 项目特有参考资料
+│   ├── 2009_era_details.yaml
+│   ├── locations/
+│   ├── dungeons/
+│   └── ...
 ├── content/chapters/      # 章节正文
 │   └── chapter_*.md
 ├── drafts/                # 草稿文件夹

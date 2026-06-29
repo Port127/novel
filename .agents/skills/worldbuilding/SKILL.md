@@ -51,11 +51,12 @@ description: 世界观设计。与 Agent 交互讨论力量体系、社会结构
 
 ### 4. 生成文件
 
-Agent 直接生成 `settings/worldbuilding/` 目录各文件：
-- `power_system.yaml`（力量体系）
-- `factions/faction_*.yaml`（势力档案）
-- `locations/location_*.yaml`（地点档案）
-- `lore/*.yaml`（传说/术语）
+Agent 直接生成 `settings/worldbuilding.yaml` 单文件，包含：
+- school_info（学校信息）
+- era_context（时代背景）
+- university_life（大学生活）
+- social_context（社会背景）
+- foreknowledge_advantages（先知优势）
 
 ### 5. 展示与调整
 
@@ -65,11 +66,8 @@ Agent 直接生成 `settings/worldbuilding/` 目录各文件：
 
 ## 输出文件
 
-- `settings/worldbuilding/power_system.yaml`
-- `settings/worldbuilding/factions/`
-- `settings/worldbuilding/locations/`
-- `settings/worldbuilding/lore/`
+- `settings/worldbuilding.yaml`
 
 ## 参考
 
-- 模板: `templates/default/settings/worldbuilding/`
+- 模板: `templates/default/settings/`

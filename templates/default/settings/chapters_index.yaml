@@ -1,0 +1,20 @@
+# 章节索引模板
+# [R] = 必填字段，[O] = 可选字段
+
+# 章节统计
+target_chapters: 0            # [R] 目标章数
+completed_chapters: 0         # [R] 已完成章数
+
+# 章节列表
+chapters: []
+# 每章包含：
+#   number: 0                 # 章节号
+#   title: ""                 # 标题
+#   summary: ""               # 摘要
+#   word_count: 0             # 字数
+#   tension: 0                # 张力值（1-10）
+#   status: planned           # 状态（planned/draft/written/revised）
+#   beats: []                 # 节拍列表
+#   characters: []            # 出场人物
+#   key_events: []            # 关键事件
+#   emotional_tone: ""        # 情感基调

@@ -1,8 +1,0 @@
-# 单龙套档案模板
-character_id: ""                  # [R] 龙套ID
-name: ""                          # [R] 姓名/称呼
-function: ""                      # [R] 功能定位
-description: ""                   # [O] 简短描述
-
-appearance:                       # [O] 外貌特征
-  features: []

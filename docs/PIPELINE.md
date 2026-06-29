@@ -9,10 +9,10 @@
 | 阶段 | 名称 | Skills | 输出 | 完善度阈值 |
 |------|------|--------|------|-----------|
 | 0 | 选题侦察 | scout-topic | `settings/scout_report.yaml` | - |
-| 1 | 世界观设定 | worldbuilding + nm | `settings/worldbuilding/` | 80% |
-| 2 | 人设设计 | design-character | `settings/characters/` | 70% |
-| 3 | 大纲设计 | design-outline | `settings/outline/` | 85% |
-| 4 | 细纲设计 | design-chapters | `settings/chapters/` | 100%（每章）|
+| 1 | 世界观设定 | worldbuilding + nm | `settings/worldbuilding.yaml` | 80% |
+| 2 | 人设设计 | design-character | `settings/characters.yaml` | 70% |
+| 3 | 大纲设计 | design-outline | `settings/outline.yaml` + `settings/arcs.yaml` | 85% |
+| 4 | 细纲设计 | design-chapters | `settings/chapters_index.yaml` | 100%（每章）|
 | 5 | 黄金三章 | golden-chapters | `content/chapter_001-003.md` | - |
 | 6 | 付费卡点 | paywall-design | `paywall_report.yaml` | - |
 | 7 | 日更写作 | daily-write | `content/chapter_*.md` | - |
@@ -53,13 +53,10 @@
 **Skills 组合**：
 1. `/nm` — 检索同类题材素材参考
 2. `/worldbuilding` — 交互式设计世界观
-3. Agent 直接生成 — 写入 worldbuilding/ 目录各文件
+3. Agent 直接生成 — 写入 worldbuilding.yaml
 
 **输出**：
-- `worldbuilding/power_system.yaml` — 力量体系
-- `worldbuilding/factions/faction_*.yaml` — 势力档案（≥3个）
-- `worldbuilding/locations/location_*.yaml` — 地点档案（≥1个）
-- `worldbuilding/lore/*.yaml` — 背景知识（可选）
+- `settings/worldbuilding.yaml` — 世界观设定（力量体系、社会结构、背景知识等）
 
 **完善度检查**：
 ```bash
@@ -82,13 +79,10 @@ novel generate (内建检查) {project_id} worldbuilding --modules
 **Skills 组合**：
 1. `/nm` — 检索同类人物塑造参考
 2. `/design-character` — 交互式人设设计 + 爽感评估
-3. Agent 直接生成 — 写入 characters/ 目录各文件
+3. Agent 直接生成 — 写入 characters.yaml
 
 **输出**：
-- `characters/protagonist/protagonist.yaml` — 主角档案
-- `characters/antagonist/antagonist_*.yaml` — 反派档案（≥1个）
-- `characters/supporting/supporting_*.yaml` — 配角档案（≥3个）
-- `characters/relationships.yaml` — 关系网络
+- `settings/characters.yaml` — 人物设定（主角、反派、配角、关系网络）
 
 **完善度检查**：
 ```bash

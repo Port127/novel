@@ -1,0 +1,33 @@
+# 世界观设定模板
+# [R] = 必填字段，[O] = 可选字段
+
+# 基础信息
+setting_type: ""              # [R] 世界观类型（玄幻/都市/科幻/历史/其他）
+time_period: ""               # [R] 时代背景
+location: ""                  # [R] 主要地点
+
+# 力量体系（如有）
+power_system:                 # [O]
+  name: ""                    # 体系名称
+  type: ""                    # 类型（修炼/魔法/科技/超能力/无）
+  levels: []                  # 等级划分
+  rules: []                   # 核心规则
+  limitations: []             # 限制条件
+
+# 社会结构
+social_structure:             # [O]
+  classes: []                 # 社会阶层
+  factions: []                # 主要势力
+  rules: []                   # 社会规则
+
+# 基础规则
+core_rules: []                # [O] 世界运行的核心规则
+
+# 时代/文化细节
+era_details:                  # [O]
+  technology: []              # 科技水平
+  culture: []                 # 文化特征
+  economy: []                 # 经济状况
+
+# 参考素材
+references: []                # [O] 参考的世界观素材

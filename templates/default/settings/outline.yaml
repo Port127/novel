@@ -1,0 +1,29 @@
+# 大纲模板
+# [R] = 必填字段，[O] = 可选字段
+
+# 核心设定
+premise:                      # [R]
+  statement: ""               # 一句话概括故事核心
+  themes: []                  # 主题
+  tones: []                   # 基调
+  target_chapters: 0          # 目标章数
+  target_words_per_chapter: 0 # 单章目标字数
+
+# 故事结构
+structure:                    # [R]
+  total_acts: 0               # 总幕数（建议三幕式）
+  acts: []                    # 各幕概要
+  # 每幕包含：
+  #   name, chapters, core_events, turning_point
+
+# 伏笔与回收
+hooks:                        # [O]
+  setup: []                   # 埋设的伏笔
+  development: []             # 发展的伏笔
+  payoff: []                  # 回收的伏笔
+
+# 节奏规划
+pacing:                       # [O]
+  overall: ""                 # 整体节奏描述
+  tension_curve: []           # 张力曲线
+  climax_points: []           # 高潮节点
