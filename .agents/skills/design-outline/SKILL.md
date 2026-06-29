@@ -1,82 +1,162 @@
 ---
 name: design-outline
-description: 大纲设计。交互式设计整体故事走向，检测节奏问题。
+description: 大纲设计。交互式设计故事走向、结构规划、节奏检测。
 ---
 
-# 大纲设计
+# design-outline（大纲设计）
 
-交互式设计小说大纲，含节奏检测和张力曲线分析。
-
----
-
-## 前置依赖
-
-- 世界观已设计（`settings/worldbuilding.yaml` 存在）
-- 品类已选择
+> **用途**：设计小说的整体故事大纲，包括幕/序列/节拍结构、节奏曲线、伏笔网络。
+> **前置条件**：
+> - `settings/scout_report.yaml` 存在（品类已确定）
+> - `settings/worldbuilding.yaml` 存在（世界观已完成）
+> - `settings/characters.yaml` 存在（人设已完成，可选但推荐）
+> **输出文件**：`settings/outline.yaml`、`settings/arcs.yaml`、`settings/pacing.yaml`
 
 ---
 
-## 工作流程
+## 核心原则
 
-### 1. 确认项目
+1. **结构类型匹配**：根据 `scout_report.yaml` 的 `required_elements.structure.type` 选择结构框架（三幕式/起承转合/英雄之旅）。
+2. **品类感知**：不同品类的节奏模式、高潮密度、伏笔风格不同。
+3. **嵌套结构**：全书 → 幕（Act）→ 序列（Sequence）→ 节拍（Beat），层层细化。
+4. **节奏优先**：大纲阶段就要检测节奏问题，避免写到中期崩盘。
+5. **伏笔可追踪**：每个伏笔有明确的埋设章节和回收章节。
 
-运行 `novel list`，选择项目。
+---
 
-### 2. 交互式询问（借鉴旧 generate-outline 模式）
+## Phase 定义
 
-按以下顺序逐步确认：
+### Phase 1：品类适配与结构选择
 
-**核心设定**：一句话概括故事核心
+**入口条件**：scout_report.yaml + worldbuilding.yaml 存在
+**目标**：根据品类和结构类型加载对应框架
 
-**主角设定**：名字、起点状态、终点状态
+**步骤**：
+1. 读取 `scout_report.yaml` 的 `genre` 和 `required_elements.structure`
+2. 确定结构类型：
+   - `三幕式`（默认）：适合大多数品类
+   - `起承转合`：适合言情、都市日常
+   - `英雄之旅`：适合玄幻、冒险
+3. 读取 `references/outline-structure.md`，加载对应结构模板
+4. 读取 `references/plot-frameworks.md`，加载品类对应的剧情框架
+5. 展示结构方案和总章数/卷数建议
+6. 确认整体规划
 
-**冲突设计**：
-- 外部冲突（主要对手/障碍）
-- 内部冲突（主角的心理矛盾）
+**出口条件**：结构类型和总体框架已确定
+**加载 References**：`outline-structure.md`、`plot-frameworks.md`
 
-**结构规划**：
-- 总章数
-- 幕数（建议三幕式）
-- 每幕核心事件
+---
 
-**确认生成**：汇总后请用户确认
+### Phase 2：骨架搭建（幕级规划）
 
-### 3. 节奏分析
+**入口条件**：结构类型已确定
+**目标**：完成幕级大纲
 
-生成大纲后调用引擎检测节奏：
+**步骤**：
+1. 根据结构类型生成幕级骨架
+2. 为每幕确定：幕名称、章节范围、核心冲突、转折点、主角状态变化
+3. 读取 `references/tension-curve.md`，绘制幕级张力曲线
+4. 展示幕级大纲，请用户确认
 
-```python
-from novel.core.skills.ask_architect import AskArchitectSkill
-skill = AskArchitectSkill()
-verdict = skill.evaluate({"chapters": chapter_list})
-```
+**出口条件**：幕级大纲已确认
+**加载 References**：`tension-curve.md`
 
-检查项：
-- 是否连续 3 章以上慢节奏？
-- 张力曲线是否合理？
-- 高潮节点分布是否均匀？
+---
 
-### 4. 生成大纲文件
+### Phase 3：序列细化（序列级规划）
 
-Agent 直接生成 `settings/outline.yaml` 单文件，包含：
-- premise（核心设定）
-- acts（各幕结构）
-- hooks（伏笔-回收）
+**入口条件**：幕级大纲已确认
+**目标**：将每幕拆分为序列，完成序列级大纲
 
-### 5. 展示与调整
+**步骤**：
+1. 每幕拆分为 2-5 个序列（每个序列约 10-30 章）
+2. 为每个序列确定：序列名称、章节范围、序列目标、序列小高潮、涉及角色
+3. 读取 `references/pacing-guide.md`，检查序列间的快慢交替
+4. 读取 `references/foreshadowing-guide.md`，规划伏笔的埋设与回收位置
+5. 展示序列级大纲，请用户确认
 
-展示大纲结构 + 节奏分析报告。询问是否需要调整。
+**出口条件**：序列级大纲已确认
+**加载 References**：`pacing-guide.md`、`foreshadowing-guide.md`
+
+---
+
+### Phase 4：节拍填充（节拍级规划）
+
+**入口条件**：序列级大纲已确认
+**目标**：为关键序列填充节拍
+
+**步骤**：
+1. 为每个序列设计 3-8 个节拍
+2. 每个节拍包含：节拍编号、名称、所在章节、事件描述、张力值（1-5）、涉及伏笔操作
+3. 运行 `scripts/check-pacing.js` 检测节奏问题
+4. 根据检测结果调整节拍
+5. 展示节拍级大纲，请用户确认
+
+**出口条件**：节拍级大纲已确认且节奏检测通过
+**加载 References**：无
+
+---
+
+### Phase 5：落盘验证
+
+**入口条件**：所有层级大纲已确认
+**目标**：生成输出文件并验证
+
+**步骤**：
+1. 汇总所有大纲数据
+2. 写入 `settings/outline.yaml`
+3. 写入 `settings/arcs.yaml`
+4. 写入 `settings/pacing.yaml`
+5. 运行 `scripts/check-outline.js` 验证结构完整性
+6. 运行 `scripts/check-pacing.js` 验证节奏无问题
+7. 清理 `_progress.md`
+
+**出口条件**：三个输出文件已生成且通过验证
+**加载 References**：无
+
+---
+
+## 质量门禁
+
+| 检查项 | 工具 | 说明 |
+|--------|------|------|
+| 结构完整性 | check-outline.js | 根据结构类型检查幕/序列/节拍是否完整 |
+| 节奏健康度 | check-pacing.js | 检测连续慢章、高潮间距过大等问题 |
+| 伏笔闭合 | check-outline.js | 检查所有伏笔是否已安排回收 |
+
+---
+
+## 断点恢复
+
+**状态文件**：`_progress.md`
+**格式**：同 scout-topic
+**恢复逻辑**：跳到最后一个 in_progress 的 Phase
 
 ---
 
 ## 输出文件
 
-- `settings/outline.yaml`
-- `settings/arcs.yaml`
-- `settings/pacing.yaml`
+- `settings/outline.yaml`：主大纲
+- `settings/arcs.yaml`：叙事弧线（卷/弧级别）
+- `settings/pacing.yaml`：节奏曲线（章节级张力标注）
 
-## 参考
+---
 
-- Schema: `data/schemas/outline.schema.yaml`
-- 引擎: `src/novel/core/skills/ask_architect.py`
-- 旧模式: 旧 generate-outline 的交互流程
+## References 索引
+
+| Phase | References | 用途 |
+|-------|-----------|------|
+| 1 | outline-structure.md、plot-frameworks.md | 结构方法论 + 品类剧情框架 |
+| 2 | tension-curve.md | 幕级张力曲线设计 |
+| 3 | pacing-guide.md、foreshadowing-guide.md | 节奏设计 + 伏笔规划 |
+| 4 | — | 节拍填充 + 节奏检测 |
+| 5 | — | 落盘验证 |
+
+---
+
+## 下一步
+
+大纲完成后，可进入：
+- `/golden-chapters`：黄金三章设计
+- `/paywall-design`：付费墙设计
+- `/design-chapters`：细纲设计
