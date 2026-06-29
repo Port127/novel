@@ -3,7 +3,7 @@ from pydantic import SecretStr
 from functools import lru_cache
 
 class Settings(BaseSettings):
-    OPENAI_API_KEY: SecretStr
+    OPENAI_API_KEY: SecretStr | None = None
     PROJECTS_DIR: str = "./novels"
     TEMPLATES_DIR: str = "./templates"
     DATABASE_URL: str | None = None
