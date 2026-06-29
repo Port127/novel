@@ -1,6 +1,7 @@
 # Novel V2 Pipeline 流程
 
 > Pipeline 是 Skills 的执行流程，确保创作按正确顺序进行。
+> 所有创作 skill 采用 V4 自包含结构：Phase 化流程 + references/ + scripts/。
 
 ---
 
@@ -11,7 +12,7 @@
 | 0 | 选题侦察 | scout-topic | `settings/scout_report.yaml` | - |
 | 1 | 世界观设定 | worldbuilding + nm | `settings/worldbuilding.yaml` | 80% |
 | 2 | 人设设计 | design-character | `settings/characters.yaml` | 70% |
-| 3 | 大纲设计 | design-outline | `settings/outline.yaml` + `settings/arcs.yaml` | 85% |
+| 3 | 大纲设计 | design-outline | `settings/outline.yaml` + `settings/arcs.yaml` + `settings/pacing.yaml` | 85% |
 | 4 | 细纲设计 | design-chapters | `settings/chapters_index.yaml` | 100%（每章）|
 | 5 | 黄金三章 | golden-chapters | `content/chapter_001-003.md` | - |
 | 6 | 付费卡点 | paywall-design | `paywall_report.yaml` | - |
@@ -35,14 +36,16 @@
 
 ### 阶段 0：选题侦察
 
-**目标**：选择品类，分析市场。
+**目标**：选择品类，分析市场，配置品类感知参数。
 
 **Skills 组合**：
-1. `/scout-topic` — 品类选择 + 选题分析
-2. `/nm` — 检索同类题材素材参考
+1. `/scout-topic` — 6 Phase 流程（品类定位→平台分析→选题决策→标签策略→品类感知配置→报告定稿）
+2. `/nm` — 检索同类题材素材参考（可选）
 
 **输出**：
-- `settings/scout_report.yaml` — 品类、目标读者、标签组合
+- `settings/scout_report.yaml` — 品类、目标读者、标签组合、`required_elements`
+
+**关键产出**：`required_elements` 字段声明了这本小说需要什么元素（力量体系/时代背景/角色类型/开篇钩子/结构类型），后续所有 skill 的质量门禁据此动态检查。
 
 ---
 
@@ -50,23 +53,17 @@
 
 **目标**：建立小说世界的基础设定。
 
+**前置依赖**：品类已选择（阶段 0）
+
 **Skills 组合**：
-1. `/nm` — 检索同类题材素材参考
-2. `/worldbuilding` — 交互式设计世界观
-3. Agent 直接生成 — 写入 worldbuilding.yaml
+1. `/nm` — 检索同类题材素材参考（可选）
+2. `/worldbuilding` — 5 Phase 流程（品类适配→力量体系→社会结构→基础规则→落盘验证）
 
 **输出**：
 - `settings/worldbuilding.yaml` — 世界观设定（力量体系、社会结构、背景知识等）
 
-**完善度检查**：
-```bash
-novel generate (内建检查) {project_id} worldbuilding --modules
-```
-
-**阈值**：
-- power_system: 100%（name + levels + rules 必填）
-- factions: 80%（至少3个势力，每个有完整档案）
-- locations: 100%（至少1个地点）
+**质量门禁**：
+- `check-completeness.js` — 检查 `required_elements.worldbuilding.required` 中的元素是否完整
 
 ---
 
@@ -77,23 +74,19 @@ novel generate (内建检查) {project_id} worldbuilding --modules
 **前置依赖**：品类已选择（阶段 0）
 
 **Skills 组合**：
-1. `/nm` — 检索同类人物塑造参考
-2. `/design-character` — 交互式人设设计 + 爽感评估
-3. Agent 直接生成 — 写入 characters.yaml
+1. `/nm` — 检索同类人物塑造参考（可选）
+2. `/design-character` — 5 Phase 流程（品类适配→主角设计→反派设计→配角与关系网络→爽感评估与落盘）
 
 **输出**：
 - `settings/characters.yaml` — 人物设定（主角、反派、配角、关系网络）
 
-**完善度检查**：
-```bash
-# 通过 Skill 检查爽感维度
-/design-character
-```
+**质量门禁**：
+- `check-characters.js` — 品类感知检查：必需角色类型齐全、主角/反派有 psychology + arc
 
-**阈值**：
-- protagonist: 100%（打脸指数/CP感 ≥ 7）
-- antagonist: 80%（反派恶心度 ≥ 7）
-- supporting: 70%（至少3个配角）
+**爽感三维评估**：
+- 打脸指数（face-slap index）≥ 6/10
+- CP感（chemistry）≥ 6/10
+- 反派恶心度（disgust level）≥ 6/10
 
 ---
 
@@ -101,29 +94,20 @@ novel generate (内建检查) {project_id} worldbuilding --modules
 
 **目标**：规划全书结构，含节奏分析。
 
-**前置依赖**：世界观 ≥ 80%，人物 ≥ 70%
+**前置依赖**：世界观 ≥ 80%
 
 **Skills 组合**：
-1. `/nm` — 检索同类大纲结构参考
-2. `/design-outline` — 交互式大纲设计 + 节奏分析
-3. Agent 直接生成 — 写入 outline/ 目录各文件
+1. `/nm` — 检索同类大纲结构参考（可选）
+2. `/design-outline` — 5 Phase 流程（品类适配→骨架搭建→序列细化→节拍填充→落盘验证）
 
 **输出**：
-- `outline/premise.yaml` — 核心设定
-- `outline/acts/act_*.yaml` — 各幕结构（≥3幕）
-- `outline/hooks.yaml` — 伏笔-回收（可选）
-- `outline/pacing.yaml` — 节奏曲线（可选）
+- `settings/outline.yaml` — 主大纲
+- `settings/arcs.yaml` — 叙事弧线
+- `settings/pacing.yaml` — 节奏曲线
 
-**完善度检查**：
-```bash
-# 通过 Skill 检查节奏
-/design-outline
-```
-
-**阈值**：
-- premise: 100%（premise_statement ≥ 50字）
-- acts: 85%（至少3幕，节奏曲线合理）
-- pacing: 无连续3章以上慢节奏
+**质量门禁**：
+- `check-outline.js` — 结构完整性（幕数/前提/伏笔闭合）
+- `check-pacing.js` — 节奏健康度（连续慢章/高潮间距/黄金三章）
 
 ---
 
@@ -134,23 +118,13 @@ novel generate (内建检查) {project_id} worldbuilding --modules
 **前置依赖**：大纲完善度 ≥ 85%
 
 **Skills 组合**：
-1. `/design-chapters` — 章节拆分 + 节拍表生成
-2. Agent 直接生成 — 写入 chapters/ 目录各文件
+1. `/design-chapters` — 5 Phase 流程（大纲解析→章节拆分→章节摘要→张力曲线→落盘验证）
 
 **输出**：
-- `chapters/_index.yaml` — 章节索引
-- `chapters/chapter_*.yaml` — 各章档案（每章）
+- `settings/chapters_index.yaml` — 章节索引（每章含摘要、节拍、张力值）
 
-**完善度检查**：
-```bash
-# 通过 Skill 检查章节结构
-/design-chapters
-```
-
-**阈值**：
-- 目标章节: 100%（summary + tension + beats 必填）
-- 节拍数量: 3-15 个/章
-- 目标字数: 2000-5000 字/章
+**质量门禁**：
+- `check-chapters.js` — 节拍数 3-15、字数 2000-5000、密度连续性
 
 ---
 
@@ -161,20 +135,17 @@ novel generate (内建检查) {project_id} worldbuilding --modules
 **前置依赖**：品类+人设+细纲已完成
 
 **Skills 组合**：
-1. `/golden-chapters` — 逐章生成 + 结构验证
-2. Agent 直接生成 — 写入 content/chapter_001-003.md
+1. `/golden-chapters` — 6 Phase 流程（品类适配→第一章→第二章→第三章→去AI味→定稿）
 
 **输出**：
 - `content/chapter_001.md`
 - `content/chapter_002.md`
 - `content/chapter_003.md`
-- `golden_chapters_report.yaml`
 
-**验证清单**：
-- 首冲突 ≤ 300 字？
-- 人设建立？
-- 金手指亮相？
-- 第一个小高潮？
+**质量门禁**：
+- `check-golden-structure.js` — 按 `opening_hook.type` 检查品类开篇钩子
+- `check-ai-patterns.js` — AI 味检测，blocking 项归零
+- `check-degeneration.js` — 退化检测，blocking 项归零
 
 ---
 
@@ -185,11 +156,13 @@ novel generate (内建检查) {project_id} worldbuilding --modules
 **前置依赖**：大纲+黄金三章已完成
 
 **Skills 组合**：
-1. `/paywall-design` — 卡点分析 + 过渡章设计
-2. Agent 直接生成 — 写入 paywall_report.yaml
+1. `/paywall-design` — 5 Phase 流程（大纲分析→切点决策→过渡设计→平台适配→落盘验证）
 
 **输出**：
 - `paywall_report.yaml` — 卡点位置、理由、过渡章设计
+
+**质量门禁**：
+- `check-paywall.js` — 切点章张力 > 均值
 
 ---
 
@@ -200,18 +173,16 @@ novel generate (内建检查) {project_id} worldbuilding --modules
 **前置依赖**：目标章节完善度 = 100%
 
 **Skills 组合**：
-1. `/daily-write` — 确认摘要 → 生成正文 → 质量门禁
-2. Agent 直接生成 — 写入 content/chapter_*.md
+1. `/daily-write` — 6 Phase 流程（选题确认→上下文加载→写作执行→确定性检查→LLM评估→定稿）
 
-**质量门禁**：
-- 事实核查（角色/时间/地点一致性）
-- 去AI味（五层检测，≥ 60 分）
-- 钩子审查（悬念强度/冲突密度，≥ 60 分）
+**输出**：
+- `content/chapter_XXX.md`
 
-**字数要求**：
-- draft: ≥ 2000字
-- written: ≥ 3000字
-- revised: ≥ 3000字（已润色）
+**质量门禁**（双层）：
+- **JS 脚本**（确定性）：`check-ai-patterns.js` + `check-degeneration.js` + `normalize-punctuation.js`
+- **LLM 评估**（语义）：反AI五层评分 ≥ 60、钩子评分 ≥ 60
+
+**断点恢复**：`_progress.md` 记录当前章节和 Phase，崩溃后自动续跑
 
 ---
 
@@ -231,21 +202,21 @@ pipeline_status:
 ## 流程图
 
 ```
-阶段0：选题侦察（品类选择）
+阶段0：选题侦察（品类选择 + required_elements 配置）
     ↓
 阶段1：世界观设定
-    ↓ 完善度 ≥ 80%
-阶段2：人设设计（含爽感评估）
-    ↓ 完善度 ≥ 70%
+    ↓ check-completeness.js 验证
+阶段2：人设设计（含三维爽感评估）
+    ↓ check-characters.js 验证
 阶段3：大纲设计（含节奏分析）
-    ↓ 完善度 ≥ 85%
+    ↓ check-outline.js + check-pacing.js 验证
 阶段4：细纲设计（章节拆分）
-    ↓ 目标章节完善度 = 100%
+    ↓ check-chapters.js 验证
 阶段5：黄金三章锻造
-    ↓
+    ↓ check-golden-structure.js + check-ai-patterns.js 验证
 阶段6：付费卡点设计
-    ↓
-阶段7：日更写作（质量门禁）
+    ↓ check-paywall.js 验证
+阶段7：日更写作（JS脚本 + LLM 评估双层门禁）
     ↓
 阶段8：导出作品
 ```
@@ -283,13 +254,13 @@ pipeline_status:
 **目标规模**：支持 100-1000 章长篇连载
 
 **模块化设计**：
-- 每个势力/人物/地点独立文件
-- 每幕独立文件（含序列+节拍）
-- 每章独立档案
+- 每个 skill 自包含，39 个 references + 14 个 JS 脚本
+- 大纲采用 幕→序列→节拍 三层嵌套结构
+- 章节索引含节拍表 + 张力曲线
 
 **分批写作**：
 - 阶段4可分批规划（如先规划前100章）
-- 阶段7按顺序写作（从第1章开始）
+- 阶段7按顺序写作（从第1章开始），支持断点恢复
 
 ---
 
@@ -301,5 +272,6 @@ Novel V2 内置网文商业化流程：
 |------|------|
 | 黄金三章 | 前3章决定生死，按品类模板严格验证结构 |
 | 付费卡点 | 分析大纲找最优切割点，设计过渡章节奏 |
-| 质量门禁 | 事实核查 + 去AI味 + 钩子审查 |
-| 爽感评估 | 打脸指数/CP感/反派恶心度 |
+| 质量门禁 | JS 脚本确定性检查 + LLM 语义评估 |
+| 爽感评估 | 打脸指数/CP感/反派恶心度（三维 ≥ 6/10） |
+| 品类感知 | 根据 required_elements 动态调整质量检查 |
