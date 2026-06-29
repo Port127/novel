@@ -55,18 +55,43 @@ AI 小说写作工具，支持交互式创作和 CLI 操作。与 novel-material
 **工作流**：
 Skills → Agent 交互讨论 → 直接生成 YAML/Markdown → 不调用脚本
 
-| Skill | 用途 | 交互流程 | 前置依赖 |
-|-------|------|----------|---------|
-| `scout-topic` | 选题侦察 | 选择品类 → 分析市场 → 选题报告 | 无 |
-| `worldbuilding` | 世界观设计 | 品类适配 → 交互讨论 → 生成设定 | 品类已选择 |
-| `design-character` | 人设设计 | 分层设计 → 爽感评估 → 生成档案 | 品类已选择 |
-| `design-outline` | 大纲设计 | 交互设计 → 节奏分析 → 生成大纲 | 品类+世界观 |
-| `design-chapters` | 细纲设计 | 章节拆分 → 节拍表 → 结构检查 | 大纲已完成 |
-| `golden-chapters` | 黄金三章 | 逐章生成 → 结构验证 → 生成报告 | 品类+人设+细纲 |
-| `paywall-design` | 付费卡点 | 卡点分析 → 过渡章设计 → 生成报告 | 大纲+黄金三章 |
-| `daily-write` | 日更写作 | 确认摘要 → 生成正文 → 质量门禁 → 定稿 | 章节已规划 |
-| `export-novel` | 导出作品 | 确认项目 → 选择格式 → 导出 | 正文已完成 |
-| `nm` | 素材检索 | 检索素材库（章节/大纲/人物/世界观/事件/细纲/深度分析）| 无 |
+#### V4 Skill 架构
+
+每个创作 skill 采用**自包含结构**（方案 B）：
+
+```
+.agents/skills/<skill-name>/
+├── SKILL.md              ← 主文件：Phase 化流程 + 质量门禁定义
+├── references/           ← 本 skill 专用的领域知识文件（按需加载）
+│   ├── <topic-a>.md
+│   └── ...
+└── scripts/              ← 本 skill 专用的 JS 验证脚本
+    ├── check-xxx.js
+    └── ...
+```
+
+**核心机制**：
+
+| 机制 | 说明 |
+|------|------|
+| **Phase 化流程** | 每个 Phase 有明确入口/出口条件，可独立执行和恢复 |
+| **确定性脚本门禁** | JS 脚本做质量检查（blocking/advisory 两级），不靠 LLM 自查 |
+| **断点恢复** | `_progress.md` 记录进度，崩溃后从断点续跑 |
+| **References 按需加载** | 不一次全读，按 Phase 映射表加载对应文件 |
+| **品类感知** | 根据 `scout_report.yaml` 的 `required_elements` 动态决定检查内容 |
+
+| Skill | 用途 | Phase 数 | References | Scripts | 前置依赖 |
+|-------|------|:--------:|:----------:|:-------:|---------|
+| `scout-topic` | 选题侦察 | 6 | 4 | 1 | 无 |
+| `worldbuilding` | 世界观设计 | 5 | 4 | 1 | 品类已选择 |
+| `design-character` | 人设设计 | 5 | 5 | 1 | 品类已选择 |
+| `design-outline` | 大纲设计 | 5 | 5 | 2 | 品类+世界观 |
+| `design-chapters` | 细纲设计 | 5 | 3 | 1 | 大纲已完成 |
+| `golden-chapters` | 黄金三章 | 6 | 4 | 3 | 品类+人设+细纲 |
+| `paywall-design` | 付费卡点 | 5 | 4 | 1 | 大纲+黄金三章 |
+| `daily-write` | 日更写作 | 6 | 6 | 3 | 章节已规划 |
+| `export-novel` | 导出作品 | — | — | — | 正文已完成 |
+| `nm` | 素材检索 | — | — | — | 无 |
 
 ### CLI 是管理工具
 
@@ -117,122 +142,136 @@ Skills → Agent 交互讨论 → 直接生成 YAML/Markdown → 不调用脚本
 
 ### /scout-topic — 选题侦察
 
-**交互流程：**
+**Phase 流程**：
 
 ```
-1. 选择目标品类（玄幻/都市/系统文等）
-   ↓
-2. 分析目标平台和读者群体
-   ↓
-3. 推荐标签组合
-   ↓
-4. 输出 settings/scout_report.yaml
+Phase 1: 品类定位 → 品类确定
+Phase 2: 平台分析 → 平台+读者确定
+Phase 3: 选题决策 → premise+core_hooks 填写
+Phase 4: 标签策略 → 标签组合通过 check-tags.js
+Phase 5: 品类感知配置 → required_elements 填写
+Phase 6: 报告定稿 → scout_report.yaml 落盘
 ```
+
+**输出**：`settings/scout_report.yaml`
 
 ### /worldbuilding — 世界观设计
 
 **前置依赖**：品类已选择
 
-**交互流程：**
+**Phase 流程**：
 
 ```
-1. 基于品类推荐世界观框架
-   ↓
-2. 逐步讨论力量体系、社会结构、基础规则
-   ↓
-3. 生成 settings/worldbuilding.yaml
+Phase 1: 品类适配 → 加载品类框架
+Phase 2: 力量体系 → 等级/升级/战斗（如需要）
+Phase 3: 社会结构 → 势力/规则（如需要）
+Phase 4: 基础规则 → 世界规则（如需要）
+Phase 5: 落盘验证 → check-completeness.js 检查
 ```
+
+**输出**：`settings/worldbuilding.yaml`
 
 ### /design-character — 人设设计
 
 **前置依赖**：品类已选择
 
-**交互流程：**
+**Phase 流程**：
 
 ```
-1. 分层设计主角、反派、配角
-   ↓
-2. 爽感评估（打脸指数/CP感/反派恶心度）
-   ↓
-3. 生成 settings/characters.yaml
+Phase 1: 品类适配 → 加载角色框架
+Phase 2: 主角设计 → traits + psychology + arc
+Phase 3: 反派设计 → 动机 + 手段 + 恶心度（如需要）
+Phase 4: 配角与关系网络 → 配角 ≥ 3 + 关系网
+Phase 5: 爽感评估 → 三维评估 + check-characters.js
 ```
+
+**输出**：`settings/characters.yaml`
 
 ### /design-outline — 大纲设计
 
 **前置依赖**：品类+世界观
 
-**交互流程：**
+**Phase 流程**：
 
 ```
-1. 交互式设计整体故事走向
-   ↓
-2. 节奏检测和张力曲线分析
-   ↓
-3. 生成 settings/outline.yaml + settings/arcs.yaml
+Phase 1: 品类适配与结构选择 → 三幕式/起承转合/英雄之旅
+Phase 2: 骨架搭建 → 幕级大纲 + 张力曲线
+Phase 3: 序列细化 → 每幕 2-5 序列
+Phase 4: 节拍填充 → 每序列 3-8 节拍
+Phase 5: 落盘验证 → check-outline.js + check-pacing.js
 ```
+
+**输出**：`settings/outline.yaml` + `settings/arcs.yaml` + `settings/pacing.yaml`
 
 ### /design-chapters — 细纲设计
 
 **前置依赖**：大纲已完成
 
-**交互流程：**
+**Phase 流程**：
 
 ```
-1. 按大纲拆分章节
-   ↓
-2. 每章生成节拍表
-   ↓
-3. 检查结构合理性
-   ↓
-4. 生成 settings/chapters_index.yaml
+Phase 1: 大纲解析 → 提取节拍列表
+Phase 2: 章节拆分 → 每章 3-15 节拍，密/疏标记
+Phase 3: 章节摘要 → 五要素摘要 + 出场人物
+Phase 4: 张力曲线 → 每章张力值（1-5）
+Phase 5: 落盘验证 → check-chapters.js
 ```
+
+**输出**：`settings/chapters_index.yaml`
 
 ### /golden-chapters — 黄金三章锻造
 
 **前置依赖**：品类+人设+细纲
 
-**交互流程：**
+**Phase 流程**：
 
 ```
-1. 按品类模板逐章生成前三章
-   ↓
-2. 结构验证（首冲突/人设/金手指/小高潮）
-   ↓
-3. 生成 content/chapter_001-003.md
+Phase 1: 品类适配 → 加载品类黄金三章模板
+Phase 2: 第一章锻造 → 300字内出冲突/钩子
+Phase 3: 第二章锻造 → 金手指/核心优势亮相
+Phase 4: 第三章锻造 → 首个小高潮
+Phase 5: 去AI味 → check-ai-patterns.js + check-degeneration.js
+Phase 6: 定稿输出 → chapter_001-003.md
 ```
+
+**输出**：`content/chapter_001.md`、`content/chapter_002.md`、`content/chapter_003.md`
 
 ### /paywall-design — 付费卡点设计
 
 **前置依赖**：大纲+黄金三章
 
-**交互流程：**
+**Phase 流程**：
 
 ```
-1. 分析大纲找最优切割点
-   ↓
-2. 设计过渡章节奏（免费末章+付费首章）
-   ↓
-3. 生成 paywall_report.yaml
+Phase 1: 大纲分析 → 标记候选切点
+Phase 2: 切点决策 → 评估候选点
+Phase 3: 过渡设计 → 免费末章+付费首章
+Phase 4: 平台适配 → 番茄/起点/晋江差异
+Phase 5: 落盘验证 → check-paywall.js
 ```
+
+**输出**：`paywall_report.yaml`
 
 ### /daily-write — 日更写作
 
 **前置依赖**：章节已规划
 
-**交互流程：**
+**Phase 流程**：
 
 ```
-1. 选择章节，检查衔接
-   ↓
-2. 生成正文（2000-3000 字/章）
-   ↓
-3. 质量门禁流水线：
-   - 事实核查（角色/时间/地点一致性）
-   - 去AI味（五层检测，≥ 60 分）
-   - 钩子审查（悬念强度/冲突密度，≥ 60 分）
-   ↓
-4. 通过所有门禁后定稿，写入 content/chapter_*.md
+Phase 1: 选题确认 → 确定目标章节
+Phase 2: 上下文加载 → 前章末300字+本章细纲+追踪文件
+Phase 3: 写作执行 → 2000-5000 字/章
+Phase 4: 确定性检查 → check-ai-patterns.js + check-degeneration.js + normalize-punctuation.js
+Phase 5: LLM 评估 → 反AI评分 ≥ 60 + 钩子评分 ≥ 60
+Phase 6: 定稿 → content/chapter_XXX.md + 更新追踪
 ```
+
+**断点恢复**：`_progress.md` 记录当前章节和 Phase，崩溃后自动续跑
+
+**质量门禁**：
+- JS 脚本：AI 模式检测、退化检测、标点规范
+- LLM 评估：反AI五层评分 ≥ 60、钩子评分 ≥ 60
 
 ### /export-novel — 导出作品
 
@@ -323,12 +362,18 @@ novels/{project_id}/
 ```
 novel/
 ├── novels/                    # 写作项目目录
-├── src/novel/                 # 核心引擎
+├── src/novel/                 # 核心引擎（退化为基础设施）
 ├── data/schemas/              # YAML Schema 定义
-└── .agents/skills/            # Agent Skills
+├── templates/                 # 项目模板
+└── .agents/skills/            # Agent Skills（V4 自包含结构）
+    ├── <skill-name>/
+    │   ├── SKILL.md           # Phase 化流程定义
+    │   ├── references/        # 领域知识文件
+    │   └── scripts/           # JS 验证脚本
+    └── _shared/scripts/       # 共享脚本（check-ai-patterns 等）
 ```
 
-**核心原则**：创作类操作全部通过 Skills 完成，Agent 直接生成内容，不调用脚本。
+**核心原则**：创作类操作全部通过 Skills 完成，Agent 直接生成内容。质量门禁由 JS 脚本（确定性检查）+ LLM 评估（语义检查）双层保障。
 
 ---
 
