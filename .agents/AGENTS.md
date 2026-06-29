@@ -512,3 +512,34 @@ Agent 不自动触发入库操作。
 - 运行后台任务、测试、部署
 
 敏感操作会显示提示，但 Agent 可自主决定执行。
+
+---
+
+## Agent 协作
+
+本项目部署了 4 个专业 Agent（定义在 `.agents/agents/`）：
+
+| Agent | 职责 | 工具权限 |
+|-------|------|---------|
+| story-architect | 故事架构师：题材/世界观/大纲/反转/情绪弧线 | Read+Write+Edit |
+| narrative-writer | 叙事写手：正文写作/去AI味/格式合规 | Read+Write+Edit |
+| character-designer | 角色设计师：角色设定/对话风格/人物弧线 | Read+Write+Edit |
+| consistency-checker | 一致性检查员：事实冲突/伏笔断线/时间线检测 | 只读 (Read+Glob+Grep) |
+
+### 调用方式
+
+各 Skill 在关键步骤会自动 spawn 对应 Agent（标记为"可选增强"）。Agent 不可用时自动降级为 solo 模式（主线程直接完成），不中断流程。
+
+### 独立审查
+
+使用 `/review` 命令启动多 Agent 对抗式审查：
+- `full` 模式：4 个 Agent 并行审查
+- `lean` 模式：架构师 + 检查员
+- `solo` 模式：主线程直接审查
+
+### 降级策略
+
+所有 agent 调用遵循统一降级规则：
+1. `.agents/agents/{agent}.md` 不存在 → solo
+2. Agent spawn 失败 → solo，标注 `Fallback: spawn failed -> solo`
+3. 当前已在 subagent 内 → 不嵌套 spawn，直接 solo

@@ -68,6 +68,18 @@ description: 人设设计。与 Agent 交互设计主角、反派、配角，含
 **出口条件**：主角人设完整（traits + psychology + arc 均已填写）
 **加载 References**：`protagonist-arc.md`
 
+#### Agent 调用：character-designer（可选增强）
+
+如果项目已部署 character-designer agent（检查 `.agents/agents/character-designer.md` 是否存在），
+可读取该文件内容，拼接以下参数后 spawn Agent 辅助主角深度设计：
+
+- 项目根目录：{当前项目绝对路径}
+- 任务类型：创作
+- 查询参数：辅助主角三层标签设计、九维深化、语言风格档案建立
+- 相关文件路径：settings/characters.yaml
+
+如 agent 不可用，跳过此步，由主线程直接完成。
+
 ---
 
 ### Phase 3：反派设计
@@ -88,6 +100,18 @@ description: 人设设计。与 Agent 交互设计主角、反派、配角，含
 
 **出口条件**：反派人设完整（动机 + 手段 + 恶心度 ≥ 7/10）
 **加载 References**：`villain-design.md`
+
+#### Agent 调用：character-designer（可选增强）
+
+如果项目已部署 character-designer agent（检查 `.agents/agents/character-designer.md` 是否存在），
+可读取该文件内容，拼接以下参数后 spawn Agent 辅助反派设计：
+
+- 项目根目录：{当前项目绝对路径}
+- 任务类型：创作
+- 查询参数：辅助反派设计、镜像关系建立、恶心度优化
+- 相关文件路径：settings/characters.yaml
+
+如 agent 不可用，跳过此步，由主线程直接完成。
 
 ---
 
