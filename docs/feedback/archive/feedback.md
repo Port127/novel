@@ -15,7 +15,7 @@
 
 
 # 小说skill
-你先阅读.agents/skills/paywall-design（skill、references、scripts），注意：每个字符都要看！
+你先阅读.agents/skills/daily-write（skill、references、scripts），注意：每个字符都要看！
 （参考内容，本项目同级项目other/oh-story-claudecode，是否使用它的提示词，照抄了还是进行针对本项目的改造？有没有缺漏关键能力）
 帮我看看有哪些欠缺，包括但不限于描述、提示词、上下文、引用文件
 你要整体的审查这个skill，放在我们整个系统、agent中所起到的作用，整体审查
