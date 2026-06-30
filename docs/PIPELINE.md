@@ -1,277 +1,421 @@
-# Novel V2 Pipeline 流程
+# Skill Pipeline 流程
 
-> Pipeline 是 Skills 的执行流程，确保创作按正确顺序进行。
-> 所有创作 skill 采用 V4 自包含结构：Phase 化流程 + references/ + scripts/。
+> 本文档描述 Novel V2 当前的人机协同创作流程。这里的 Pipeline 不是 CLI 自动流水线，而是 Agent 按 Skills 引导、用户实时监督确认的阶段化创作流程。
 
----
+## 一、总原则
 
-## Pipeline 阶段
+创作流程必须遵守：
 
-| 阶段 | 名称 | Skills | 输出 | 完善度阈值 |
-|------|------|--------|------|-----------|
-| 0 | 选题侦察 | scout-topic | `settings/scout_report.yaml` | - |
-| 1 | 世界观设定 | worldbuilding + nm | `settings/worldbuilding.yaml` | 80% |
-| 2 | 人设设计 | design-character | `settings/characters.yaml` | 70% |
-| 3 | 大纲设计 | design-outline | `settings/outline.yaml` + `settings/arcs.yaml` + `settings/pacing.yaml` | 85% |
-| 4 | 细纲设计 | design-chapters | `settings/chapters_index.yaml` | 100%（每章）|
-| 5 | 黄金三章 | golden-chapters | `content/chapter_001-003.md` | - |
-| 6 | 付费卡点 | paywall-design | `paywall_report.yaml` | - |
-| 7 | 日更写作 | daily-write | `content/chapter_*.md` | - |
-| 8 | 导出 | export-novel | TXT/MD/EPUB | - |
+1. **Skill 是入口**：每个阶段从对应 Skill 的 `SKILL.md` 开始。
+2. **用户是决策者**：题材、设定、角色、大纲、正文和卡点都必须经过用户确认。
+3. **门禁可阻断**：JS 脚本发现 blocking 问题时，不能继续推进。
+4. **允许回退**：下游暴露结构问题时，应回退到上游 Skill，而不是硬补。
+5. **旧 CLI 不参与**：Python CLI 和 `scripts/` 是冻结遗留，不定义当前流程。
 
----
+## 二、阶段总览
 
-## Pipeline 入口
+| 阶段 | 名称 | Skill | 主要输出 | 关键确认点 |
+|------|------|-------|----------|------------|
+| 0 | 选题侦察 | `/scout-topic` | `settings/scout_report.yaml` | 品类、平台、读者、卖点、required_elements |
+| 1 | 世界观设定 | `/worldbuilding` | `settings/worldbuilding.yaml` | 必需世界元素是否足够支撑故事 |
+| 2 | 人设设计 | `/design-character` | `settings/characters.yaml` | 主角爽点、反派压力、关系网络 |
+| 3 | 大纲设计 | `/design-outline` | `settings/outline.yaml`、`arcs.yaml`、`pacing.yaml` | 全书结构、高潮、伏笔、节奏 |
+| 4 | 细纲设计 | `/design-chapters` | `settings/chapters_index.yaml` | 每章摘要、节拍、张力值 |
+| 5 | 黄金三章 | `/golden-chapters` | `content/chapter_001.md` 至 `chapter_003.md` | 开篇钩子、人设亮相、首个小高潮 |
+| 6 | 付费卡点 | `/paywall-design` | `paywall_report.yaml` | 切点、过渡章、付费动机 |
+| 7 | 日更写作 | `/daily-write` | `content/chapter_XXX.md` | 单章正文是否可定稿 |
+| 8 | 导出作品 | `/export-novel` | `exports/` | 导出范围与格式 |
 
-**推荐使用完整创作流程**，它会：
-1. 从选题开始，逐步引导
-2. 检查当前项目状态
-3. 判断处于哪个阶段
-4. 引导用户完成当前阶段
-5. 自动进入下一阶段
-
----
-
-## 各阶段详情
+## 三、阶段详情
 
 ### 阶段 0：选题侦察
 
-**目标**：选择品类，分析市场，配置品类感知参数。
+**目标**：确认这本书写什么、给谁看、靠什么卖点成立。
 
-**Skills 组合**：
-1. `/scout-topic` — 6 Phase 流程（品类定位→平台分析→选题决策→标签策略→品类感知配置→报告定稿）
-2. `/nm` — 检索同类题材素材参考（可选）
+**入口**：
+
+- 用户准备开新书，或旧项目需要重新定位。
+
+**执行**：
+
+1. 触发 `/scout-topic`。
+2. 按 Phase 讨论品类、平台、目标读者、选题方向和标签策略。
+3. 需要素材参考时触发 `/nm` 查询同类作品。
+4. 生成 `required_elements`，声明后续质量门禁检查什么。
+
+**用户确认点**：
+
+- 是否接受目标品类。
+- 是否接受核心卖点。
+- 是否接受标签组合。
+- 是否接受后续必需元素。
 
 **输出**：
-- `settings/scout_report.yaml` — 品类、目标读者、标签组合、`required_elements`
 
-**关键产出**：`required_elements` 字段声明了这本小说需要什么元素（力量体系/时代背景/角色类型/开篇钩子/结构类型），后续所有 skill 的质量门禁据此动态检查。
+- `settings/scout_report.yaml`
 
----
+**门禁**：
+
+- `check-tags.js`
+
+**回退策略**：
+
+- 如果后续世界观、人设或大纲发现题材不成立，回退本阶段重新定义品类和卖点。
 
 ### 阶段 1：世界观设定
 
-**目标**：建立小说世界的基础设定。
+**目标**：建立支撑故事的基础世界规则。
 
-**前置依赖**：品类已选择（阶段 0）
+**前置**：
 
-**Skills 组合**：
-1. `/nm` — 检索同类题材素材参考（可选）
-2. `/worldbuilding` — 5 Phase 流程（品类适配→力量体系→社会结构→基础规则→落盘验证）
+- 已完成 `settings/scout_report.yaml`。
+
+**执行**：
+
+1. 触发 `/worldbuilding`。
+2. 读取品类和 `required_elements.worldbuilding`。
+3. 按需设计力量体系、时代背景、地点、社会规则、资源规则等。
+4. 需要参考时使用 `/nm` 检索同类世界观。
+
+**用户确认点**：
+
+- 当前世界规则是否能产生足够冲突。
+- 设定复杂度是否适合目标读者。
+- 哪些元素必须保留，哪些元素可以简化。
 
 **输出**：
-- `settings/worldbuilding.yaml` — 世界观设定（力量体系、社会结构、背景知识等）
 
-**质量门禁**：
-- `check-completeness.js` — 检查 `required_elements.worldbuilding.required` 中的元素是否完整
+- `settings/worldbuilding.yaml`
 
----
+**门禁**：
+
+- `check-completeness.js`
+
+**回退策略**：
+
+- 如果必需元素不足，补齐本阶段。
+- 如果世界设定和题材卖点冲突，回退阶段 0。
 
 ### 阶段 2：人设设计
 
-**目标**：设计主角、反派、配角，含爽感维度评估。
+**目标**：设计主角、反派、配角与关系网络。
 
-**前置依赖**：品类已选择（阶段 0）
+**前置**：
 
-**Skills 组合**：
-1. `/nm` — 检索同类人物塑造参考（可选）
-2. `/design-character` — 5 Phase 流程（品类适配→主角设计→反派设计→配角与关系网络→爽感评估与落盘）
+- 已完成选题。
+- 世界观达到当前品类最低可用状态。
+
+**执行**：
+
+1. 触发 `/design-character`。
+2. 读取品类、人设 schema、角色设计 references。
+3. 设计主角欲望、缺陷、能力、爽点路径。
+4. 设计反派压力、手段、恶心度和可持续冲突。
+5. 设计配角、关系网络和情绪支点。
+
+**用户确认点**：
+
+- 主角是否有持续行动欲望。
+- 反派是否足够有压迫感。
+- 关系网络是否能制造长期剧情。
+- 爽感三维是否符合目标品类。
 
 **输出**：
-- `settings/characters.yaml` — 人物设定（主角、反派、配角、关系网络）
 
-**质量门禁**：
-- `check-characters.js` — 品类感知检查：必需角色类型齐全、主角/反派有 psychology + arc
+- `settings/characters.yaml`
 
-**爽感三维评估**：
-- 打脸指数（face-slap index）≥ 6/10
-- CP感（chemistry）≥ 6/10
-- 反派恶心度（disgust level）≥ 6/10
+**门禁**：
 
----
+- `check-characters.js`
+- 爽感三维评估：打脸指数、CP 感、反派恶心度。
+
+**回退策略**：
+
+- 如果主角目标无法支撑长篇，重做人设。
+- 如果反派无法支撑付费前冲突，回退本阶段或阶段 3。
 
 ### 阶段 3：大纲设计
 
-**目标**：规划全书结构，含节奏分析。
+**目标**：建立全书结构、主要高潮、伏笔和节奏曲线。
 
-**前置依赖**：世界观 ≥ 80%
+**前置**：
 
-**Skills 组合**：
-1. `/nm` — 检索同类大纲结构参考（可选）
-2. `/design-outline` — 5 Phase 流程（品类适配→骨架搭建→序列细化→节拍填充→落盘验证）
+- 世界观和核心人设已确认。
+
+**执行**：
+
+1. 触发 `/design-outline`。
+2. 选择适合品类的结构模型。
+3. 搭建幕级结构。
+4. 细化序列和节拍。
+5. 设计伏笔、反转和高潮间距。
+
+**用户确认点**：
+
+- 核心冲突是否清楚。
+- 前 20 至 30 章是否足够抓人。
+- 中后期是否有持续升级空间。
+- 伏笔与反转是否符合作者预期。
 
 **输出**：
-- `settings/outline.yaml` — 主大纲
-- `settings/arcs.yaml` — 叙事弧线
-- `settings/pacing.yaml` — 节奏曲线
 
-**质量门禁**：
-- `check-outline.js` — 结构完整性（幕数/前提/伏笔闭合）
-- `check-pacing.js` — 节奏健康度（连续慢章/高潮间距/黄金三章）
+- `settings/outline.yaml`
+- `settings/arcs.yaml`
+- `settings/pacing.yaml`
 
----
+**门禁**：
+
+- `check-outline.js`
+- `check-pacing.js`
+
+**回退策略**：
+
+- 如果节奏平、高潮过远或伏笔不闭合，重做本阶段。
+- 如果人设无法驱动大纲，回退阶段 2。
 
 ### 阶段 4：细纲设计
 
-**目标**：按大纲拆分章节，每章生成节拍表。
+**目标**：把大纲拆成可执行章节。
 
-**前置依赖**：大纲完善度 ≥ 85%
+**前置**：
 
-**Skills 组合**：
-1. `/design-chapters` — 5 Phase 流程（大纲解析→章节拆分→章节摘要→张力曲线→落盘验证）
+- 大纲结构已确认。
 
-**输出**：
-- `settings/chapters_index.yaml` — 章节索引（每章含摘要、节拍、张力值）
+**执行**：
 
-**质量门禁**：
-- `check-chapters.js` — 节拍数 3-15、字数 2000-5000、密度连续性
+1. 触发 `/design-chapters`。
+2. 解析大纲节拍。
+3. 拆分章节，每章包含摘要、出场人物、节拍、张力值。
+4. 标记密章、疏章、高潮章、过渡章。
 
----
+**用户确认点**：
 
-### 阶段 5：黄金三章锻造
-
-**目标**：按品类模板，逐段生成前三章，验证结构。
-
-**前置依赖**：品类+人设+细纲已完成
-
-**Skills 组合**：
-1. `/golden-chapters` — 6 Phase 流程（品类适配→第一章→第二章→第三章→去AI味→定稿）
+- 每章是否有明确推进。
+- 张力曲线是否符合商业节奏。
+- 黄金三章和付费前章节是否足够强。
 
 **输出**：
+
+- `settings/chapters_index.yaml`
+
+**门禁**：
+
+- `check-chapters.js`
+
+**回退策略**：
+
+- 如果章节拆分后发现高潮位置不合理，回退阶段 3。
+- 如果某章摘要不够写正文，补齐本阶段。
+
+### 阶段 5：黄金三章
+
+**目标**：锻造前三章，验证开篇能不能留住读者。
+
+**前置**：
+
+- 品类、人设、章节细纲已确认。
+
+**执行**：
+
+1. 触发 `/golden-chapters`。
+2. 读取品类黄金三章模板。
+3. 逐章生成并审查。
+4. 执行 AI 味、退化、结构检查。
+5. 用户确认后定稿。
+
+**用户确认点**：
+
+- 第一章前 300 字是否有有效钩子。
+- 主角是否立住。
+- 冲突是否明确。
+- 第三章是否形成小高潮。
+
+**输出**：
+
 - `content/chapter_001.md`
 - `content/chapter_002.md`
 - `content/chapter_003.md`
 
-**质量门禁**：
-- `check-golden-structure.js` — 按 `opening_hook.type` 检查品类开篇钩子
-- `check-ai-patterns.js` — AI 味检测，blocking 项归零
-- `check-degeneration.js` — 退化检测，blocking 项归零
+**门禁**：
 
----
+- `check-golden-structure.js`
+- `check-ai-patterns.js`
+- `check-degeneration.js`
 
-### 阶段 6：付费卡点设计
+**回退策略**：
 
-**目标**：分析大纲，找到最优付费切割点。
+- 如果开篇钩子弱，回退阶段 4 或阶段 3。
+- 如果人设不吸引人，回退阶段 2。
 
-**前置依赖**：大纲+黄金三章已完成
+### 阶段 6：付费卡点
 
-**Skills 组合**：
-1. `/paywall-design` — 5 Phase 流程（大纲分析→切点决策→过渡设计→平台适配→落盘验证）
+**目标**：找到能支撑付费转化的切点，并设计免费末章与付费首章。
+
+**前置**：
+
+- 大纲和黄金三章已完成。
+- 章节张力曲线可用。
+
+**执行**：
+
+1. 触发 `/paywall-design`。
+2. 标记候选切点，优先关注预期付费区间。
+3. 排除主角低谷、无悬念、随机危机等低质量切点。
+4. 如果预期区间找不到合格切点，暂停流程并预警。
+5. 使用卡点倒推法检查核心反派、免费章节冗余和情绪阈值。
+6. 设计免费末章悬念和付费首章反馈。
+7. 按平台差异调整切点策略。
+8. 可选唤醒 `story-architect` 做商业复核。
+
+**用户确认点**：
+
+- 是否接受候选切点。
+- 是否需要回退大纲或细纲重做卡点。
+- 免费末章是否足够吊胃口。
+- 付费首章是否兑现承诺。
+- 是否需要故事架构师复核。
 
 **输出**：
-- `paywall_report.yaml` — 卡点位置、理由、过渡章设计
 
-**质量门禁**：
-- `check-paywall.js` — 切点章张力 > 均值
+- `paywall_report.yaml`
 
----
+**门禁**：
+
+- `check-paywall.js`
+- advisory 重点关注：切点前连续平淡期、前章张力不足、切点张力低于均值。
+
+**回退策略**：
+
+- 预期付费区间无合格切点时，回退 `/design-chapters` 或 `/design-outline`。
+- 如果切点危机不是由核心反派或主线矛盾引发，回退上游重构。
 
 ### 阶段 7：日更写作
 
-**目标**：根据章节摘要生成正文，通过质量门禁。
+**目标**：按章节细纲写正文，并通过质量门禁。
 
-**前置依赖**：目标章节完善度 = 100%
+**前置**：
 
-**Skills 组合**：
-1. `/daily-write` — 6 Phase 流程（选题确认→上下文加载→写作执行→确定性检查→LLM评估→定稿）
+- 目标章节在 `chapters_index.yaml` 中已规划。
+
+**执行**：
+
+1. 触发 `/daily-write`。
+2. 选择章节并确认摘要。
+3. 加载上下文：前章末尾、本章细纲、设定、追踪信息。
+4. 生成正文草稿。
+5. 执行确定性检查。
+6. 执行语义评估。
+7. 用户确认后定稿。
+
+**用户确认点**：
+
+- 本章摘要是否仍然正确。
+- 正文是否符合预期文风。
+- 钩子、情绪、爽点是否足够。
+- 是否定稿、重写或回退细纲。
 
 **输出**：
+
 - `content/chapter_XXX.md`
 
-**质量门禁**（双层）：
-- **JS 脚本**（确定性）：`check-ai-patterns.js` + `check-degeneration.js` + `normalize-punctuation.js`
-- **LLM 评估**（语义）：反AI五层评分 ≥ 60、钩子评分 ≥ 60
+**门禁**：
 
-**断点恢复**：`_progress.md` 记录当前章节和 Phase，崩溃后自动续跑
+- `check-ai-patterns.js`
+- `check-degeneration.js`
+- `normalize-punctuation.js`
+- 反 AI 五层评分
+- 钩子评分
 
----
+**回退策略**：
 
-## Pipeline 状态追踪
+- 文风问题：在本阶段重写或润色。
+- 章节结构问题：回退阶段 4。
+- 主线问题：回退阶段 3。
 
-项目 `project.yaml` 中包含 `pipeline_status` 字段：
+### 阶段 8：导出作品
+
+**目标**：把已确认正文导出为目标格式。
+
+**前置**：
+
+- 正文已完成或用户明确选择导出当前进度。
+
+**执行**：
+
+1. 触发 `/export-novel`。
+2. 确认导出范围。
+3. 确认格式：TXT、Markdown、EPUB。
+4. 输出到 `exports/`。
+
+**用户确认点**：
+
+- 导出哪些章节。
+- 是否包含元信息。
+- 使用哪种格式。
+
+**输出**：
+
+- `exports/`
+
+## 四、状态追踪
+
+项目状态建议记录在 `project.yaml`：
 
 ```yaml
 pipeline_status:
-  current_stage: 2                # 当前阶段
-  completed_stages: [1]           # 已完成阶段
-  blocked_stages: []              # 阻塞阶段（前置依赖不满足）
+  current_stage: 2
+  completed_stages: [0, 1]
+  blocked_stages: []
 ```
 
----
+长任务可使用 `_progress.md` 记录断点：
 
-## 流程图
-
-```
-阶段0：选题侦察（品类选择 + required_elements 配置）
-    ↓
-阶段1：世界观设定
-    ↓ check-completeness.js 验证
-阶段2：人设设计（含三维爽感评估）
-    ↓ check-characters.js 验证
-阶段3：大纲设计（含节奏分析）
-    ↓ check-outline.js + check-pacing.js 验证
-阶段4：细纲设计（章节拆分）
-    ↓ check-chapters.js 验证
-阶段5：黄金三章锻造
-    ↓ check-golden-structure.js + check-ai-patterns.js 验证
-阶段6：付费卡点设计
-    ↓ check-paywall.js 验证
-阶段7：日更写作（JS脚本 + LLM 评估双层门禁）
-    ↓
-阶段8：导出作品
+```text
+skill: daily-write
+chapter: 012
+phase: deterministic-check
+status: interrupted
 ```
 
----
+## 五、跳阶段处理
 
-## 跳阶段处理
+禁止跳阶段。典型阻断：
 
-**禁止跳阶段**：
-- 未完成阶段1 → 不能执行阶段2
-- 未完成阶段2 → 不能执行阶段3
-- ...
-
-**跳阶段尝试时**：
-- Skills 会检查前置完善度
-- 未达标会阻止并提示缺失前置
-
-**示例**：
-```
+```text
 用户尝试：/design-outline
 
 检查结果：
-  阶段0（品类）未设置 ❌
-  阶段1（世界观）完善度 20% ❌
-  阶段2（人设）完善度 0% ❌
+  阶段 0 选题未完成
+  阶段 1 世界观缺少 required_elements
+  阶段 2 人设未确认
 
-阻止：请先完成品类选择和世界观设定
-引导：是否开始选题侦察？
+处理：
+  阻止大纲设计
+  解释缺失项
+  建议回到 /scout-topic 或 /worldbuilding
 ```
 
----
+## 六、商业化支持
 
-## 规模支持
+| 能力 | 所在阶段 | 说明 |
+|------|----------|------|
+| 品类定位 | 阶段 0 | 明确平台、读者和题材卖点 |
+| 黄金三章 | 阶段 5 | 验证开篇留存 |
+| 付费卡点 | 阶段 6 | 设计付费动机和过渡章 |
+| 张力曲线 | 阶段 3 至 4 | 控制高潮间距和平淡期 |
+| 爽感评估 | 阶段 2、5、7 | 检查打脸、CP、反派压力和情绪反馈 |
+| 数据诊断 | 辅助 Skill | 根据平台数据定位问题章节 |
 
-**目标规模**：支持 100-1000 章长篇连载
+## 七、与 novel-material 协作
 
-**模块化设计**：
-- 每个 skill 自包含，39 个 references + 14 个 JS 脚本
-- 大纲采用 幕→序列→节拍 三层嵌套结构
-- 章节索引含节拍表 + 张力曲线
+`/nm` 是素材检索入口，不是自动洗稿工具。
 
-**分批写作**：
-- 阶段4可分批规划（如先规划前100章）
-- 阶段7按顺序写作（从第1章开始），支持断点恢复
+使用原则：
 
----
+1. 先明确当前创作问题。
+2. 检索同类素材结构。
+3. 提炼可借鉴模式。
+4. 展示给用户确认。
+5. 糅合进当前项目，而不是复制原文。
 
-## 商业化支持
-
-Novel V2 内置网文商业化流程：
-
-| 功能 | 说明 |
-|------|------|
-| 黄金三章 | 前3章决定生死，按品类模板严格验证结构 |
-| 付费卡点 | 分析大纲找最优切割点，设计过渡章节奏 |
-| 质量门禁 | JS 脚本确定性检查 + LLM 语义评估 |
-| 爽感评估 | 打脸指数/CP感/反派恶心度（三维 ≥ 6/10） |
-| 品类感知 | 根据 required_elements 动态调整质量检查 |
+素材数量不足时，提示用户在 novel-material 项目中自行入库，本项目不自动执行入库。

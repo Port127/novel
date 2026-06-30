@@ -1,342 +1,403 @@
 # 用户手册
 
-Novel V2 使用指南。
+Novel V2 当前的推荐使用方式是：直接与 Agent 对话，由 Agent 按 Skills 引导你完成创作。不要把 CLI 当作主入口。
 
----
+## 一、开始前先理解
 
-## 快速开始
+本项目不是自动写书流水线。你需要在每个关键节点确认方向：
 
-### 1. 创建项目
+- 题材是否成立。
+- 世界观是否够用。
+- 主角是否有爽点。
+- 反派是否有压力。
+- 大纲是否能支撑长篇。
+- 章节是否值得继续写。
+- 付费卡点是否真的让人想看下一章。
+- 正文是否符合你的口味。
 
-```bash
-novel new "我的小说" --genre 修仙 --author "作者名"
+Agent 负责提出方案、生成草稿、执行检查和记录文件；你负责判断方向、确认取舍和要求重写。
+
+## 二、常用入口
+
+| 你想做什么 | 使用方式 |
+|------------|----------|
+| 开一本新书 | “帮我开一本新书，先做选题侦察” |
+| 设计世界观 | “进入 /worldbuilding，基于当前选题设计世界观” |
+| 设计主角和反派 | “进入 /design-character，先做主角” |
+| 做全书大纲 | “进入 /design-outline，按当前设定设计大纲” |
+| 拆章节 | “进入 /design-chapters，把前 50 章拆出来” |
+| 写前三章 | “进入 /golden-chapters，锻造黄金三章” |
+| 设计付费卡点 | “进入 /paywall-design，检查付费切点” |
+| 写日更正文 | “进入 /daily-write，写第 N 章” |
+| 查素材 | “使用 /nm 查同类作品参考” |
+| 审查当前内容 | “/review 审查一下” |
+| 导出作品 | “/export-novel 导出当前正文” |
+
+## 三、完整创作流程
+
+```text
+/scout-topic
+  ↓
+/worldbuilding
+  ↓
+/design-character
+  ↓
+/design-outline
+  ↓
+/design-chapters
+  ↓
+/golden-chapters
+  ↓
+/paywall-design
+  ↓
+/daily-write
+  ↓
+/export-novel
 ```
 
-系统会返回项目 ID（如 `nv_20260625_abcd`），后续操作都需要用到。
+你可以回退。比如写黄金三章时发现主角不够吸引人，应回到 `/design-character`；设计付费卡点时发现前 20 章没有强高潮，应回到 `/design-chapters` 或 `/design-outline`。
 
-### 2. 开始创作
+## 四、开新书
 
-按完整创作流程逐步进行：
+### 4.1 触发
 
-```
-1. /scout-topic      — 选题侦察（品类选择）
-2. /worldbuilding    — 世界观设计
-3. /design-character — 人设设计
-4. /design-outline   — 大纲设计
-5. /design-chapters  — 细纲设计
-6. /golden-chapters  — 黄金三章锻造
-7. /paywall-design   — 付费卡点设计
-8. /daily-write      — 日更写作
-9. /export-novel     — 导出作品
+对 Agent 说：
+
+```text
+帮我开一本新书，先做 /scout-topic
 ```
 
-### 3. 查看进度
+### 4.2 你需要确认
 
-```bash
-novel show <project_id>
-novel list
+- 写哪个品类。
+- 面向哪个平台和读者。
+- 题材核心卖点是什么。
+- 标签组合是否准确。
+- 这本书后续必须检查哪些元素。
+
+### 4.3 Agent 会产出
+
+- `settings/scout_report.yaml`
+
+其中最重要的是 `required_elements`，后续世界观、人设、大纲和黄金三章会根据它动态检查。
+
+## 五、设计世界观
+
+### 5.1 触发
+
+```text
+进入 /worldbuilding，基于 scout_report 设计世界观
 ```
 
----
+### 5.2 你需要确认
 
-## V4 Skill 系统
+- 当前品类是否需要力量体系、时代背景、地点、社会规则。
+- 设定复杂度是否适合目标读者。
+- 这些设定是否能制造长期冲突。
 
-### 自包含结构
+### 5.3 Agent 会产出
 
-每个创作 skill 是自包含的，包含：
+- `settings/worldbuilding.yaml`
 
-| 组件 | 说明 |
-|------|------|
-| `SKILL.md` | Phase 化流程定义 + 质量门禁 |
-| `references/` | 领域知识文件（按需加载） |
-| `scripts/` | JS 验证脚本（确定性检查） |
+### 5.4 不能继续的情况
 
-### Phase 化流程
+- `scout_report.yaml` 不存在。
+- 必需世界元素为空。
+- 世界观和选题卖点冲突。
 
-每个 skill 由多个 Phase 组成，每个 Phase 有明确的入口/出口条件：
+## 六、设计人物
 
-- **入口条件**：需要哪些前置文件/状态
-- **出口条件**：本 Phase 完成的标志
-- **加载 References**：本 Phase 需要读取的知识文件
+### 6.1 触发
 
-### 断点恢复
-
-长任务（如日更写作）通过 `_progress.md` 记录进度。如果中断：
-- 再次进入 skill 时，会检测是否有未完成的进度
-- 可选择从断点继续
-
-### 品类感知
-
-在选题阶段（scout-topic）会配置 `required_elements`，声明这本小说需要什么元素。后续所有 skill 的质量门禁据此动态调整：
-
-```yaml
-# scout_report.yaml 中的 required_elements
-required_elements:
-  worldbuilding:
-    required: [era_details, locations, social_rules]  # 都市类
-  characters:
-    protagonist: required
-    love_interest: required
-  opening_hook:
-    type: reborn_advantage
+```text
+进入 /design-character，先做主角，再做反派和配角
 ```
 
----
+### 6.2 你需要确认
 
-## Skills 使用指南
+- 主角想要什么。
+- 主角凭什么爽。
+- 主角缺陷是否会推动成长。
+- 反派是否有足够压力。
+- 配角是否能制造关系张力。
 
-### /scout-topic — 选题侦察（推荐入口）
+### 6.3 Agent 会产出
 
-品类选择 + 选题分析，是所有后续设计的基础。
+- `settings/characters.yaml`
 
-**Phase 流程**：
-1. **品类定位** — 选择目标品类（玄幻/都市/系统文等）
-2. **平台分析** — 分析目标平台和读者群体
-3. **选题决策** — 推荐选题方向
-4. **标签策略** — 推荐标签组合（通过 check-tags.js 验证）
-5. **品类感知配置** — 配置 required_elements
-6. **报告定稿** — 输出 `settings/scout_report.yaml`
+### 6.4 重点检查
 
-### /worldbuilding — 世界观设计
+- 打脸指数
+- CP 感
+- 反派恶心度
+- 主角弧线
+- 关系网络
 
-**前置依赖**：品类已选择
+## 七、设计大纲
 
-**Phase 流程**：
-1. **品类适配** — 基于品类推荐世界观框架
-2. **力量体系** — 等级/升级/战斗（如需要）
-3. **社会结构** — 势力/规则（如需要）
-4. **基础规则** — 世界运行规则（如需要）
-5. **落盘验证** — 通过 check-completeness.js 检查
-6. **输出** — `settings/worldbuilding.yaml`
+### 7.1 触发
 
-### /design-character — 人设设计
-
-**前置依赖**：品类已选择
-
-**Phase 流程**：
-1. **品类适配** — 加载角色框架
-2. **主角设计** — 分层设计主角（traits + psychology + arc）
-3. **反派设计** — 反派动机/手段/恶心度（如需要）
-4. **配角与关系网络** — 配角 ≥ 3 + 关系网
-5. **爽感评估与落盘** — 三维评估 + check-characters.js
-6. **输出** — `settings/characters.yaml`
-
-**爽感三维评估**：
-- 打脸指数（face-slap index）≥ 6/10
-- CP感（chemistry）≥ 6/10
-- 反派恶心度（disgust level）≥ 6/10
-
-### /design-outline — 大纲设计
-
-**前置依赖**：品类+世界观
-
-**Phase 流程**：
-1. **品类适配与结构选择** — 三幕式/起承转合/英雄之旅
-2. **骨架搭建** — 幕级大纲 + 张力曲线
-3. **序列细化** — 每幕 2-5 序列
-4. **节拍填充** — 每序列 3-8 节拍
-5. **落盘验证** — check-outline.js + check-pacing.js
-6. **输出** — `settings/outline.yaml` + `settings/arcs.yaml` + `settings/pacing.yaml`
-
-### /design-chapters — 细纲设计
-
-**前置依赖**：大纲已完成
-
-**Phase 流程**：
-1. **大纲解析** — 提取节拍列表
-2. **章节拆分** — 每章 3-15 节拍，密/疏标记
-3. **章节摘要** — 五要素摘要 + 出场人物
-4. **张力曲线** — 每章张力值（1-5）
-5. **落盘验证** — check-chapters.js
-6. **输出** — `settings/chapters_index.yaml`
-
-### /golden-chapters — 黄金三章锻造
-
-**前置依赖**：品类+人设+细纲
-
-**Phase 流程**：
-1. **品类适配** — 加载品类黄金三章模板
-2. **第一章锻造** — 300字内出冲突/钩子
-3. **第二章锻造** — 金手指/核心优势亮相
-4. **第三章锻造** — 首个小高潮
-5. **去AI味** — check-ai-patterns.js + check-degeneration.js
-6. **定稿输出** — `content/chapter_001-003.md`
-
-### /paywall-design — 付费卡点设计
-
-**前置依赖**：大纲+黄金三章
-
-**Phase 流程**：
-1. **大纲分析** — 标记候选切点
-2. **切点决策** — 评估候选点
-3. **过渡设计** — 免费末章+付费首章
-4. **平台适配** — 番茄/起点/晋江差异
-5. **落盘验证** — check-paywall.js
-6. **输出** — `paywall_report.yaml`
-
-### /daily-write — 日更写作
-
-**前置依赖**：章节已规划
-
-**Phase 流程**：
-1. **选题确认** — 选择章节
-2. **上下文加载** — 前章末300字+本章细纲+追踪文件
-3. **写作执行** — 2000-5000 字/章
-4. **确定性检查** — check-ai-patterns.js + check-degeneration.js + normalize-punctuation.js
-5. **LLM 评估** — 反AI评分 ≥ 60 + 钩子评分 ≥ 60
-6. **定稿** — `content/chapter_XXX.md`
-
-**断点恢复**：如果中断，再次进入会提示是否续跑。
-
-### /nm — 素材检索
-
-需要参考时调用：
-
-```
-"查一下修仙类的小说"
-→ 查分类 → 检索参考 → 糅合建议
+```text
+进入 /design-outline，设计全书大纲
 ```
 
-支持检索：章节/大纲/人物/世界观/事件/细纲/深度分析
+### 7.2 你需要确认
 
-### /export-novel — 导出作品
+- 故事主线是否清楚。
+- 前期是否足够抓人。
+- 高潮位置是否合理。
+- 伏笔是否能闭合。
+- 中后期是否有升级空间。
 
-支持格式：TXT、Markdown、EPUB
+### 7.3 Agent 会产出
 
----
+- `settings/outline.yaml`
+- `settings/arcs.yaml`
+- `settings/pacing.yaml`
 
-## CLI 命令
+### 7.4 不能继续的情况
 
-### 项目管理
+- 世界观或人设还没确认。
+- 大纲缺主线。
+- 高潮间距过长。
+- 伏笔没有回收计划。
 
-```bash
-# 创建项目
-novel new "书名" --genre 类型 --author 作者
+## 八、设计章节细纲
 
-# 列出项目
-novel list
+### 8.1 触发
 
-# 查看详情
-novel show <project_id>
-
-# 删除项目
-novel delete <project_id>
+```text
+进入 /design-chapters，把前 50 章拆成章节细纲
 ```
 
----
+### 8.2 你需要确认
 
-## 项目状态
+- 每章是否有推进。
+- 每章摘要是否能直接指导写作。
+- 张力曲线是否符合平台节奏。
+- 黄金三章和付费前章节是否足够强。
 
-### 项目状态流转
+### 8.3 Agent 会产出
 
+- `settings/chapters_index.yaml`
+
+### 8.4 常见回退
+
+- 章节拆开后发现前期太平，回到 `/design-outline`。
+- 某些章节没有事件推进，留在 `/design-chapters` 重拆。
+- 付费点附近张力不够，回到 `/design-chapters` 做卡点倒推。
+
+## 九、写黄金三章
+
+### 9.1 触发
+
+```text
+进入 /golden-chapters，写前三章
 ```
-planning → drafting → revising → completed
+
+### 9.2 你需要确认
+
+- 第一章前 300 字是否抓人。
+- 主角是否立住。
+- 冲突是否明确。
+- 金手指或核心优势是否有效。
+- 第三章是否形成小高潮。
+- 文风是否像你想要的书。
+
+### 9.3 Agent 会产出
+
+- `content/chapter_001.md`
+- `content/chapter_002.md`
+- `content/chapter_003.md`
+
+### 9.4 检查项
+
+- 黄金三章结构
+- AI 味模式
+- 文本退化
+- 钩子强度
+
+## 十、设计付费卡点
+
+### 10.1 触发
+
+```text
+进入 /paywall-design，检查付费切点
 ```
 
-| 状态 | 允许操作 |
-|------|---------|
-| planning | 世界观/人设/大纲/细纲设计 |
-| drafting | 日更写作、黄金三章、付费卡点 |
-| revising | 改写、润色 |
-| completed | 导出 |
+### 10.2 你需要确认
 
-### 章节状态
+- 预期付费区间在哪里。
+- 候选切点是否真的有付费动机。
+- 免费末章是否留下强悬念。
+- 付费首章是否能立即兑现。
+- 是否需要回退大纲或细纲重构卡点。
+- 是否需要故事架构师做商业复核。
 
+### 10.3 Agent 会产出
+
+- `paywall_report.yaml`
+
+### 10.4 重要机制
+
+如果预期付费区间内找不到合格切点，Agent 必须暂停流程并预警。此时不要硬选一个弱切点，应回到 `/design-chapters` 或 `/design-outline`，用卡点倒推法重构前期高潮。
+
+卡点倒推重点看：
+
+- 切点危机是否由核心反派或主线矛盾引发。
+- 免费章节是否存在无关支线。
+- 情绪是否连续推向切点。
+- 爽文是否形成压抑后的爆发。
+- 情感向是否到达情绪阈值。
+
+## 十一、日更写作
+
+### 11.1 触发
+
+```text
+进入 /daily-write，写第 12 章
 ```
-planned → draft → written → revised
+
+### 11.2 你需要确认
+
+- 本章摘要是否仍然正确。
+- 本章目标是什么。
+- 是否需要延续前章情绪。
+- 正文是否符合文风。
+- 是否定稿、重写、润色或回退细纲。
+
+### 11.3 Agent 会产出
+
+- `content/chapter_XXX.md`
+
+### 11.4 检查项
+
+- AI 味模式
+- 文本退化
+- 标点规范
+- 反 AI 五层评分
+- 钩子评分
+
+### 11.5 中断怎么办
+
+长任务会通过 `_progress.md` 记录进度。再次进入同一 Skill 时，可以从断点恢复，也可以放弃断点重新开始。
+
+## 十二、素材检索
+
+### 12.1 触发
+
+```text
+使用 /nm 查一下同类都市重生文的开篇结构
 ```
 
-| 状态 | 说明 |
-|------|------|
-| planned | 有摘要，无正文 |
-| draft | 有正文草稿 |
-| written | 正文完成 |
-| revised | 已润色 |
+### 12.2 能查什么
 
----
+- 素材数量
+- 章节写法
+- 大纲结构
+- 人物塑造
+- 世界观设定
+- 事件场景
+- 细纲结构
+- 深度分析
 
-## 质量门禁
+### 12.3 使用原则
 
-### 双层架构
+检索结果只用于结构参考，不复制原文。Agent 应提炼可借鉴模式，并让你确认是否糅合到当前项目。
 
-| 层 | 工具 | 说明 |
-|----|------|------|
-| **确定性检查** | JS 脚本 | blocking 必须修到 0，advisory 是建议 |
-| **语义检查** | LLM 评估 | 反AI五层评分、钩子评分等 |
+## 十三、审查
 
-### 各 Skill 门禁
+### 13.1 触发
 
-| Skill | JS 脚本 | 通过标准 |
-|-------|--------|---------|
-| scout-topic | check-tags.js | 无标签冲突 |
-| worldbuilding | check-completeness.js | required 元素完整 |
-| design-character | check-characters.js | 必需角色齐全 + 深度达标 |
-| design-outline | check-outline.js + check-pacing.js | 结构完整 + 节奏健康 |
-| design-chapters | check-chapters.js | 节拍 3-15 + 字数 2000-5000 |
-| golden-chapters | check-ai-patterns.js + check-degeneration.js | blocking 归零 |
-| daily-write | 3 个 JS 脚本 + LLM 评估 | blocking 归零 + 评分 ≥ 60 |
-| paywall-design | check-paywall.js | 切点章张力 > 均值 |
+```text
+/review 审查一下前三章
+```
 
----
+### 13.2 审查视角
 
-## 常见问题
+- 故事架构
+- 叙事文风
+- 角色设计
+- 设定一致性
+
+### 13.3 你需要确认
+
+- 哪些问题必须改。
+- 哪些建议暂时不采纳。
+- 是局部修正文案，还是回退上游重做。
+
+## 十四、导出
+
+### 14.1 触发
+
+```text
+/export-novel 导出当前正文为 Markdown
+```
+
+### 14.2 你需要确认
+
+- 导出哪些章节。
+- 导出什么格式。
+- 是否包含元信息。
+
+### 14.3 Agent 会产出
+
+- `exports/`
+
+## 十五、质量门禁
+
+| 层 | 说明 |
+|----|------|
+| JS 确定性检查 | 检查结构、字段、AI 味、退化、张力等规则化问题 |
+| LLM 语义评估 | 检查钩子、爽点、商业吸引力、文本质感 |
+| 用户确认 | 最终判断是否接受、重写或回退 |
+
+blocking 问题必须修复。advisory 问题必须展示给你，由你决定是否处理。
+
+## 十六、常见问题
+
+### Q: 还能用 CLI 吗？
+
+旧 CLI 保留在仓库中，但不再作为推荐入口维护。创造性工作以 Skills 为准。
+
+### Q: 为什么不自动跑完整流程？
+
+实践结论是，小说创作需要大量实时判断。自动流水线容易在题材、人设、节奏或正文方向错掉后继续放大错误。
 
 ### Q: 可以跳过阶段吗？
 
-不可以。每个阶段有完善度检查，未达标不能进入下一阶段。品类选择（阶段0）是所有设计的基础。
+不建议，也会被 Skill 前置检查阻止。没有选题就做人设，没有细纲就写正文，都会导致后续产物不可控。
 
-### Q: 可以修改已完成的设定吗？
+### Q: 已完成设定能改吗？
 
-可以，但需要重新检查完善度，并可能影响后续阶段。
+可以，但改上游设定后，需要重新检查受影响的下游内容。
 
-### Q: 如何参考其他小说？
+### Q: 写出来不满意怎么办？
 
-使用 `/nm` skill 检索素材库，获取同类作品的结构分析。
-
-### Q: 黄金三章有什么要求？
-
-前三章决定生死，必须满足：
-- 首冲突 ≤ 300 字
-- 人设建立
-- 金手指亮相
-- 第一个小高潮
-
-### Q: 写作中断了怎么办？
-
-日更写作（daily-write）支持断点恢复。`_progress.md` 记录当前章节和 Phase，再次进入 skill 时会提示是否续跑。
+先判断问题层级：文风问题在当前章节重写；章节结构问题回退细纲；主线或卡点问题回退大纲；主角不成立回退人设。
 
 ### Q: 什么是品类感知？
 
-在选题阶段（scout-topic）会配置 `required_elements`，声明这本小说需要什么元素。后续 skill 的质量门禁据此动态调整，例如都市类不检查力量体系，玄幻类不检查时代背景。
+`/scout-topic` 会在 `scout_report.yaml` 中声明当前作品需要哪些元素。后续 Skill 按这份声明检查，而不是用同一套模板套所有品类。
 
-### Q: 付费卡点如何设计？
+## 十七、项目目录
 
-`/paywall-design` 会分析大纲，找到最优切割点（爽点兑现+新悬念），并设计过渡章节奏。不同平台（番茄/起点/晋江）有不同的策略。
-
----
-
-## 目录结构
-
-单个项目的完整结构：
-
-```
+```text
 novels/{project_id}/
-├── project.yaml           # 项目元信息
-├── settings/              # 设定文件（扁平化结构）
-│   ├── scout_report.yaml  # 选题报告（含 required_elements）
-│   ├── worldbuilding.yaml # 世界观设定
-│   ├── characters.yaml    # 人物设定
-│   ├── outline.yaml       # 大纲
-│   ├── arcs.yaml          # 细纲（Arc结构）
-│   ├── pacing.yaml        # 节奏规划
-│   ├── chapters_index.yaml # 章节索引
-│   └── notes.yaml         # 草稿/笔记
-├── references/            # 项目特有参考资料
-│   ├── _index.yaml        # 顶层索引
-│   └── ...                # 按小说需求自由组织
-├── content/               # 正文
+├── project.yaml
+├── settings/
+│   ├── scout_report.yaml
+│   ├── worldbuilding.yaml
+│   ├── characters.yaml
+│   ├── outline.yaml
+│   ├── arcs.yaml
+│   ├── pacing.yaml
+│   ├── chapters_index.yaml
+│   └── notes.yaml
+├── references/
+├── content/
 │   └── chapter_*.md
-├── drafts/                # 草稿
-├── exports/               # 导出文件
-└── _progress.md           # 断点恢复状态（如有）
+├── drafts/
+├── exports/
+└── _progress.md
 ```

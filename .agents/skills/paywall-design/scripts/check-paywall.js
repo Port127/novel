@@ -61,6 +61,20 @@ function main() {
     findings.push({ severity: 'advisory', message: `前章（第${paywallChapter - 1}章）张力 ${prevTension} < 3，爽点可能不足` });
   }
 
+  // 检查4：前期平淡期预警 (Pacing Warning)
+  let flatStreak = 0;
+  for (let i = Math.max(0, paywallChapter - 6); i < paywallChapter - 1; i++) {
+    if (tensions[i] !== undefined && tensions[i] < 3) {
+      flatStreak++;
+    } else {
+      flatStreak = 0;
+    }
+    if (flatStreak >= 4) {
+      findings.push({ severity: 'advisory', message: `付费切点前存在连续 ${flatStreak} 章的平淡期（张力 < 3），读者可能在到达切点前流失，建议压缩无关剧情。` });
+      break; // Only warn once
+    }
+  }
+
   printResults(findings);
 }
 

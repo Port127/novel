@@ -1,127 +1,135 @@
 # 项目需求文档
 
-> 本文档记录 Novel V2 的核心用户需求，所有架构设计和技术决策必须服务于这些需求。
-
-## 相关文档
-
-- [.agents/AGENTS.md](../.agents/AGENTS.md) — Agent 规则与工作流
-- [README.md](../README.md) — 项目入口与功能说明
-- [docs/USER_MANUAL.md](USER_MANUAL.md) — 用户使用手册
-- [data/schemas/](../data/schemas/) — YAML Schema 定义
-
----
+> 本文档记录 Novel V2 当前的产品定位、维护边界和硬规则。所有后续文档、Skill 调整和数据结构设计都应服务于这里的原则。
 
 ## 一、项目定位
 
-**Novel V2 是一个面向网文作者的 AI 辅助写作工具。**
+Novel V2 是一个面向中文网文作者的 **Skill 驱动人机协同创作工作台**。
 
-它不是用来"自动生成小说"的工具，而是用来**辅助作者完成创作流程**的交互式系统，从选题到完本全程支持。
+它不是“自动生成小说”的 CLI 流水线，也不再追求让系统从选题到正文自动跑完。实践结论是：小说创作中的题材判断、爽点取舍、人设微调、节奏控制、付费卡点和正文质感，都需要作者实时监督和确认。自动化只能处理结构化检查、素材检索、格式化落盘和局部辅助，不能替代创作判断。
 
-**与 novel-material 的关系**：
+核心声明：
 
-| 项目 | 定位 | 关系 |
+> 本项目已从“自动化小说生成流水线”转向“Skill 驱动的人机协同创作工作台”。CLI 与 Python pipeline 是历史遗留实现，仅保留作参考，不再作为主入口维护。所有创造性工作必须由 Agent 按 Skill 流程执行，并在关键节点等待用户确认。
+
+## 二、维护边界
+
+### 2.1 当前维护对象
+
+| 路径 | 状态 | 说明 |
 |------|------|------|
-| novel-material | 素材检索库 | 上游，提供同类作品的结构化分析 |
-| novel-v2 | 写作工具 | 本项目，调用上游检索服务辅助创作 |
+| `.agents/skills/` | 持续维护 | 当前主入口。每个 Skill 的 `SKILL.md` 定义具体 Phase、输入输出、门禁与确认点 |
+| `.agents/agents/` | 持续维护 | 专业子 Agent 提示词，用于审查、设计和一致性检查 |
+| `data/schemas/` | 持续维护 | YAML 文件结构与完善度标准 |
+| `templates/` | 持续维护 | 新项目模板，应匹配当前扁平化 `settings/*.yaml` 结构 |
+| `docs/` | 持续维护 | 当前规则、流程和用户手册 |
+| `novels/` | 数据目录 | 写作项目数据，按当前 Skill 产物结构组织 |
 
----
+### 2.2 冻结遗留对象
 
-## 二、创作流程
+| 路径 | 状态 | 说明 |
+|------|------|------|
+| `src/novel/` | 冻结保留 | 历史 Python 引擎和基础设施参考，不再作为创作主入口扩展 |
+| `scripts/` | 冻结保留 | 历史脚本，可能仍反映旧数据结构，不再作为当前流程依据 |
+| `novel` CLI | 冻结保留 | 自动流水线方向已放弃，不再围绕 CLI 补齐创作功能 |
 
-Novel V2 支持完整的网文创作流程，从选题到完本：
+冻结不等于删除。旧代码可以作为历史实现、测试参考或将来拆取基础能力的素材，但不能继续用它定义产品主流程。
 
+## 三、用户需求
+
+### 3.1 作者真正需要什么
+
+作者需要的是一个能陪同创作的系统：
+
+1. 帮作者整理题材方向、读者预期和商业卖点。
+2. 把世界观、人设、大纲、细纲拆成可确认的小步骤。
+3. 在每个关键节点提出候选方案，而不是直接替作者决定。
+4. 对结构化产物做确定性检查，及时提示缺口。
+5. 对正文做去 AI 味、退化检测、钩子审查和一致性审查。
+6. 在方向错误时支持回退，而不是在错误方向上继续自动生成。
+7. 让所有设定、正文、审查结果可追踪、可复查、可修改。
+
+### 3.2 作者不需要什么
+
+1. 不需要无人监督的“从一句话生成整本书”。
+2. 不需要 CLI 一次性自动跑完选题、设定、大纲和正文。
+3. 不需要在未确认设定时自动写正文。
+4. 不需要绕过作者判断的自动修复。
+5. 不需要把旧代码的能力包装成当前推荐入口。
+
+## 四、创作流程
+
+当前完整流程如下：
+
+```text
+1. 选题侦察       /scout-topic
+2. 世界观设计     /worldbuilding
+3. 人设设计       /design-character
+4. 大纲设计       /design-outline
+5. 细纲设计       /design-chapters
+6. 黄金三章       /golden-chapters
+7. 付费卡点       /paywall-design
+8. 日更写作       /daily-write
+9. 导出作品       /export-novel
 ```
-1. 选题侦察 (scout-topic)
-   ↓
-2. 世界观设计 (worldbuilding)
-   ↓
-3. 人设设计 (design-character)
-   ↓
-4. 大纲设计 (design-outline)
-   ↓
-5. 细纲设计 (design-chapters)
-   ↓
-6. 黄金三章锻造 (golden-chapters)
-   ↓
-7. 付费卡点设计 (paywall-design)
-   ↓
-8. 日更写作 (daily-write)
-   ↓
-9. 导出作品 (export-novel)
-```
 
-每个阶段都有完善度检查，未达标不能进入下一阶段。
+每个阶段都必须满足三类条件：
 
----
-
-## 三、Skills 系统
-
-### 3.1 V4 Skill 架构
-
-Skills 是交互式创作的核心入口。每个创作 skill 采用**自包含结构**：
-
-```
-.agents/skills/<skill-name>/
-├── SKILL.md              ← Phase 化流程 + 质量门禁
-├── references/           ← 领域知识文件（按需加载）
-└── scripts/              ← JS 验证脚本（确定性检查）
-```
-
-**核心机制**：
-
-| 机制 | 说明 |
+| 条件 | 说明 |
 |------|------|
-| **Phase 化流程** | 每个 Phase 有明确入口/出口条件，可独立执行和恢复 |
-| **确定性脚本门禁** | JS 脚本做质量检查（blocking/advisory 两级） |
-| **断点恢复** | `_progress.md` 记录进度，崩溃后从断点续跑 |
-| **品类感知** | 根据 `scout_report.yaml` 的 `required_elements` 动态决定检查内容 |
+| 前置条件 | 上游设定或章节规划已完成，且当前阶段有足够上下文 |
+| 用户确认 | 关键判断、候选方案、落盘前内容必须经用户确认 |
+| 质量门禁 | JS 脚本或 LLM 评估发现 blocking 问题时必须先修正 |
 
-**汇总统计**：9 个创作 skill，39 个 references，14 个 JS 脚本。
+## 五、Skills 系统
 
-### 3.2 创作类 Skills
+### 5.1 自包含结构
 
-| Skill | 用途 | Phase 数 | References | Scripts | 前置依赖 | 输出 |
-|-------|------|:--------:|:----------:|:-------:|---------|------|
-| `scout-topic` | 品类选择 + 选题分析 | 6 | 4 | 1 | 无 | `settings/scout_report.yaml` |
-| `worldbuilding` | 世界观设计 | 5 | 4 | 1 | 品类已选择 | `settings/worldbuilding.yaml` |
-| `design-character` | 人设设计（含爽感评估） | 5 | 5 | 1 | 品类已选择 | `settings/characters.yaml` |
-| `design-outline` | 大纲设计（含节奏分析） | 5 | 5 | 2 | 品类+世界观 | `settings/outline.yaml` + `arcs.yaml` + `pacing.yaml` |
-| `design-chapters` | 细纲设计（章节拆分） | 5 | 3 | 1 | 大纲已完成 | `settings/chapters_index.yaml` |
-| `golden-chapters` | 黄金三章锻造 | 6 | 4 | 3 | 品类+人设+细纲 | `content/chapter_001-003.md` |
-| `paywall-design` | 付费卡点设计 | 5 | 4 | 1 | 大纲+黄金三章 | `paywall_report.yaml` |
-| `daily-write` | 日更写作（含质量门禁） | 6 | 6 | 3 | 章节已规划 | `content/chapter_XXX.md` |
-| `export-novel` | 导出作品 | — | — | — | 正文已完成 | TXT/MD/EPUB |
+```text
+.agents/skills/<skill-name>/
+├── SKILL.md
+├── references/
+└── scripts/
+```
 
-### 3.3 辅助类 Skills
+| 组件 | 责任 |
+|------|------|
+| `SKILL.md` | 定义 Phase、入口条件、操作步骤、出口条件、确认点和落盘要求 |
+| `references/` | 提供方法论、品类模板、写作技巧和检查依据 |
+| `scripts/` | 执行确定性质量门禁 |
+
+### 5.2 创作类 Skills
+
+| Skill | 用途 | 输出 |
+|-------|------|------|
+| `scout-topic` | 品类、平台、读者、选题和标签策略 | `settings/scout_report.yaml` |
+| `worldbuilding` | 世界观与规则体系 | `settings/worldbuilding.yaml` |
+| `design-character` | 主角、反派、配角与关系网络 | `settings/characters.yaml` |
+| `design-outline` | 全书结构、幕、序列、节拍与节奏 | `settings/outline.yaml`、`settings/arcs.yaml`、`settings/pacing.yaml` |
+| `design-chapters` | 章节拆分、摘要、节拍和张力 | `settings/chapters_index.yaml` |
+| `golden-chapters` | 前三章正文锻造 | `content/chapter_001.md` 至 `content/chapter_003.md` |
+| `paywall-design` | 付费切点、过渡章和商业复核 | `paywall_report.yaml` |
+| `daily-write` | 单章正文写作、检查和定稿 | `content/chapter_XXX.md` |
+| `export-novel` | 作品导出 | `exports/` |
+
+### 5.3 辅助类 Skills
 
 | Skill | 用途 |
 |-------|------|
-| `nm` | 素材检索（章节/大纲/人物/世界观/事件/细纲/深度分析） |
-| `stock-check` | 库存检查 |
-| `data-diagnosis` | 数据诊断 |
-| `feature-planning` | 功能规划 |
-| `code-review-change` | 代码审查 |
-| `commit-msg` | 提交消息生成 |
+| `nm` | 调用 novel-material 检索素材 |
+| `review` | 多视角对抗式审查 |
+| `data-diagnosis` | 平台数据诊断 |
+| `stock-check` | 存稿水位检查 |
+| `feature-planning` | 新功能规划 |
 | `refactor-planning` | 重构规划 |
+| `code-review-change` | 变动影响审查 |
+| `commit-msg` | 规范化提交信息 |
 
----
+## 六、品类感知质量门禁
 
-## 四、品类感知质量门禁
-
-不同品类的小说需要不同的元素。质量门禁不硬编码，而是根据每本小说的品类和声明动态检查。
-
-### 4.1 三层结构
-
-| 层 | 位置 | 内容 |
-|----|------|------|
-| **品类模板** | skill references | "玄幻通常需要力量体系" 等建议 |
-| **小说声明** | `scout_report.yaml` 的 `required_elements` | "这本需要 era_details、locations" |
-| **实际数据** | `settings/*.yaml` | 具体的力量体系设计、角色设计等 |
-
-### 4.2 required_elements 示例
+不同品类需要不同元素。质量门禁不硬编码为某一种小说模板，而是由 `settings/scout_report.yaml` 中的 `required_elements` 声明当前作品需要什么。
 
 ```yaml
-# scout_report.yaml
 required_elements:
   worldbuilding:
     required: [era_details, locations, social_rules]
@@ -138,156 +146,110 @@ required_elements:
     target_arcs: 4
 ```
 
-### 4.3 品类默认值
+三层结构：
 
-| 品类 | 默认 worldbuilding | 默认 characters | 默认 opening_hook | 默认 structure |
-|------|-------------------|-----------------|-------------------|----------------|
-| xuanhuan | power_system, factions, locations | protagonist+mentor+villain | golden_finger | 三幕式, 幕≥3 |
-| urban | era_details, locations, social_rules | protagonist+supporting_cast | conflict | 起承转合, arcs≥4 |
-| system | system_rules, quest_mechanics | protagonist+system_entity | golden_finger | 三幕式, 幕≥3 |
-| romance | locations, relationship_context | protagonist+love_interest | meet_cute | 起承转合, arcs≥3 |
+| 层 | 位置 | 作用 |
+|----|------|------|
+| 品类模板 | Skill references | 提供默认建议，如玄幻需要力量体系，都市需要时代背景 |
+| 小说声明 | `scout_report.yaml` | 声明当前作品实际需要检查的元素 |
+| 实际数据 | `settings/*.yaml` | 保存作者确认后的设定 |
 
----
+## 七、质量门禁
 
-## 五、CLI 命令
+采用双层门禁：
 
-管理类操作通过 CLI 命令完成，只做文件系统操作，不调用 LLM：
+| 层 | 工具 | 说明 |
+|----|------|------|
+| 确定性检查 | JS 脚本 | 检查字段、结构、张力、AI 味模式、退化等可规则化问题 |
+| 语义检查 | LLM + 用户判断 | 检查爽感、钩子、商业吸引力、情绪连续性等语义问题 |
 
-```bash
-# 项目管理
-novel new "书名" --genre 类型 --author 作者
-novel list
-novel show <project_id>
-novel delete <project_id>
-```
+JS 结果分级：
 
-**注意**：创作类操作（世界观、人设、大纲、正文等）全部通过 Skills 完成，Agent 直接生成内容。
+| 级别 | 处理方式 |
+|------|----------|
+| blocking | 必须修到 0，否则不能进入下一阶段 |
+| advisory | 必须展示给用户，由用户决定是否调整 |
 
----
+## 八、项目数据结构
 
-## 六、目录结构
+单本小说目录：
 
-### 项目目录
-
-```
+```text
 novels/{project_id}/
-├── project.yaml           # 项目元信息
-├── settings/              # 设定文件（扁平化结构）
-│   ├── scout_report.yaml  # 选题报告（含 required_elements）
-│   ├── worldbuilding.yaml # 世界观设定
-│   ├── characters.yaml    # 人物设定
-│   ├── outline.yaml       # 大纲
-│   ├── arcs.yaml          # 细纲（Arc结构）
-│   ├── pacing.yaml        # 节奏规划
-│   ├── chapters_index.yaml # 章节索引
-│   └── notes.yaml         # 草稿/笔记
-├── references/            # 项目特有参考资料
-│   ├── _index.yaml
-│   └── ...
-├── content/               # 正文
+├── project.yaml
+├── settings/
+│   ├── scout_report.yaml
+│   ├── worldbuilding.yaml
+│   ├── characters.yaml
+│   ├── outline.yaml
+│   ├── arcs.yaml
+│   ├── pacing.yaml
+│   ├── chapters_index.yaml
+│   └── notes.yaml
+├── references/
+├── content/
 │   └── chapter_*.md
-├── drafts/                # 草稿
-├── exports/               # 导出
-└── _progress.md           # 断点恢复状态（daily-write 等）
+├── drafts/
+├── exports/
+└── _progress.md
 ```
 
-### 项目根目录
+当前文档以扁平化 `settings/*.yaml` 为主。旧脚本中出现的模块化目录结构仅代表历史实现，不应作为新流程依据。
 
-```
-novel/
-├── novels/                    # 写作项目目录
-├── src/novel/                 # 核心引擎（退化为基础设施）
-├── data/schemas/              # YAML Schema 定义
-├── templates/                 # 项目模板
-└── .agents/skills/            # Agent Skills（V4 自包含结构）
-```
+## 九、状态流转
 
----
+### 9.1 项目状态
 
-## 七、状态流转
-
-### 项目状态
-
-```
+```text
 planning → drafting → revising → completed
 ```
 
-| 状态 | 允许操作 |
-|------|---------|
-| planning | 世界观/人设/大纲/细纲设计 |
-| drafting | 日更写作、黄金三章、付费卡点 |
-| revising | 改写、润色 |
-| completed | 导出 |
+| 状态 | 说明 |
+|------|------|
+| planning | 选题、世界观、人设、大纲、细纲阶段 |
+| drafting | 黄金三章、付费卡点、日更写作阶段 |
+| revising | 改写、润色、补洞、一致性修复阶段 |
+| completed | 正文完成，可导出 |
 
-### 章节状态
+### 9.2 章节状态
 
-```
+```text
 planned → draft → written → revised
 ```
 
 | 状态 | 说明 |
 |------|------|
-| planned | 有摘要，无正文 |
-| draft | 有正文草稿 |
-| written | 正文完成 |
-| revised | 已润色 |
+| planned | 有摘要和节拍，无正文 |
+| draft | 有正文草稿，未通过全部检查 |
+| written | 正文完成并通过基础门禁 |
+| revised | 已润色或人工确认定稿 |
 
----
+## 十、硬规则
 
-## 八、质量门禁
+必须：
 
-### 8.1 质量门禁架构
+- 创作类操作使用 Skills 交互式完成。
+- 关键节点必须询问用户，不跳过确认。
+- 生成 YAML 前必须读取对应 schema 或 Skill 指定的数据结构。
+- 生成内容前必须尊重已有设定。
+- blocking 问题必须修正后才能进入下一阶段。
+- 当下游发现根本性问题时，必须回退到上游阶段重做。
 
-采用**双层质量门禁**：JS 脚本（确定性检查）+ LLM 评估（语义检查）。
+禁止：
 
-### 8.2 各 Skill 质量门禁
+- 把 CLI 自动流水线作为当前推荐入口。
+- 在未完成选题和章节规划时直接写正文。
+- 未经用户确认覆盖已有设定或正文。
+- 跳阶段推进。
+- 把 advisory 风险静默忽略。
 
-| Skill | JS 脚本 | LLM 评估 |
-|-------|--------|---------|
-| scout-topic | check-tags.js | — |
-| worldbuilding | check-completeness.js | — |
-| design-character | check-characters.js | 爽感三维评估 |
-| design-outline | check-outline.js + check-pacing.js | — |
-| design-chapters | check-chapters.js | — |
-| golden-chapters | check-golden-structure.js + check-ai-patterns.js + check-degeneration.js | — |
-| daily-write | check-ai-patterns.js + check-degeneration.js + normalize-punctuation.js | 反AI五层评分 ≥ 60 + 钩子评分 ≥ 60 |
-| paywall-design | check-paywall.js | — |
+## 十一、成功标准
 
-### 8.3 JS 脚本规范
+本项目成功不以“自动生成了多少字”为标准，而以作者是否能稳定推进创作为标准：
 
-| 属性 | 说明 |
-|------|------|
-| 语言 | JavaScript（Node.js） |
-| 依赖 | 仅 Node.js 内建模块（fs, path） |
-| 级别 | blocking（必须修到 0）/ advisory（建议） |
-| 退出码 | 0=通过，1=有问题，2=脚本错误 |
-
----
-
-## 九、硬规则
-
-**必须：**
-- 创作类操作使用 Skills 交互式完成
-- 逐步询问，不跳过用户确认
-- 尊重已有设定，逐步细化让用户确认
-- 状态流转按顺序进行
-- 品类选择前置（所有设计依赖品类）
-
-**禁止：**
-- 跳过用户确认直接生成
-- 在未规划章节时写作正文
-- 跳阶段：未完成品类时设计世界观/人物/大纲
-- 覆盖已有设定
-
----
-
-## 十、成功标准
-
-本项目是否成功，取决于用户能否在实际写作中：
-
-1. **交互式创作流畅**：询问 → 确认 → 生成 → 调整的流程顺畅
-2. **设定一致性**：世界观/人物设定在整个写作过程中保持一致
-3. **正文质量可接受**：生成正文语义连贯，符合章纲要求，通过双层质量门禁
-4. **商业化适配**：支持黄金三章、付费卡点等网文商业化需求
-5. **进度可控**：用户可随时查看项目状态和统计
-6. **断点恢复**：长任务中断后可从断点续跑
+1. 作者能清楚知道当前处于哪个阶段。
+2. 每个阶段都有明确产物和确认点。
+3. 设定、正文、卡点和审查结果可追踪。
+4. 质量门禁能及时暴露结构缺口和文本问题。
+5. 用户能随时中断、调整、回退。
+6. 最终正文保持设定一致、商业节奏清楚、AI 痕迹可控。

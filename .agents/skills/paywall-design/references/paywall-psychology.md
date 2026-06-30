@@ -94,8 +94,8 @@
 ## 切点评分模板
 
 ```yaml
+paywall_chapter: 25
 paywall_evaluation:
-  chapter: 25
   satisfaction:
     score: 8/10
     source: "主角击败小反派"
