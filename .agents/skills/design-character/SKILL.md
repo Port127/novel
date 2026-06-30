@@ -90,6 +90,7 @@ description: 人设设计。与 Agent 交互设计主角、反派、配角，含
 8. 依据用户反馈在内存中暂存 protagonist 条目。
 
 **出口条件**：主角人设已设计并获用户确认。
+**加载 References**：`protagonist-arc.md`、`character-basics.md`、`character-design-methods.md`、`dialogue-mastery.md`
 
 > [!IMPORTANT]
 > **【系统红线】**：在完成 Phase 2 的每轮提问后，**必须停止调用工具并等待用户回复**。获得明确 Accept 后，更新 `_progress.md` 的 `current_phase` 为 3，才允许进入 Phase 3！
@@ -135,6 +136,7 @@ description: 人设设计。与 Agent 交互设计主角、反派、配角，含
 7. 依据用户反馈在内存中暂存 antagonist 条目。
 
 **出口条件**：反派人设已获用户确认（包含 Schema 要求的所有强制字段）。
+**加载 References**：`villain-design.md`
 
 > [!IMPORTANT]
 > **【系统红线】**：在完成 Phase 3 的每轮提问后，**必须停止调用工具并等待用户回复**。获得明确 Accept 后，更新 `_progress.md` 的 `current_phase` 为 4，才允许进入 Phase 4！
@@ -184,6 +186,7 @@ description: 人设设计。与 Agent 交互设计主角、反派、配角，含
 7. 依据用户反馈暂存 supporting 条目与 relationships 条目。
 
 **出口条件**：配角网络与关系弧线已获用户确认。
+**加载 References**：`character-relations.md`
 
 > [!IMPORTANT]
 > **【系统红线】**：在完成 Phase 4 的每轮提问后，**必须停止调用工具并等待用户回复**。获得明确 Accept 后，更新 `_progress.md` 的 `current_phase` 为 5，才允许进入 Phase 5！

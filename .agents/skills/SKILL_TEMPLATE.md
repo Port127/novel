@@ -3,6 +3,19 @@ name: skill-name-placeholder
 description: 一句话描述该 Skill 的核心用途和触发场景。
 ---
 
+<!-- 
+=============================================================================
+[AI_INSTRUCTION_FOR_SKILL_REFACTORING]
+致 AI 助手（读到此文件的 Agent）：
+当你被用户要求“参考 SKILL_TEMPLATE.md 对现有 Skill 进行收敛/格式化”时，
+**绝对禁止**大面积删除或过度概括原 Skill 中的【业务核心逻辑】、【数据约束模板】、【字数/密度契约】或【各个 Phase 的详细领域步骤】！
+你的任务是**非破坏性融合（Non-destructive merge）**：
+1. 原封不动地保留所有原有的业务规则，将它们一丝不漏地塞进【2. 创作与业务准则 (Domain Rules)】板块下！
+2. 在原有的 Phase 步骤中，“插入”或“叠加”本模板要求的架构动作（如：更新 _progress、强制读取 Schema、启发式提问、停顿确认）。
+3. 严禁因为本模板的示例十分简短，就去模仿简短的格式而删掉那些真实的业务护栏！如果丢失业务护栏，将导致灾难性的后果！
+=============================================================================
+-->
+
 # skill-name-placeholder（中文名称）
 
 > **用途**：明确指出本技能解决什么具体问题。
@@ -11,14 +24,20 @@ description: 一句话描述该 Skill 的核心用途和触发场景。
 
 ---
 
-## 核心原则 (Core Principles)
+## 1. 架构与行为规范 (System Rules)
 
+> **[系统强制]** 本板块定义 Agent 必须遵守的操作流转规则，绝对不可违背或删减。
 1. **防暴走与启发式交互 (UX)**：严禁一次性执行多个 Phase 或连发开放式提问。每个 Phase 结束前必须停下等待用户。提问时必须基于上下文提供 **2-3 个具体预设方案 (Option A/B/C)** 供用户选择或微调。
 2. **多智能体编排 (Orchestration)**：在涉及重度脑暴或深度执行的 Phase 中，主 Agent 必须使用 `invoke_subagent` 唤醒对应的专业子 Agent（如 `story-architect`, `character-designer`）来负责具体的交互与生成，主 Agent 仅负责流程统筹与最终落盘。
-3. **商业对齐 (Commercial Alignment)**：必须基于 `scout_report.yaml` 中的 `competition_analysis` (竞争分析) 和 `core_hooks` (核心卖点) 进行设计，刻意制造差异化。
-4. **素材库联动 (Ecosystem)**：当遇到生僻设定或需要寻找灵感时，主动向用户推荐或直接使用 `/nm` 系列命令查询上游素材库。
-5. **上下文闭环 (Context Loop)**：如果在 Phase 中要求读取上游文件（如 worldbuilding），则最终落盘的数据结构中，必须有对应的联动字段（如 schema 中的可选阵营字段）进行支撑，不能读而不用。
-6. **实时进度保存 (State Persistence)**：进入任何一个新的 Phase，必须立即更新根目录下的 `_progress.md` 文件。
+3. **上下文闭环 (Context Loop)**：如果在 Phase 中要求读取上游文件（如 worldbuilding），则最终落盘的数据结构中，必须有对应的联动字段（如 schema 中的可选阵营字段）进行支撑，不能读而不用。
+4. **实时进度保存 (State Persistence)**：进入任何一个新的 Phase，必须立即更新根目录下的 `_progress.md` 文件。
+
+## 2. 创作与业务准则 (Domain Rules)
+
+> **[业务核心]** 本板块定义该 Skill 独有的领域知识、创作契约和设定标准。重构时必须**全量保留**原有的业务逻辑，填入下方：
+1. **商业对齐 (Commercial Alignment)**：必须基于 `scout_report.yaml` 中的 `competition_analysis` (竞争分析) 和 `core_hooks` (核心卖点) 进行设计，刻意制造差异化。
+2. **素材库联动 (Ecosystem)**：当遇到生僻设定或需要寻找灵感时，主动向用户推荐或直接使用 `/nm` 系列命令查询上游素材库。
+3. **【业务逻辑占位符】**：（例如：字数预算契约、多线情节骨架、人物成长弧线、打脸指数等，请将原 Skill 中的所有业务细节无损平移至此！）
 
 ---
 
