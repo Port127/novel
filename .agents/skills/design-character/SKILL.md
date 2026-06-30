@@ -6,39 +6,47 @@ description: 人设设计。与 Agent 交互设计主角、反派、配角，含
 # design-character（人设设计）
 
 > **用途**：设计小说人物，包括主角、反派、配角，并评估爽感维度。
-> **前置条件**：`settings/scout_report.yaml` 存在（品类已确定）。
-> **输出文件**：`settings/characters.yaml`
+> **前置条件**：`{project_dir}/settings/scout_report.yaml` 和 `worldbuilding.yaml` 存在。
+> **输出文件**：`{project_dir}/settings/characters.yaml`
 
 ---
 
-## 核心原则
+## 核心原则 (Core Principles)
 
-1. **品类适配**：不同品类需要不同角色类型（玄幻需要反派，言情需要恋爱对象）。
-2. **弧线驱动**：主角必须有清晰的起点→终点弧线，弧线上有关键转折点。
-3. **反派即剧情**：反派的恶心程度决定打脸的爽感上限。
-4. **爽感可量化**：打脸指数、CP感、反派恶心度——三维评估人设质量。
-5. **关系成网**：角色不是孤立的，关系网络决定剧情张力。
-6. **差异化至上**：遮住名字能分出谁在说话，差异化失败 = 角色设计失败。
-7. **动机可推导**：角色的重大决策必须能从动机链推导，不能为剧情服务而失真。
-8. **弱点让角色可信**：没有弱点的完美主角不可信，弱点让成长有意义。
+1. **防暴走与启发式交互 (UX)**：严禁一次性执行多个 Phase 或连发开放式提问。每个 Phase 结束前必须停下等待用户。提问时必须基于上下文提供 **2-3 个具体预设方案 (Option A/B/C)** 供用户选择或微调。
+2. **多智能体编排 (Orchestration)**：在涉及重度脑暴或深度执行的 Phase 中，主 Agent 必须使用 `invoke_subagent` 唤醒 `character-designer` 来负责具体的交互与生成，主 Agent 仅负责流程统筹与最终落盘。
+3. **商业与品类对齐 (Commercial Alignment)**：必须基于 `scout_report.yaml` 中的品类要素进行设计（如玄幻需反派，言情需恋爱对象）。刻意制造差异化，遮住名字能分出谁在说话。
+4. **素材库联动 (Ecosystem)**：当需要寻找人设灵感或建立动机链时，主动使用 `/nm search character` 或 `/nm search insight` 查询上游素材库。
+5. **实时进度保存 (State Persistence)**：进入任何一个新的 Phase，必须立即更新根目录下的 `_progress.md` 文件。
+6. **弧线驱动与弱点可信**：主角和反派必须有清晰的起点→终点弧线，弱点让角色可信，没有弱点的完美角色不可信。
+7. **爽感可量化**：打脸指数、CP感、反派恶心度——三维评估人设质量。
 
 ---
 
-## Phase 定义
+## Phase 定义 (Phase State Machine)
 
-### Phase 1：品类适配
+> **【架构强制要求】**：
+> 1. 生成任何结构化数据前，**必须使用 `view_file` 强制读取 `data/schemas/characters.schema.yaml`**。
+> 2. 严禁按己意图捏造不在 Schema 中的顶级字段。
+> 3. Reference 文件应当按需在具体的 Phase 中加载，不要在 Phase 1 一次性全读完。
 
-**入口条件**：scout_report.yaml 存在
-**目标**：根据品类加载对应角色框架，确定需要设计的角色类型
+### Phase 1：准备与上下文对齐
+
+**入口条件**：`scout_report.yaml` 和 `worldbuilding.yaml` 存在
+**目标**：拉取基础上下文，确认本技能的操作范围
 
 **步骤**：
-1. 读取 `scout_report.yaml` 的 `genre` 和 `required_elements.characters`
-2. 读取 `references/character-basics.md`，加载品类对应角色框架
-3. 展示该品类需要设计的角色类型
-4. 确认设计范围
+1. **进度更新**：更新 `_progress.md` 的 `current_phase` 为 1。
+2. **强制读取 Schema**：使用 `view_file` 读取本次目标输出对应的 `data/schemas/characters.schema.yaml`。
+3. 读取 `{project_dir}/settings/scout_report.yaml` 的 `genre` 和 `required_elements.characters`。
+4. 读取 `{project_dir}/settings/worldbuilding.yaml`，理解世界观、力量体系和社会结构。
+5. （按需）读取 `references/character-basics.md` 加载品类角色框架。
+6. 综合以上信息，向用户展示该品类需要设计的角色类型范围，并提供 **2-3 个关于主角初步设定的方向 (Option A/B/C)** 供用户选择。
 
-**出口条件**：角色类型列表确定
-**加载 References**：`character-basics.md`
+**出口条件**：操作范围已与用户确认，主角大方向已定。
+
+> [!IMPORTANT]
+> **【系统红线】**：在完成 Phase 1 后，**必须停止调用工具并向用户展示当前设计范围**。只有在获得用户明确确认后，才允许进入 Phase 2！
 
 **品类框架示例**：
 
@@ -78,22 +86,21 @@ description: 人设设计。与 Agent 交互设计主角、反派、配角，含
    - 起点状态 → 终点状态 → 关键转折点
    - 成长三阶段：小我 → 自我 → 他我
    - 情绪公式：满足 → 打击 → 怀疑 → 心痛 → 觉醒
-7. 写入 characters.yaml 的 protagonist 条目
+7. 提供主角设计的 **2-3 个具体变体方案 (Option A/B/C)** 让用户挑选或微调。
+8. 依据用户反馈在内存中暂存 protagonist 条目。
 
-**出口条件**：主角人设完整（三层标签 + 九维 + 动机链 + 语言档案 + 弧线均已填写）
-**加载 References**：`protagonist-arc.md`、`character-basics.md`、`character-design-methods.md`
+**出口条件**：主角人设已设计并获用户确认。
+
+> [!IMPORTANT]
+> **【系统红线】**：在完成 Phase 2 的每轮提问后，**必须停止调用工具并等待用户回复**。获得明确 Accept 后，更新 `_progress.md` 的 `current_phase` 为 3，才允许进入 Phase 3！
 
 #### Agent 调用：character-designer（可选增强）
 
-如果项目已部署 character-designer agent（检查 `.agents/agents/character-designer.md` 是否存在），
-可读取该文件内容，拼接以下参数后 spawn Agent 辅助主角深度设计：
-
-- 项目根目录：{当前项目绝对路径}
-- 任务类型：创作
-- 查询参数：辅助主角三层标签设计、九维深化、语言风格档案建立
-- 相关文件路径：settings/characters.yaml
-
-如 agent 不可用，跳过此步，由主线程直接完成。
+如果需要深度设计，请使用 `invoke_subagent` 工具唤醒 `character-designer` 子代理（前提是 `.agents/agents/character-designer.md` 存在）。
+**调用参数示例**：
+- `TypeName`: `character-designer`
+- `Prompt`: "项目根目录：{当前项目绝对路径}。任务：辅助主角三层标签设计、九维深化、语言风格档案建立。请读取 settings/characters.yaml 并给出建议。"
+*(如 agent 不可用，则降级由主线程直接完成。)*
 
 ---
 
@@ -124,22 +131,21 @@ description: 人设设计。与 Agent 交互设计主角、反派、配角，含
 5. **反派弧线**：
    - 反派的动机是否有层次（表面动机 vs 真实动机）
    - 反派是否有自己的成长/变化（不是静态的恶）
-6. 写入 characters.yaml 的 antagonist 条目
+6. 提供反派设计的 **2-3 个具体设定变体 (Option A/B/C)** 供用户挑选或微调。
+7. 依据用户反馈在内存中暂存 antagonist 条目。
 
-**出口条件**：反派人设完整（动机 + 手段 + 恶心度 ≥ 7/10 + 弱点 + 镜像关系）
-**加载 References**：`villain-design.md`
+**出口条件**：反派人设已获用户确认（包含 Schema 要求的所有强制字段）。
+
+> [!IMPORTANT]
+> **【系统红线】**：在完成 Phase 3 的每轮提问后，**必须停止调用工具并等待用户回复**。获得明确 Accept 后，更新 `_progress.md` 的 `current_phase` 为 4，才允许进入 Phase 4！
 
 #### Agent 调用：character-designer（可选增强）
 
-如果项目已部署 character-designer agent（检查 `.agents/agents/character-designer.md` 是否存在），
-可读取该文件内容，拼接以下参数后 spawn Agent 辅助反派设计：
-
-- 项目根目录：{当前项目绝对路径}
-- 任务类型：创作
-- 查询参数：辅助反派设计、镜像关系建立、恶心度优化
-- 相关文件路径：settings/characters.yaml
-
-如 agent 不可用，跳过此步，由主线程直接完成。
+使用 `invoke_subagent` 工具唤醒 `character-designer` 子代理。
+**调用参数示例**：
+- `TypeName`: `character-designer`
+- `Prompt`: "项目根目录：{当前项目绝对路径}。任务：辅助反派设计、补充心理维度(psychology)与人物弧线(arc)、镜像关系建立、恶心度优化。"
+*(如 agent 不可用，由主线程完成。)*
 
 ---
 
@@ -149,7 +155,7 @@ description: 人设设计。与 Agent 交互设计主角、反派、配角，含
 **目标**：设计配角和关系网络
 
 **步骤**：
-1. 读取 `references/relationship-network.md`
+1. 读取 `references/character-relations.md`
 2. **配角设计流程**：
    - 确定配角功能列表（导师/盟友/情报源/牺牲品/镜像对照/竞争者）
    - 每个配角必须有明确功能（推动剧情/衬托主角/提供信息），没有功能的不出场
@@ -174,32 +180,31 @@ description: 人设设计。与 Agent 交互设计主角、反派、配角，含
    - 关系必须有变化弧线（不能从头到尾一个状态）
    - 避免铁板一块（同盟内部可以有分歧，对立之中可以有惺惺相惜）
    - 关系变化必须有铺垫事件，不能"突然就成了好朋友"
-6. 写入 characters.yaml 的 supporting/minor 条目
-7. 绘制关系网络图（文字描述）
+6. 提供配角与关系网络的 **2-3 种编排方案 (Option A/B/C)** 供用户挑选。
+7. 依据用户反馈暂存 supporting 条目与 relationships 条目。
 
-**出口条件**：配角 ≥ 3 个，关系网络已建立（四种类型 + 好感度 + 弧线）
-**加载 References**：`relationship-network.md`、`character-relations.md`
+**出口条件**：配角网络与关系弧线已获用户确认。
+
+> [!IMPORTANT]
+> **【系统红线】**：在完成 Phase 4 的每轮提问后，**必须停止调用工具并等待用户回复**。获得明确 Accept 后，更新 `_progress.md` 的 `current_phase` 为 5，才允许进入 Phase 5！
 
 ---
 
-### Phase 5：爽感评估与落盘
+### Phase 5：落盘验证 (Quality Gate)
 
 **入口条件**：所有必需角色已设计
-**目标**：评估爽感三维，生成 characters.yaml 并验证
+**目标**：评估爽感三维，写入硬盘并通过自动化门禁检查
 
 **步骤**：
-1. 读取 `references/cool-factor-guide.md`
-2. 评估三维爽感：
-   - 打脸指数（face-slap index）
-   - CP感（chemistry）
-   - 反派恶心度（disgust level）
-3. 如任一维度 < 6/10，给出调整建议
-4. 汇总所有人设，展示给用户确认
-5. 写入 `settings/characters.yaml`
-6. 运行 `scripts/check-characters.js` 验证
-7. 清理 `_progress.md`
+1. **进度更新**：更新 `_progress.md` 的 `current_phase` 为 5。
+2. （按需）读取 `references/cool-factor-guide.md` 评估三维爽感（打脸指数、CP感、反派恶心度）。如 < 6/10 则调整。
+3. **最终检查**：汇总内存中的所有设定，检查是否严格符合 `characters.schema.yaml`。
+4. **写入文件**：按照 Schema 严格写入 `{project_dir}/settings/characters.yaml`（使用 `characters: []` 数组结构）。
+5. **门禁校验**：运行 `node .agents/skills/design-character/scripts/check-characters.js {project_dir}/settings/scout_report.yaml {project_dir}/settings/characters.yaml` 进行验证。
+6. 根据脚本输出的 `[blocking]` 或 `[advisory]` 决定是否重做。如有阻断性错误，**必须阻断流程并修正**。
+7. 验证通过后清理 `_progress.md` 文件，宣告本技能完成。
 
-**出口条件**：characters.yaml 已生成，爽感三维均 ≥ 6/10，通过完整性检查
+**出口条件**：`characters.yaml` 已合规生成并写入硬盘，爽感三维达标。
 **加载 References**：`cool-factor-guide.md`
 
 ---
@@ -218,11 +223,21 @@ description: 人设设计。与 Agent 交互设计主角、反派、配角，含
 
 ---
 
-## 断点恢复
+## 断点恢复 (Recovery)
 
-**状态文件**：`_progress.md`
-**格式**：同 scout-topic
-**恢复逻辑**：跳到最后一个 in_progress 的 Phase
+**状态文件**：`_progress.md`（位于项目根目录）
+
+**格式范例**：
+```markdown
+# design-character Progress
+- current_phase: <1-5>
+- status: in_progress | completed
+- last_updated: <timestamp>
+```
+
+**恢复逻辑**：
+- 启动时检查 `_progress.md`。
+- 若状态非 completed，主动询问用户是否继续中断的进度，跳到对应的 current_phase。
 
 ---
 
@@ -239,16 +254,16 @@ description: 人设设计。与 Agent 交互设计主角、反派、配角，含
 | 1 | character-basics.md | 基础角色设计方法论 + 品类适配 |
 | 2 | protagonist-arc.md, character-basics.md, character-design-methods.md | 主角设计（三层标签 + 九维深化 + 动机链 + 语言档案 + 弧线） |
 | 3 | villain-design.md | 反派设计（层级 + 四要素 + 镜像关系） |
-| 4 | relationship-network.md, character-relations.md | 配角 + 关系网络（四种类型 + 好感度 + 弧线） |
+| 4 | character-relations.md | 配角 + 关系网络（四种类型 + 好感度 + 弧线） |
 | 5 | cool-factor-guide.md | 爽感三维评估 |
 
 ---
 
-## 下一步
+## 下一步 (Next Steps)
 
-characters.yaml 生成后，可进入：
-- `/design-outline`：大纲设计（人设驱动剧情）
-- `/design-chapters`：章节设计
+本技能完成后，推荐执行的操作或进入的下一步 Skill：
+- `/design-outline`：基于现有人设进行大纲与故事结构设计。
+- `/paywall-design`：如果是付费导向，可以提前思考付费卡点的分布。
 
 ---
 
@@ -262,73 +277,98 @@ characters.yaml 生成后，可进入：
 | 反派降智 | 反派为恶而恶，动机不合理 | 重新设计反派动机和镜像关系 | villain-design.md |
 | 关系突变 | "突然就成了好朋友" | 补充铺垫事件和好感度阶段 | character-relations.md |
 | 完美主角 | 主角无弱点，不可信 | 添加致命弱点和道德困境 | protagonist-arc.md |
-| 配角空转 | 配角无功能，出场无意义 | 删除或重新定义功能 | relationship-network.md |
+| 配角空转 | 配角无功能，出场无意义 | 删除或重新定义功能 | character-relations.md |
 | 好感度失控 | 互动尺度不匹配关系阶段 | 按好感度体系调整互动边界 | character-relations.md |
 
 ---
 
-## 角色档案输出格式
+## 角色档案输出格式 (严格遵循 Schema)
 
 ```yaml
-# characters.yaml 示例结构
-protagonist:
-  name: 角色名
-  gender: 性别
-  role: protagonist
-  identity_tags: [身份标签1, 身份标签2]
-  appearance_tags: [表现标签1, 表现标签2]
-  core_tags: [内核标签1, 内核标签2]
-  appearance: 外貌特征
-  personality: [trait1, trait2, trait3]
-  psychology:
-    flaw: 致命弱点
-    obsession: 执念
-    soft_spot: 软肋
-    misjudgment: 误判
-  motivation_chain:
-    cause: 起因（具体事件）
-    surface_intent: 表面意图
-    true_intent: 真实意图
-    constraints: [外部约束, 内部约束]
-    risks:
-      failure_cost: 失败代价
-      success_cost: 成功代价
-      moral_cost: 道德代价
-  arc:
-    start_state: 起点状态
-    end_state: 终点状态
-    turning_points: [转折点1, 转折点2]
-  language_profile:
-    catchphrase: 口头禅
-    speech_rhythm: 说话节奏
-    info_preference: 信息偏好
-    stance: 立场角度
-    identity_influence: 身份影响措辞
-    personality_influence: 性格影响语气
-    progress_influence: 进度影响态度
+# characters.yaml 示例结构（必须是 characters: 的列表结构）
+characters:
+  # === 主角 ===
+  - name: 角色名
+    role: protagonist
+    archetype: 废柴逆袭
+    description: 一句话核心描述
+    traits: [trait1, trait2, trait3]
+    # 下方字段为 protagonist 独有深化
+    identity_tags: [身份标签1, 身份标签2]
+    appearance_tags: [表现标签1, 表现标签2]
+    core_tags: [内核标签1, 内核标签2]
+    appearance:
+      age: 年龄段
+      gender: 性别
+      features: [外貌特征1, 外貌特征2]
+      typical_clothing: 典型着装
+    psychology:
+      fatal_flaw: 致命弱点
+      obsession: 执念
+      soft_spot: 软肋
+      misbelief: 误判
+    motivation_chain:
+      cause: 起因（具体事件）
+      surface_intent: 表面意图
+      true_intent: 真实意图
+      constraints: [外部约束, 内部约束]
+      risks:
+        failure_cost: 失败代价
+        success_cost: 成功代价
+        moral_cost: 道德代价
+    arc:
+      type: 成长弧线
+      start: 起点状态
+      end: 终点状态
+      stages:
+        - stage: 阶段1
+          state: 状态1
+          chapter: 章节号
+    language_profile:
+      catchphrase: 口头禅
+      speech_rhythm: 说话节奏
+      # ... 其他 7 维度
+    # === 关系网络（必须嵌套在角色内部）===
+    relationships:
+      - to: 角色B
+        type: 冲突型
+        description: 宿敌关系描述
+        importance: primary
+    # === 阵营归属（可选联动 worldbuilding）===
+    faction_affiliations:
+      - faction: 势力名称
+        role: 在势力中的角色
+        period: 归属时期
 
-antagonists:
+  # === 反派 ===
   - name: 反派名
-    level: 小反派/中等反派/大弧Boss/最终Boss
+    role: antagonist
+    archetype: 反派
+    description: 一句话核心描述
+    traits: [手段毒辣, 隐忍]
+    # 反派也必须有 psychology 和 arc（Schema要求）
+    psychology:
+      fatal_flaw: 傲慢
+      obsession: 统治世界
+    arc:
+      type: 悲剧弧线
+      start: 巅峰
+      end: 陨落
+    level: 最终Boss
     chapters: [出场章节, 退场章节]
     motivation: 动机
     methods: [手段1, 手段2]
-    disgust_level: 8  # 1-10
+    disgust_level: 8
     weakness: 弱点
     mirror_relation: 与主角的镜像关系
 
-supporting_cast:
+  # === 配角 ===
   - name: 配角名
-    function: 导师/盟友/情报源/牺牲品/镜像对照
+    role: supporting
+    archetype: 导师型
+    description: 隐藏在戒指里的老爷爷
+    traits: [护短, 嘴毒]
+    function: 导师/盟友
     relation_to_protagonist: 与主角关系
-    core_traits: [trait1, trait2]
     signature: 标志性特征
-    exit: 退场方式
-
-relationships:
-  - type: 冲突型/联盟型/亲密型/权威型
-    characters: [角色A, 角色B]
-    affinity_stages: [陌生, 初识, 熟悉, 信任]
-    arc: 关系弧线描述
-    test_event: 考验事件
 ```

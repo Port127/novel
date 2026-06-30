@@ -5,7 +5,7 @@
 // Usage: node check-characters.js <scout_report.yaml> <characters.yaml>
 //
 // 纯 Node.js 内建模块，无外部依赖。
-// 通过简单正则提取 YAML 中的角色信息。
+// 通过行解析提取 YAML 中的角色信息。
 
 const fs = require('fs');
 const path = require('path');
@@ -38,6 +38,13 @@ function main() {
 
   const findings = [];
 
+  // 0. Ensure the file has 'characters:' section
+  if (!/^characters:/m.test(charContent)) {
+    findings.push({ severity: 'blocking', message: '缺少顶级键 characters:（必须遵循 schema 的列表结构）' });
+    printFindings(findings);
+    return;
+  }
+
   // 1. 检查是否有主角
   if (!hasRole(charContent, 'protagonist')) {
     findings.push({ severity: 'blocking', message: '缺少主角 (role: protagonist)' });
@@ -60,7 +67,6 @@ function main() {
         findings.push({ severity: 'blocking', message: `缺少必需的角色类型: ${type}` });
       }
     } else if (type === 'love_interest') {
-      // love_interest 可以通过 relationship type 判断
       if (!hasRelationshipType(charContent, '恋人') && !hasRelationshipType(charContent, 'love_interest')) {
         findings.push({ severity: 'blocking', message: '缺少恋爱对象 (love_interest)' });
       }
@@ -77,7 +83,10 @@ function main() {
     findings.push({ severity: 'advisory', message: `配角数量 ${supportingCount}，建议 ≥ 3 个` });
   }
 
-  // 输出结果
+  printFindings(findings);
+}
+
+function printFindings(findings) {
   if (findings.length === 0) {
     console.log('✓ 人设完整性检查通过');
     process.exit(0);
@@ -93,19 +102,30 @@ function main() {
   process.exit(blocking.length > 0 ? 1 : 0);
 }
 
-/**
- * 提取指定 role 的角色块（YAML 列表项）
- */
+function getCharactersSection(content) {
+  const lines = content.split('\n');
+  let inChars = false;
+  let section = [];
+  for (const line of lines) {
+    if (line.match(/^characters:/)) {
+      inChars = true;
+      continue;
+    }
+    if (inChars) {
+      if (line.match(/^[A-Za-z_-]+:/)) {
+        break; // Reached another top-level key
+      }
+      section.push(line);
+    }
+  }
+  return section.join('\n');
+}
+
 function extractRoleBlock(content, role) {
-  // 找到 characters: 部分
-  const charsMatch = content.match(/characters:\s*\n([\s\S]*)/);
-  if (!charsMatch) return null;
-  const charsSection = charsMatch[1];
+  const charsSection = getCharactersSection(content);
+  if (!charsSection) return null;
 
-  // 分割成各个角色项（以 "  - " 开头的行，即2空格缩进）
-  // 注意：traits 等内部列表是 6 空格缩进，不应分割
-  const items = charsSection.split(/\n(?=  - )/);
-
+  const items = charsSection.split(/\n(?=\s*-\s+name:|\s*-\s+role:)/);
   for (const item of items) {
     if (new RegExp(`role:\\s*${role}\\b`).test(item)) {
       return [item];
@@ -114,77 +134,56 @@ function extractRoleBlock(content, role) {
   return null;
 }
 
-/**
- * 检查指定 role 是否有足够的深度（traits, psychology, arc）
- */
 function checkRoleDepth(content, role, findings) {
   const match = extractRoleBlock(content, role);
   if (!match) return;
 
   const block = match[0];
 
-  // 检查 name
   if (!/name:\s*\S/.test(block)) {
     findings.push({ severity: 'blocking', message: `${role}: 缺少 name 字段` });
   }
 
-  // 检查 traits
   if (!/traits:\s*[\n-]/.test(block) && !/traits:\s*\[/.test(block)) {
     findings.push({ severity: 'blocking', message: `${role}: 缺少性格特征 (traits)` });
   }
 
-  // 检查 psychology（主角/反派需要）
   if (!/psychology:\s*\n/.test(block)) {
     findings.push({ severity: 'blocking', message: `${role}: 缺少心理维度 (psychology)` });
   }
 
-  // 检查 arc
   if (!/arc:\s*\n/.test(block)) {
     findings.push({ severity: 'blocking', message: `${role}: 缺少人物弧线 (arc)` });
   } else {
-    // 检查 arc 是否有 start 和 end
-    // 取 arc: 后直到块末尾的所有内容
-    const arcMatch = block.match(/arc:\s*\n([\s\S]*)/);
-    if (arcMatch) {
-      const arcBlock = arcMatch[1];
-      if (!/start:\s*\S/.test(arcBlock)) {
-        findings.push({ severity: 'blocking', message: `${role}: arc 缺少 start` });
-      }
-      if (!/end:\s*\S/.test(arcBlock)) {
-        findings.push({ severity: 'blocking', message: `${role}: arc 缺少 end` });
-      }
+    // We just check if start/end exist anywhere in the block, which is generally safe
+    // as long as they are not used elsewhere in the same character block.
+    if (!/start:\s*\S/.test(block)) {
+      findings.push({ severity: 'blocking', message: `${role}: arc 缺少 start` });
+    }
+    if (!/end:\s*\S/.test(block)) {
+      findings.push({ severity: 'blocking', message: `${role}: arc 缺少 end` });
     }
   }
 }
 
-/**
- * 检查是否存在指定 role
- */
 function hasRole(content, role) {
-  return new RegExp(`role:\\s*${role}\\b`, 'm').test(content);
+  const charsSection = getCharactersSection(content);
+  return new RegExp(`role:\\s*${role}\\b`, 'm').test(charsSection);
 }
 
-/**
- * 统计指定 role 的数量
- */
 function countRole(content, role) {
-  const matches = content.match(new RegExp(`role:\\s*${role}\\b`, 'gm'));
+  const charsSection = getCharactersSection(content);
+  const matches = charsSection.match(new RegExp(`role:\\s*${role}\\b`, 'gm'));
   return matches ? matches.length : 0;
 }
 
-/**
- * 检查是否存在指定类型的 relationship
- */
 function hasRelationshipType(content, type) {
   return new RegExp(`type:\\s*${type}`, 'm').test(content);
 }
 
-/**
- * 从 scout_report 提取必需的字符类型
- */
 function extractRequiredCharacters(content) {
   const types = [];
-  const charMatch = content.match(/characters:\s*\n([\s\S]*?)(?=\n\s*\w|\n\s*#|$)/);
+  const charMatch = content.match(/characters:\s*\n([\s\S]*?)(?=\n[A-Za-z_]+:|$)/m);
   if (!charMatch) return types;
 
   const charSection = charMatch[1];

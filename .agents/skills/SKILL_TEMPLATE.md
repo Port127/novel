@@ -17,7 +17,8 @@ description: 一句话描述该 Skill 的核心用途和触发场景。
 2. **多智能体编排 (Orchestration)**：在涉及重度脑暴或深度执行的 Phase 中，主 Agent 必须使用 `invoke_subagent` 唤醒对应的专业子 Agent（如 `story-architect`, `character-designer`）来负责具体的交互与生成，主 Agent 仅负责流程统筹与最终落盘。
 3. **商业对齐 (Commercial Alignment)**：必须基于 `scout_report.yaml` 中的 `competition_analysis` (竞争分析) 和 `core_hooks` (核心卖点) 进行设计，刻意制造差异化。
 4. **素材库联动 (Ecosystem)**：当遇到生僻设定或需要寻找灵感时，主动向用户推荐或直接使用 `/nm` 系列命令查询上游素材库。
-5. **实时进度保存 (State Persistence)**：进入任何一个新的 Phase，必须立即更新根目录下的 `_progress.md` 文件。
+5. **上下文闭环 (Context Loop)**：如果在 Phase 中要求读取上游文件（如 worldbuilding），则最终落盘的数据结构中，必须有对应的联动字段（如 schema 中的可选阵营字段）进行支撑，不能读而不用。
+6. **实时进度保存 (State Persistence)**：进入任何一个新的 Phase，必须立即更新根目录下的 `_progress.md` 文件。
 
 ---
 
@@ -112,6 +113,8 @@ description: 一句话描述该 Skill 的核心用途和触发场景。
 
 ## References 索引
 
+> ⚠️ **警告**：编写或更新此表时，必须确保 `references/` 目录下真实存在引用的文件。严禁引用幽灵文件或保留完全冗余的重复文件。
+
 | Phase | References | 用途 |
 |-------|-----------|------|
 | 1 | `xxx.md` | 用途说明 |
@@ -124,3 +127,16 @@ description: 一句话描述该 Skill 的核心用途和触发场景。
 本技能完成后，推荐执行的操作或进入的下一步 Skill：
 - `/next-skill-1`：简述理由
 - `/next-skill-2`：简述理由
+
+---
+
+## 数据输出范式示例 (可选，但必须合规)
+
+> ⚠️ **警告**：大模型往往会优先模仿当前上下文中的示例。如果在此处提供 YAML/JSON 格式的参考示例，**其层级结构（嵌套的数组、对象）与具体键名必须 100% 贴合目标 Schema 的定义**。
+> - 严禁将深层嵌套结构错误提权为顶层数组。
+> - 严禁捏造 Schema 不支持的独立顶层键。
+
+```yaml
+# 示例：
+# 这里填入经过严格审查，与 schema.yaml 分毫不差的结构示范...
+```
