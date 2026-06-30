@@ -25,11 +25,18 @@ chapters: []                          # R | 章节列表
 #                                      # draft    = 有正文草稿
 #                                      # written  = 正文完成
 #                                      # revised  = 已润色
-# words: 0                            # R | 字数（自动统计）
-# summary: ""                         # R | 章节摘要
+# words_target: 0                     # R | 目标字数
+# density: "密"                       # R | 密度（密/中/疏）
+# words: 0                            # R | 实际字数（自动统计）
+# summary: |                          # R | 章节摘要（可为纯文本，也可按五要素格式嵌套）
+#   main_plot: "主线推进"
+#   character_change: "人物变化"
+# beats:                              # R | 节拍列表摘要
+#   - 节拍 1
+#   - 节拍 2
+# tension: 0                          # R | 张力值（1-5）
 
 # === 可选信息 ===
-# tension: 0                          # O | 张力值（1-5）
 # functions: []                       # O | 章节功能标签列表
 #                                      # 示例值类型：开局引入/转折推进/高潮爆发/过渡铺垫/收尾总结
 # characters: []                      # O | 出场人物列表
