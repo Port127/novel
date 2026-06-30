@@ -20,7 +20,7 @@
 帮我看看有哪些欠缺，包括但不限于描述、提示词、上下文、引用文件
 你要整体的审查这个skill，放在我们整个系统、agent中所起到的作用，整体审查
 ------
-请帮我深度审查 `.agents/skills/paywall-design`。为了保证审查质量，请严格按照以下步骤执行：
+请帮我深度审查 `.agents/skills/daily-write`。为了保证审查质量，请严格按照以下步骤执行：
 **1. 设定目标与上下文**
 - **目标检索**：完整读取目标 Skill 目录下的所有核心文件（`SKILL.md`, `references/`, `scripts/`）。
 - **参考标的路径**：`../oh-story-claudecode/`
@@ -40,7 +40,7 @@
 
 现在参考 .agents/skills/SKILL_TEMPLATE.md，对当前 Skill 进行非破坏性合并。请你只把模板里的架构要求（UX、进度保存、门禁等）穿插进去，绝对不要删减、概括或修改任何原有的业务逻辑、细化标准和模板格式！
 
-再审查一次.agents/skills/paywall-design（skill、references、scripts），从多角度、全局考虑，有任何问题都可以提出来
+再审查一次.agents/skills/daily-write（skill、references、scripts），从多角度、全局考虑，有任何问题都可以提出来
 
 反思、提炼的改动，然后分析是否有可以落实到.agents/skills/SKILL_TEMPLATE.md的内容
 
