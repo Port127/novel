@@ -1,12 +1,14 @@
-# Novel V2 - Agent 全局规则
+# Novel V4 - Agent 全局规则
 
-AI 小说写作工具，支持交互式创作和 CLI 操作。与 novel-material（上游素材库）配合使用。
+AI 小说写作工具，基于纯 Skill 驱动。与 novel-material（上游素材库）配合使用。
 
-## 技术栈
+## 技术栈与运行环境
 
-- Python 3.x
-- YAML 数据格式
-- Agent Skills（创作入口）+ CLI（管理工具）
+- **Python 3.12+**
+- **Node.js (v24+)**：用于运行各技能的确定性检查门禁（JS 脚本）。
+- **Git**：用于版本控制与规范化提交。
+- **YAML**：作为所有设定数据和元信息的载体。
+- **环境优先级**：Agent 执行任何终端任务时，**必须优先使用本机 Conda 环境（当前为 `env3.12`）**，其次才是系统默认环境。
 
 ---
 
@@ -42,293 +44,65 @@ AI 小说写作工具，支持交互式创作和 CLI 操作。与 novel-material
 
 ---
 
-## 使用方式定位
+## All-in-Skill 架构与使用方式
 
-### Skills 是创作入口
+本项目已全面废除传统的 Python CLI 命令。所有的创作、管理、审查、导出、检查，**全部由 Agent 结合 Skills 和 JS 脚本**完成。
 
-创作类操作（大纲、人物、正文）**必须通过 Skills 交互式完成**，因为：
+### Skills 是唯一入口
 
-- 用户需要参与创意过程（写小说是跟 Agent 讨论出来的）
-- 需要逐步询问、确认、调整
-- **Agent 直接生成内容**，不调用脚本
+无论是创作小说、诊断数据，还是开发新功能，**必须通过触发对应的 Skill 交互式完成**。
 
 **工作流**：
-Skills → Agent 交互讨论 → 直接生成 YAML/Markdown → 不调用脚本
+用户指令 → 命中对应 Skill → Agent 按照 `SKILL.md` 流程执行 → 调用内置 JS 脚本进行确定性门禁检查 → 生成 YAML/Markdown。
 
-#### V4 Skill 架构
+#### V4 Skill 架构全景图
 
-每个创作 skill 采用**自包含结构**（方案 B）：
+每个 skill 采用**自包含结构**，按职责分为三大核心板块：
 
-```
-.agents/skills/<skill-name>/
-├── SKILL.md              ← 主文件：Phase 化流程 + 质量门禁定义
-├── references/           ← 本 skill 专用的领域知识文件（按需加载）
-│   ├── <topic-a>.md
-│   └── ...
-└── scripts/              ← 本 skill 专用的 JS 验证脚本
-    ├── check-xxx.js
-    └── ...
-```
+**1. 核心创作流 (The 9 Phases)**
+| Skill | 用途 | 前置依赖 |
+|-------|------|---------|
+| `scout-topic` | 选题侦察（定位与受众） | 无 |
+| `worldbuilding` | 世界观设计（力量/社会/规则） | 品类已选择 |
+| `design-character` | 人设设计（主角/反派/配角） | 品类已选择 |
+| `design-outline` | 大纲设计（结构/序列/节拍） | 品类+世界观 |
+| `design-chapters` | 细纲设计（章节拆分/张力曲线） | 大纲已完成 |
+| `golden-chapters` | 黄金三章（微节拍锻造） | 品类+人设+细纲 |
+| `paywall-design` | 付费卡点（转折点决策） | 大纲+黄金三章 |
+| `daily-write` | 日更写作（2000-5000字执行） | 章节已规划 |
+| `nm` | 素材检索（调用上游库） | 无 |
 
-**核心机制**：
+**2. 运营与审查流**
+| Skill | 用途 |
+|-------|------|
+| `review` | 多视角对抗式审查（调用子 Agent 并行或串行审查） |
+| `data-diagnosis` | 数据诊断（导入平台数据，分析追读/互动，定位问题章节） |
+| `stock-check` | 存稿看板（查看存稿水位、成本报告、应急建议） |
+| `export-novel` | 导出作品（将正文编译为 txt/md/epub） |
 
-| 机制 | 说明 |
-|------|------|
-| **Phase 化流程** | 每个 Phase 有明确入口/出口条件，可独立执行和恢复 |
-| **确定性脚本门禁** | JS 脚本做质量检查（blocking/advisory 两级），不靠 LLM 自查 |
-| **断点恢复** | `_progress.md` 记录进度，崩溃后从断点续跑 |
-| **References 按需加载** | 不一次全读，按 Phase 映射表加载对应文件 |
-| **品类感知** | 根据 `scout_report.yaml` 的 `required_elements` 动态决定检查内容 |
-
-| Skill | 用途 | Phase 数 | References | Scripts | 前置依赖 |
-|-------|------|:--------:|:----------:|:-------:|---------|
-| `scout-topic` | 选题侦察 | 6 | 4 | 1 | 无 |
-| `worldbuilding` | 世界观设计 | 5 | 4 | 1 | 品类已选择 |
-| `design-character` | 人设设计 | 5 | 5 | 1 | 品类已选择 |
-| `design-outline` | 大纲设计 | 5 | 5 | 2 | 品类+世界观 |
-| `design-chapters` | 细纲设计 | 5 | 3 | 1 | 大纲已完成 |
-| `golden-chapters` | 黄金三章 | 6 | 4 | 3 | 品类+人设+细纲 |
-| `paywall-design` | 付费卡点 | 5 | 4 | 1 | 大纲+黄金三章 |
-| `daily-write` | 日更写作 | 6 | 6 | 3 | 章节已规划 |
-| `export-novel` | 导出作品 | — | — | — | 正文已完成 |
-| `nm` | 素材检索 | — | — | — | 无 |
-
-### CLI 是管理工具
-
-管理类操作**通过 CLI 命令完成**，因为：
-
-- 机械操作，无需创意参与
-- 执行明确，结果可预期
-- **只做文件系统操作，不调用 LLM**
-
-| 命令 | 用途 |
-|------|------|
-| `novel new` | 创建项目 |
-| `novel list` | 列出项目 |
-| `novel show` | 查看详情 |
-| `novel delete` | 删除项目 |
-
-### nm 是素材检索入口
-
-需要参考时调用 `nm` skill：
-
-- 查分类 → 检索参考 → 糅合建议
+**3. 开发与超级工作流**
+| Skill | 用途 |
+|-------|------|
+| `feature-planning` | 新功能开发规划（Specs -> 实施步骤） |
+| `refactor-planning` | 重构计划制定 |
+| `code-review-change` | 变动影响与隐患审查 |
+| `commit-msg` | 规范化 Git 提交信息生成 |
 
 ---
 
-## Skills 详情
+## 强制信息源约束（Skills 详情规避）
 
-### 完整创作流程（9 阶段）
+> [!IMPORTANT]  
+> **Agent 严禁依赖自身记忆或本全局文件的概括来执行具体技能！**
+> 因为每个技能的具体 Phase 流程、约束条件和输出格式可能会随时更新，全局规则不负责记录这些执行细节。
 
-```
-阶段0：选题侦察 (/scout-topic)
-    ↓
-阶段1：世界观设计 (/worldbuilding)
-    ↓ 完善度 ≥ 80%
-阶段2：人设设计 (/design-character)
-    ↓ 完善度 ≥ 70%
-阶段3：大纲设计 (/design-outline)
-    ↓ 完善度 ≥ 85%
-阶段4：细纲设计 (/design-chapters)
-    ↓ 目标章节完善度 = 100%
-阶段5：黄金三章锻造 (/golden-chapters)
-    ↓
-阶段6：付费卡点设计 (/paywall-design)
-    ↓
-阶段7：日更写作 (/daily-write)
-    ↓
-阶段8：导出作品 (/export-novel)
-```
-
-### /scout-topic — 选题侦察
-
-**Phase 流程**：
-
-```
-Phase 1: 品类定位 → 品类确定
-Phase 2: 平台分析 → 平台+读者确定
-Phase 3: 选题决策 → premise+core_hooks 填写
-Phase 4: 标签策略 → 标签组合通过 check-tags.js
-Phase 5: 品类感知配置 → required_elements 填写
-Phase 6: 报告定稿 → scout_report.yaml 落盘
-```
-
-**输出**：`settings/scout_report.yaml`
-
-### /worldbuilding — 世界观设计
-
-**前置依赖**：品类已选择
-
-**Phase 流程**：
-
-```
-Phase 1: 品类适配 → 加载品类框架
-Phase 2: 力量体系 → 等级/升级/战斗（如需要）
-Phase 3: 社会结构 → 势力/规则（如需要）
-Phase 4: 基础规则 → 世界规则（如需要）
-Phase 5: 落盘验证 → check-completeness.js 检查
-```
-
-**输出**：`settings/worldbuilding.yaml`
-
-### /design-character — 人设设计
-
-**前置依赖**：品类已选择
-
-**Phase 流程**：
-
-```
-Phase 1: 品类适配 → 加载角色框架
-Phase 2: 主角设计 → traits + psychology + arc
-Phase 3: 反派设计 → 动机 + 手段 + 恶心度（如需要）
-Phase 4: 配角与关系网络 → 配角 ≥ 3 + 关系网
-Phase 5: 爽感评估 → 三维评估 + check-characters.js
-```
-
-**输出**：`settings/characters.yaml`
-
-### /design-outline — 大纲设计
-
-**前置依赖**：品类+世界观
-
-**Phase 流程**：
-
-```
-Phase 1: 品类适配与结构选择 → 三幕式/起承转合/英雄之旅
-Phase 2: 骨架搭建 → 幕级大纲 + 张力曲线
-Phase 3: 序列细化 → 每幕 2-5 序列
-Phase 4: 节拍填充 → 每序列 3-8 节拍
-Phase 5: 落盘验证 → check-outline.js + check-pacing.js
-```
-
-**输出**：`settings/outline.yaml` + `settings/arcs.yaml` + `settings/pacing.yaml`
-
-### /design-chapters — 细纲设计
-
-**前置依赖**：大纲已完成
-
-**Phase 流程**：
-
-```
-Phase 1: 大纲解析 → 提取节拍列表
-Phase 2: 章节拆分 → 每章 3-15 节拍，密/疏标记
-Phase 3: 章节摘要 → 五要素摘要 + 出场人物
-Phase 4: 张力曲线 → 每章张力值（1-5）
-Phase 5: 落盘验证 → check-chapters.js
-```
-
-**输出**：`settings/chapters_index.yaml`
-
-### /golden-chapters — 黄金三章锻造
-
-**前置依赖**：品类+人设+细纲
-
-**Phase 流程**：
-
-```
-Phase 1: 品类适配 → 加载品类黄金三章模板
-Phase 2: 第一章锻造 → 300字内出冲突/钩子
-Phase 3: 第二章锻造 → 金手指/核心优势亮相
-Phase 4: 第三章锻造 → 首个小高潮
-Phase 5: 去AI味 → check-ai-patterns.js + check-degeneration.js
-Phase 6: 定稿输出 → chapter_001-003.md
-```
-
-**输出**：`content/chapter_001.md`、`content/chapter_002.md`、`content/chapter_003.md`
-
-### /paywall-design — 付费卡点设计
-
-**前置依赖**：大纲+黄金三章
-
-**Phase 流程**：
-
-```
-Phase 1: 大纲分析 → 标记候选切点
-Phase 2: 切点决策 → 评估候选点
-Phase 3: 过渡设计 → 免费末章+付费首章
-Phase 4: 平台适配 → 番茄/起点/晋江差异
-Phase 5: 落盘验证 → check-paywall.js
-```
-
-**输出**：`paywall_report.yaml`
-
-### /daily-write — 日更写作
-
-**前置依赖**：章节已规划
-
-**Phase 流程**：
-
-```
-Phase 1: 选题确认 → 确定目标章节
-Phase 2: 上下文加载 → 前章末300字+本章细纲+追踪文件
-Phase 3: 写作执行 → 2000-5000 字/章
-Phase 4: 确定性检查 → check-ai-patterns.js + check-degeneration.js + normalize-punctuation.js
-Phase 5: LLM 评估 → 反AI评分 ≥ 60 + 钩子评分 ≥ 60
-Phase 6: 定稿 → content/chapter_XXX.md + 更新追踪
-```
-
-**断点恢复**：`_progress.md` 记录当前章节和 Phase，崩溃后自动续跑
-
-**质量门禁**：
-- JS 脚本：AI 模式检测、退化检测、标点规范
-- LLM 评估：反AI五层评分 ≥ 60、钩子评分 ≥ 60
-
-### /export-novel — 导出作品
-
-**交互流程：**
-
-```
-1. 确认项目
-   ↓
-2. 询问导出格式（txt/md/epub）
-   ↓
-3. Agent 生成导出文件
-   ↓
-4. 展示导出路径
-```
-
-### /nm — 素材检索
-
-**交互流程：**
-
-```
-1. 用户提出参考需求
-   ↓
-2. 切换到素材库项目：cd ../novel-material
-   ↓
-3. 执行检索命令（nm search chapter/outline/character/world/event/detail/insight）
-   ↓
-4. 展示检索结果（结构化摘要）
-   ↓
-5. 理解参考特点，糅合建议
-```
+**执行规则**：
+每当需要进入一个新的 Skill（如 `scout-topic`、`worldbuilding` 等），你必须使用 `view_file` 工具去完整读取该技能目录（`.agents/skills/<skill-name>/`）下的 `SKILL.md` 文件。
+如果 `SKILL.md` 引用了 `references/` 下的知识文件或 `data/schemas/` 下的数据字典，**也必须老老实实去读取源文件**，绝对不准靠猜测生成内容。
 
 ---
 
-## CLI 命令（管理工具）
 
-### 项目管理
-
-```bash
-novel new "书名" --genre 修仙 --author 作者名 --template default
-novel list
-novel show <project_id>
-novel delete <project_id>
-```
-
-### 统计查看
-
-```bash
-novel stats <project_id> [--detail]
-```
-
-### 导出
-
-```bash
-novel export <project_id> --format txt|md|epub
-```
-
----
 
 ## 目录结构
 
@@ -362,15 +136,18 @@ novels/{project_id}/
 ```
 novel/
 ├── novels/                    # 写作项目目录
-├── src/novel/                 # 核心引擎（退化为基础设施）
+├── src/novel/                 # 历史遗留/纯基础设施
 ├── data/schemas/              # YAML Schema 定义
 ├── templates/                 # 项目模板
+├── scripts/                   # 全局工具脚本
+├── .superpowers/              # TDD Plans 和 Specs 规划文档存放区
+├── .agents/agents/            # 专业子 Agent 提示词定义
 └── .agents/skills/            # Agent Skills（V4 自包含结构）
     ├── <skill-name>/
     │   ├── SKILL.md           # Phase 化流程定义
     │   ├── references/        # 领域知识文件
     │   └── scripts/           # JS 验证脚本
-    └── _shared/scripts/       # 共享脚本（check-ai-patterns 等）
+    └── _shared/scripts/       # 共享脚本
 ```
 
 **核心原则**：创作类操作全部通过 Skills 完成，Agent 直接生成内容。质量门禁由 JS 脚本（确定性检查）+ LLM 评估（语义检查）双层保障。
@@ -415,19 +192,20 @@ planned → draft → written → revised
 
 ### 草稿系统
 
-| 来源 | 使用方式 |
-|------|----------|
-| `settings/notes.yaml` | 项目内草稿区，Skill 自动读取 |
-| 直接提供内容 | `--from-draft "想法..."` |
-| 外部文件 | `--from-draft path/to/file.txt` |
+- **项目内草稿**：优先记录/读取 `settings/notes.yaml`，作为跨技能的备忘录。
+- **用户直接提供**：通过对话交互式让用户提供脑洞想法。
+- **外部文件导入**：直接使用 `view_file` 读取用户指定的本地文件内容。
 
-### Schema 参考
+### Schema 参考约束
+
+> [!WARNING]
+> Agent 在生成任何设定 YAML（如世界观、人设、大纲等）之前，**必须**使用 `view_file` 读取对应的 `.schema.yaml` 文件！严禁按自己的理解随意构造数据结构！
 
 | Schema | 路径 |
 |--------|------|
 | 项目元信息 | `data/schemas/project.schema.yaml` |
 | 世界观 | `data/schemas/worldbuilding.schema.yaml` |
-| 人物 | `data/schemas/characters.schema.yaml` |
+| 人设 | `data/schemas/characters.schema.yaml` |
 | 大纲 | `data/schemas/outline.schema.yaml` |
 | 章节 | `data/schemas/chapters.schema.yaml` |
 | **完善度标准** | `data/schemas/completeness.schema.yaml` |
@@ -449,12 +227,8 @@ planned → draft → written → revised
 - 修改已 revised 状态章节时不创建备份
 - **跳阶段**：未完成世界观时生成人物/大纲，未完成人物时生成大纲
 
-**完善度检查命令**：
-```bash
-novel generate (内建检查) {project_id} worldbuilding
-novel generate (内建检查) {project_id} characters
-novel generate (内建检查) {project_id} outline
-```
+**完善度检查机制**：
+不再使用命令行进行校验。阶段流转的阻断与放行，**完全依赖执行所在 Skill 的 `/scripts/` 目录下的 JS 脚本**（例如 `check-tags.js`, `check-completeness.js`）。如果 JS 脚本报 blocking 错误，Agent 必须停下并修正。
 
 ---
 
@@ -515,7 +289,7 @@ Agent 不自动触发入库操作。
 
 ---
 
-## Agent 协作
+## Agent 协作 (Orchestration)
 
 本项目部署了 4 个专业 Agent（定义在 `.agents/agents/`）：
 
@@ -526,20 +300,20 @@ Agent 不自动触发入库操作。
 | character-designer | 角色设计师：角色设定/对话风格/人物弧线 | Read+Write+Edit |
 | consistency-checker | 一致性检查员：事实冲突/伏笔断线/时间线检测 | 只读 (Read+Glob+Grep) |
 
-### 调用方式
+### 调用方式与通信
 
-各 Skill 在关键步骤会自动 spawn 对应 Agent（标记为"可选增强"）。Agent 不可用时自动降级为 solo 模式（主线程直接完成），不中断流程。
-
-### 独立审查
-
-使用 `/review` 命令启动多 Agent 对抗式审查：
-- `full` 模式：4 个 Agent 并行审查
-- `lean` 模式：架构师 + 检查员
-- `solo` 模式：主线程直接审查
+1. **编排与唤醒**：主 Agent（作为 Orchestrator）在关键步骤时，**必须主动使用 `invoke_subagent` 工具**，唤醒对应的 Agent 在后台工作。
+2. **通信**：唤醒后，主 Agent 使用 `send_message` 工具与子 Agent 进行对话、派发任务或收取结果。
+3. **独立审查指令**：使用 `/review` 触发对应 skill，启动多 Agent 对抗式审查：
+   - `full` 模式：并行 spawn 4 个 Agent。
+   - `lean` 模式：只 spawn 架构师 + 检查员。
+   - `solo` 模式：主线程自行审查。
 
 ### 降级策略
 
-所有 agent 调用遵循统一降级规则：
+所有 agent 调用遵循统一降级规则。如果在特定沙箱环境或资源受限时，`invoke_subagent` 工具不可用：
 1. `.agents/agents/{agent}.md` 不存在 → solo
-2. Agent spawn 失败 → solo，标注 `Fallback: spawn failed -> solo`
-3. 当前已在 subagent 内 → 不嵌套 spawn，直接 solo
+2. Agent spawn 失败 → solo，并在回复中标注 `Fallback: spawn failed -> solo`
+3. 当前已在 subagent 内部 → 不允许嵌套 spawn，直接 fallback 到 solo。
+
+此时主 Agent 需要将子 Agent 的提示词内容加载到自身的上下文中，直接进行 Roleplay 完成任务。
