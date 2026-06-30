@@ -41,6 +41,8 @@ tools: [Read, Glob, Grep, Write, Edit]
 | `plot-frameworks.md` | 选择叙事框架时 | design-outline |
 | `foreshadowing-guide.md` | 设计伏笔体系、反转铺垫时 | design-outline |
 | `tension-curve.md` | 设计张力曲线、情绪弧线时 | design-outline |
+| `plot-core-methods.md` | 高潮构建、AB交织法时 | design-outline |
+| `reversal-toolkit.md` | 反转设计、嵌套反转、误导技巧时 | design-outline |
 | `chapter-beat-guide.md` | 设计节拍级细纲时 | design-chapters |
 | `genre-catalog.md` | 题材定位、题材框架速查时 | scout-topic |
 | `topic-decision.md` | 题材决策、对标分析时 | scout-topic |

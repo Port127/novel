@@ -39,6 +39,12 @@ tools: [Read, Glob, Grep, Write, Edit]
 | `writing-flow.md` | 写作流程参考时 | daily-write |
 | `quality-checklist.md` | 审查文字质量（五维评分、9项检查）时 | daily-write |
 | `hooks-guide.md` | 段落级钩子设计时 | daily-write |
+| `writing-craft.md` | 正文写作（三维度揉进、身体细节、疏密分配）时 | daily-write |
+| `dialogue-mastery.md` | 写或审查对话场景（潜台词、权力博弈、差异化）时 | daily-write |
+| `emotional-methods.md` | 情绪弧线执行、情绪节拍设计时 | daily-write |
+| `style-craft.md` | 风格技法（打斗、装逼、日常写法）时 | daily-write |
+| `hooks-paragraph.md` | 段落级钩子设计时 | daily-write |
+| `format-and-structure.md` | 格式规范（段落节奏、语气标点谱系）时 | daily-write |
 | `genre-templates.md` | 品类模板写作时 | golden-chapters |
 | `micro-beat-guide.md` | 微节拍设计时 | golden-chapters |
 | `golden-rules.md` | 黄金三章法则时 | golden-chapters |

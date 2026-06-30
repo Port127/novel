@@ -40,6 +40,7 @@ tools: [Read, Glob, Grep, Write, Edit]
 | `villain-design.md` | 反派设计时 | design-character |
 | `relationship-network.md` | 设计角色关系类型、关系图时 | design-character |
 | `cool-factor-guide.md` | 爽感三维评估时 | design-character |
+| `character-relations.md` | 角色关系类型、好感度体系、关系弧线时 | design-character |
 
 ---
 
