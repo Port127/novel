@@ -15,12 +15,12 @@
 
 
 # 小说skill
-你先阅读.agents/skills/design-chapters（skill、references、scripts），注意：每个字符都要看！
+你先阅读.agents/skills/paywall-design（skill、references、scripts），注意：每个字符都要看！
 （参考内容，本项目同级项目other/oh-story-claudecode，是否使用它的提示词，照抄了还是进行针对本项目的改造？有没有缺漏关键能力）
 帮我看看有哪些欠缺，包括但不限于描述、提示词、上下文、引用文件
 你要整体的审查这个skill，放在我们整个系统、agent中所起到的作用，整体审查
 ------
-请帮我深度审查 `.agents/skills/golden-chapters`。为了保证审查质量，请严格按照以下步骤执行：
+请帮我深度审查 `.agents/skills/paywall-design`。为了保证审查质量，请严格按照以下步骤执行：
 **1. 设定目标与上下文**
 - **目标检索**：完整读取目标 Skill 目录下的所有核心文件（`SKILL.md`, `references/`, `scripts/`）。
 - **参考标的路径**：`../oh-story-claudecode/`
@@ -40,9 +40,9 @@
 
 现在参考 .agents/skills/SKILL_TEMPLATE.md，对当前 Skill 进行非破坏性合并。请你只把模板里的架构要求（UX、进度保存、门禁等）穿插进去，绝对不要删减、概括或修改任何原有的业务逻辑、细化标准和模板格式！
 
-再审查一次.agents/skills/design-chapters（skill、references、scripts），从多角度、全局考虑，有任何问题都可以提出来
+再审查一次.agents/skills/paywall-design（skill、references、scripts），从多角度、全局考虑，有任何问题都可以提出来
 ------
-请帮我深度审查 `.agents/skills/golden-chapters` 技能。我们需要从多角度、全局生态位出发，进行挑剔且严谨的诊断。为了保证审查深度，请严格执行以下步骤：
+请帮我深度审查 `.agents/skills/paywall-design` 技能。我们需要从多角度、全局生态位出发，进行挑剔且严谨的诊断。为了保证审查深度，请严格执行以下步骤：
 **1. 强制信息获取与生态位定位（必须使用读取工具）**
 - **目标检索**：完整读取目标 Skill 目录下的所有核心文件（`SKILL.md`, `references/`, `scripts/`）。
 - **全局定位**：读取项目根目录的 `.agents/AGENTS.md`。你需要自行分析出该 Skill 处于哪一个状态流转阶段（如 planning, drafting, revising 等）。
