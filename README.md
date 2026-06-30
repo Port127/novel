@@ -24,6 +24,23 @@ AI 辅助小说写作工具，支持交互式创作和 CLI 管理。
 | 素材检索 | 参考同类小说 | `/nm` |
 | 导出 | TXT/Markdown/EPUB | `/export-novel` |
 
+## V4 Skill 架构
+
+每个创作 skill 采用**自包含结构**：
+
+```
+.agents/skills/<skill-name>/
+├── SKILL.md              ← Phase 化流程 + 质量门禁
+├── references/           ← 领域知识文件（按需加载）
+└── scripts/              ← JS 验证脚本（确定性检查）
+```
+
+**核心机制**：
+- **Phase 化流程**：每个 Phase 有明确入口/出口条件，支持断点恢复
+- **JS 质量门禁**：blocking/advisory 两级，blocking 必须修到 0
+- **断点恢复**：`_progress.md` 记录进度，崩溃后从断点续跑
+- **品类感知**：根据 `scout_report.yaml` 的 `required_elements` 动态决定检查内容
+
 ## 使用方式
 
 ### 方式一：Skills 交互式创作（推荐）
@@ -72,15 +89,23 @@ cp .env.example .env
 ## 创作流程
 
 ```
-阶段1：世界观设定    → 完善度 ≥ 80%
+阶段0：选题侦察        → scout_report.yaml
     ↓
-阶段2：人物设定      → 完善度 ≥ 70%
+阶段1：世界观设定       → 完善度 ≥ 80%
     ↓
-阶段3：大纲设定      → 完善度 ≥ 85%
+阶段2：人物设定         → 完善度 ≥ 70%
     ↓
-阶段4：章节规划      → 目标章节 = 100%
+阶段3：大纲设定         → 完善度 ≥ 85%
     ↓
-阶段5：正文写作      → 完成
+阶段4：章节规划         → 目标章节 = 100%
+    ↓
+阶段5：黄金三章锻造     → chapter_001-003.md
+    ↓
+阶段6：付费卡点设计     → paywall_report.yaml
+    ↓
+阶段7：日更写作         → chapter_*.md
+    ↓
+阶段8：导出作品         → TXT/MD/EPUB
 ```
 
 **强制顺序**：每个阶段有完善度检查，未达标不能进入下一阶段。
@@ -90,9 +115,15 @@ cp .env.example .env
 ```
 novel/
 ├── novels/                    # 写作项目目录
-├── src/novel/                 # 核心引擎
+├── src/novel/                 # 核心引擎（退化为基础设施）
 ├── data/schemas/              # YAML Schema 定义
-└── .agents/skills/            # Agent Skills
+├── templates/                 # 项目模板
+└── .agents/skills/            # Agent Skills（V4 自包含结构）
+    ├── <skill-name>/
+    │   ├── SKILL.md           # Phase 化流程定义
+    │   ├── references/        # 领域知识文件
+    │   └── scripts/           # JS 验证脚本
+    └── _shared/scripts/       # 共享脚本
 ```
 
 ## 文档导航
@@ -101,6 +132,8 @@ novel/
 - **[需求文档](docs/REQUIREMENTS.md)** — 核心需求与设计原则
 - **[Pipeline 流程](docs/PIPELINE.md)** — 创作流程详细说明
 - **[Schema 定义](data/schemas/)** — YAML 文件字段规范
+- **[V4 设计规格](docs/superpowers/specs/2026-06-29-skill-upgrade-v4-design.md)** — Skill 架构设计
+- **[验证报告](docs/superpowers/verification/2026-06-29-final-verification-report.md)** — V4 升级验证结果
 
 ## 与 novel-material 协作
 
