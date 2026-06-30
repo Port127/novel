@@ -80,6 +80,8 @@ Skill 驱动的人机协同小说创作工作台，面向中文网文作者。
 
 不要把 CLI 当作推荐入口。`novel new`、`novel generate`、`scripts/export.py` 等历史实现仍保留在仓库中，但不再作为当前创作流程的依据。
 
+冻结遗留代码可能仍有 Python 测试未通过。除非任务明确要求维护 `src/novel/`、根目录 `scripts/` 或 `novel` CLI，否则这些测试结果不作为当前 Skill 主流程是否可用的判断依据。
+
 ## 创作流程
 
 ```text
@@ -133,6 +135,7 @@ novels/{project_id}/
 │   ├── arcs.yaml
 │   ├── pacing.yaml
 │   ├── chapters_index.yaml
+│   ├── chapter_outlines/
 │   └── notes.yaml
 ├── references/
 ├── content/
@@ -141,6 +144,8 @@ novels/{project_id}/
 ├── exports/
 └── _progress.md
 ```
+
+章节规划采用双层结构：`settings/chapters_index.yaml` 是章节总索引和跨 Skill 调度表；`settings/chapter_outlines/chapter_*.md` 是单章详细蓝图，用于承载更长的分场、节拍、情绪和字数预算。下游 Skill 可以读取详细蓝图，但必须以章节总索引作为主入口。
 
 ## 文档导航
 

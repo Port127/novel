@@ -188,6 +188,8 @@
 3. 拆分章节，每章包含摘要、出场人物、节拍、张力值。
 4. 标记密章、疏章、高潮章、过渡章。
 
+`chapters_index.yaml` 必须保持可扫描、可调度；长篇分场、情绪推进和字数预算写入 `chapter_outlines/`，避免把章节总索引膨胀成不可维护的大文档。
+
 **用户确认点**：
 
 - 每章是否有明确推进。
@@ -197,6 +199,7 @@
 **输出**：
 
 - `settings/chapters_index.yaml`
+- `settings/chapter_outlines/chapter_*.md`（单章详细蓝图，可选但推荐）
 
 **门禁**：
 
@@ -277,7 +280,7 @@
 
 **输出**：
 
-- `paywall_report.yaml`
+- `paywall_report.yaml`（单本小说项目根目录）
 
 **门禁**：
 

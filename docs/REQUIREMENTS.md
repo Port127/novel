@@ -185,6 +185,7 @@ novels/{project_id}/
 │   ├── arcs.yaml
 │   ├── pacing.yaml
 │   ├── chapters_index.yaml
+│   ├── chapter_outlines/
 │   └── notes.yaml
 ├── references/
 ├── content/
@@ -195,6 +196,10 @@ novels/{project_id}/
 ```
 
 当前文档以扁平化 `settings/*.yaml` 为主。旧脚本中出现的模块化目录结构仅代表历史实现，不应作为新流程依据。
+
+章节规划采用双层结构：`settings/chapters_index.yaml` 是章节总索引和跨 Skill 调度表；`settings/chapter_outlines/chapter_*.md` 是单章详细蓝图。当前流程以章节总索引作为下游 Skill 的主入口，详细蓝图用于补充单章执行信息。
+
+Schema 充分性按 Skill 合约判断：只要某个 Skill 生产结构化 YAML，或多个 Skill 共同读写同一份 YAML，就必须有明确 schema、模板或审计文档说明字段边界。缺少 dedicated schema 的产物必须在 `docs/SKILL_CONTRACT_AUDIT.md` 中记录。
 
 ## 九、状态流转
 
