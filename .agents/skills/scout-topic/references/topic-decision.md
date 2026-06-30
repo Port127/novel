@@ -45,27 +45,4 @@
 
 ---
 
-## 选题报告模板
 
-输出到 `scout_report.yaml`，核心字段：
-
-```yaml
-premise: 一句话前提（50字以上）
-core_hooks:
-  - name: 钩子名称
-    description: 描述
-    hook_type: 钩子类型
-competition_analysis:
-  overall_competition: 0.5  # 0-1
-  overall_potential: 0.8    # 0-1
-  reasoning: 分析理由
-  market_window: 市场窗口判断
-```
-
----
-
-## 交付
-
-1. 写入 `settings/scout_report.yaml`
-2. 展示给用户确认，支持调整
-3. 后续衔接：进入 Phase 4（标签策略）或直接进入 `/worldbuilding`
