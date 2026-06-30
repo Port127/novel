@@ -4,11 +4,11 @@
 
 本轮审计确认：当前主流程已经以 `.agents/skills/` 为入口，`src/novel/`、根目录 `scripts/` 和 `novel` CLI 只保留为冻结遗留。需要修正的主要问题不是代码运行时，而是 Skill 合约、主文档、schema 和模板之间的口径漂移。
 
-必须优先修正的事项：
+基线审计发现并已在本轮完成对齐的事项：
 
-- `.agents/AGENTS.md` 仍把正文目录写成 `content/chapters/`，与 README、PIPELINE 和创作类 Skill 使用的 `content/chapter_*.md` 不一致。
-- 主文档未充分说明 `settings/chapters_index.yaml` 与 `settings/chapter_outlines/chapter_*.md` 的双层关系。
-- 高影响 Skill 中仍有 `scripts/*.js` 短路径，实际脚本位于 `.agents/skills/<skill>/scripts/` 或 `.agents/skills/_shared/scripts/`。
+- `.agents/AGENTS.md` 曾把正文目录写成 `content/chapters/`，现已统一为 `content/chapter_*.md`，并明确旧路径不作为当前新流程路径。
+- 主文档已补充 `settings/chapters_index.yaml` 与 `settings/chapter_outlines/chapter_*.md` 的双层关系。
+- 高影响 Skill 中的 `scripts/*.js` 短路径已改为 `.agents/skills/<skill>/scripts/` 或 `.agents/skills/_shared/scripts/` 下的实际路径。
 - `data/schemas/chapters.schema.yaml` 与 `templates/default/settings/chapters_index.yaml` 存在字段和张力范围漂移，需要至少在文档中明确以 schema 为当前约束。
 - `settings/notes.yaml`、`paywall_report.yaml`、`history/golden_chapters_report.md`、导出配置等产物缺少 dedicated schema，本轮先记录边界，不扩大为 schema 重建。
 
@@ -31,10 +31,10 @@
 | scout-topic | 用户选题目标、平台偏好、`references/*.md` | `settings/scout_report.yaml` | `data/schemas/scout_report.schema.yaml` | `node .agents/skills/scout-topic/scripts/check-tags.js settings/scout_report.yaml` | 无明确 `_progress.md` 合约 | 基本对齐；可继续作为下游品类和 required_elements 来源。 |
 | worldbuilding | `settings/scout_report.yaml`、世界观 references | `settings/worldbuilding.yaml` | `data/schemas/worldbuilding.schema.yaml` | `node .agents/skills/worldbuilding/scripts/check-completeness.js settings/scout_report.yaml settings/worldbuilding.yaml` | `_progress.md` | 基本对齐；脚本路径已是当前路径。 |
 | design-character | `settings/scout_report.yaml`、`settings/worldbuilding.yaml`、人物 references | `settings/characters.yaml` | `data/schemas/characters.schema.yaml` | `node .agents/skills/design-character/scripts/check-characters.js {project_dir}/settings/scout_report.yaml {project_dir}/settings/characters.yaml` | 无明确 `_progress.md` 合约 | 基本对齐；`{project_dir}` 占位符需要执行时替换。 |
-| design-outline | `settings/scout_report.yaml`、`settings/worldbuilding.yaml`、`settings/characters.yaml` | `settings/outline.yaml`、`settings/arcs.yaml`、`settings/pacing.yaml`、`settings/notes.yaml` | `data/schemas/outline.schema.yaml` 覆盖 `outline.yaml` 核心结构；`arcs/pacing/notes` 缺 dedicated schema | 当前写法为 `scripts/check-outline.js`、`scripts/check-pacing.js` 短路径 | `_progress.md` | 需要修正脚本路径，并明确 `outline/arcs/pacing/notes` 的 schema 边界。 |
-| design-chapters | `settings/outline.yaml`、`settings/scout_report.yaml`、章节 references | `settings/chapters_index.yaml`、`settings/chapter_outlines/chapter_*.md` | `data/schemas/chapters.schema.yaml` | 当前写法为 `scripts/check-chapters.js`、`scripts/check-outlines.js` 短路径 | `_progress.md` | 需要修正脚本路径，并明确总索引与单章蓝图关系。 |
-| golden-chapters | `settings/outline.yaml`、`settings/chapters_index.yaml`、`settings/scout_report.yaml`、`settings/characters.yaml` | `content/chapter_001.md`、`content/chapter_002.md`、`content/chapter_003.md`、`history/golden_chapters_report.md` | 正文无直接 schema；报告缺 dedicated schema | 当前写法为 `node scripts/check-golden-structure.js`、`node scripts/check-ai-patterns.js`、`node scripts/check-degeneration.js` 短路径 | `_progress.md` | 需要修正脚本路径，并说明前三章可读取 `chapter_outlines/` 补足微节拍。 |
-| paywall-design | `settings/outline.yaml`、`settings/chapters_index.yaml` | `paywall_report.yaml` | 缺 dedicated `paywall_report.schema.yaml`，依赖 Skill 示例和脚本字段 | 当前写法为 `scripts/check-paywall.js` 短路径 | `_progress.md` | 需要修正脚本路径，保持根目录 `paywall_report.yaml` 口径。 |
+| design-outline | `settings/scout_report.yaml`、`settings/worldbuilding.yaml`、`settings/characters.yaml` | `settings/outline.yaml`、`settings/arcs.yaml`、`settings/pacing.yaml`、`settings/notes.yaml` | `data/schemas/outline.schema.yaml` 覆盖 `outline.yaml` 核心结构；`arcs/pacing/notes` 缺 dedicated schema | `node .agents/skills/design-outline/scripts/check-outline.js settings/scout_report.yaml settings/outline.yaml`；`node .agents/skills/design-outline/scripts/check-pacing.js settings/pacing.yaml` | `_progress.md` | 已对齐脚本路径，并补充 `outline/arcs/pacing/notes` 的 schema 边界。 |
+| design-chapters | `settings/outline.yaml`、`settings/scout_report.yaml`、章节 references | `settings/chapters_index.yaml`、`settings/chapter_outlines/chapter_*.md` | `data/schemas/chapters.schema.yaml` | `node .agents/skills/design-chapters/scripts/check-chapters.js settings/chapters_index.yaml`；`node .agents/skills/design-chapters/scripts/check-outlines.js settings/chapter_outlines/` | `_progress.md` | 已对齐脚本路径，并明确总索引与单章蓝图关系。 |
+| golden-chapters | `settings/outline.yaml`、`settings/chapters_index.yaml`、`settings/scout_report.yaml`、`settings/characters.yaml` | `content/chapter_001.md`、`content/chapter_002.md`、`content/chapter_003.md`、`history/golden_chapters_report.md` | 正文无直接 schema；报告缺 dedicated schema | `node .agents/skills/golden-chapters/scripts/check-golden-structure.js ...`；`node .agents/skills/golden-chapters/scripts/check-ai-patterns.js ...`；`node .agents/skills/golden-chapters/scripts/check-degeneration.js ...` | `_progress.md` | 已对齐脚本路径，并说明前三章可读取 `chapter_outlines/` 补足微节拍。 |
+| paywall-design | `settings/outline.yaml`、`settings/chapters_index.yaml` | `paywall_report.yaml` | 缺 dedicated `paywall_report.schema.yaml`，依赖 Skill 示例和脚本字段 | `node .agents/skills/paywall-design/scripts/check-paywall.js settings/chapters_index.yaml paywall_report.yaml` | `_progress.md` | 已对齐脚本路径，保持根目录 `paywall_report.yaml` 口径。 |
 | daily-write | `settings/chapters_index.yaml`、`settings/notes.yaml`、前文正文、可选 `settings/chapter_outlines/chapter_*.md`、可选 `paywall_report.yaml` | `content/chapter_XXX.md`，并更新 `settings/notes.yaml`、`settings/chapters_index.yaml` 状态 | 正文无直接 schema；`settings/notes.yaml` 缺 dedicated schema | `node .agents/skills/_shared/scripts/check-ai-patterns.js --check content/chapter_{N}.md`、`node .agents/skills/daily-write/scripts/normalize-punctuation.js content/chapter_{N}.md`、`node .agents/skills/_shared/scripts/check-degeneration.js --check content/chapter_{N}.md` | `_progress.md` | 脚本路径基本对齐；需要明确章节索引与详细蓝图读取优先级。 |
 | review | 正文、`settings/outline.yaml`、`settings/arcs.yaml`、`settings/pacing.yaml`、`settings/characters.yaml`、追踪记录 | 对话审查报告或用户指定路径 | 统一 Findings Schema 写在 Skill 内；无文件级 dedicated schema | 可运行共享 `check-ai-patterns.js`、`check-degeneration.js` | 无明确 `_progress.md` 合约 | 基本对齐；报告结构为文本合约。 |
 | data-diagnosis | 平台导出 CSV、可选 `settings/chapters_index.yaml` | `data_diagnosis_report.yaml` | 无直接 schema | 当前写法为 `scripts/analyze-metrics.js` 短路径 | 无明确 `_progress.md` 合约 | 非本轮高影响 Skill；后续应补脚本路径和报告 schema。 |
@@ -66,9 +66,9 @@
 
 | 严重级别 | 冲突 | 证据 | 建议 |
 |----------|------|------|------|
-| P1 必须修正 | `content/chapters/` 与 `content/chapter_*.md` 路径漂移 | `.agents/AGENTS.md` 项目目录仍写 `content/chapters/`；README、PIPELINE、golden-chapters、daily-write 使用 `content/chapter_*.md` | 本轮修正 `.agents/AGENTS.md` 和必要主文档，统一为 `content/chapter_*.md`。 |
-| P1 必须修正 | `chapters_index.yaml` 与 `chapter_outlines/` 关系未在主文档充分说明 | `design-chapters` 已输出两者，但 README、REQUIREMENTS、PIPELINE、USER_MANUAL 只强调 `chapters_index.yaml` | 本轮补充双层结构：总索引用于调度，详细蓝图用于单章执行。 |
-| P1 必须修正 | Skill 中 `scripts/*.js` 相对路径可能指向错误目录 | `design-chapters`、`golden-chapters`、`paywall-design`、`design-outline` 存在短路径 | 本轮先修高影响 Skill；其他辅助 Skill 后续补。 |
+| P1 必须修正 | `content/chapters/` 与 `content/chapter_*.md` 路径漂移 | 基线时 `.agents/AGENTS.md` 项目目录写 `content/chapters/`；README、PIPELINE、golden-chapters、daily-write 使用 `content/chapter_*.md` | 本轮已修正 `.agents/AGENTS.md` 和必要主文档，统一为 `content/chapter_*.md`。 |
+| P1 必须修正 | `chapters_index.yaml` 与 `chapter_outlines/` 关系未在主文档充分说明 | 基线时 `design-chapters` 已输出两者，但 README、REQUIREMENTS、PIPELINE、USER_MANUAL 只强调 `chapters_index.yaml` | 本轮已补充双层结构：总索引用于调度，详细蓝图用于单章执行。 |
+| P1 必须修正 | Skill 中 `scripts/*.js` 相对路径可能指向错误目录 | 基线时 `design-chapters`、`golden-chapters`、`paywall-design`、`design-outline` 存在短路径 | 本轮已修正高影响 Skill；其他辅助 Skill 后续补。 |
 | P1 必须修正 | `chapters.schema.yaml` 与 `templates/default/settings/chapters_index.yaml` 字段不一致 | schema 使用 `chapter/file/words_target/words/stats` 和 tension 1-5；模板使用 `number/word_count/target_chapters/completed_chapters` 和 tension 1-10 | 本轮在审计和主文档中声明 schema 是当前约束；后续单独统一模板或 schema。 |
 | P2 建议修正 | `settings/paywall_report.yaml` 与根目录 `paywall_report.yaml` 历史残留 | 设计稿和计划已标注旧路径；主流程 Skill 当前多使用根目录 `paywall_report.yaml` | 本轮验证主文档和高影响 Skill 不把 `settings/paywall_report.yaml` 当当前路径。 |
 | P2 建议修正 | `notes.yaml` tracking 节点缺少 dedicated schema | `design-outline` 初始化 `settings/notes.yaml`，`daily-write` 持续读写，模板只有注释 | 本轮记录并在 `design-outline`/主文档说明边界；后续设计 `notes.schema.yaml`。 |
