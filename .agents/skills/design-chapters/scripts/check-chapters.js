@@ -50,6 +50,13 @@ function main() {
     // 必填字段
     if (!ch.title) findings.push({ severity: 'blocking', msg: `第 ${num} 章缺少 title` });
     if (!ch.file) findings.push({ severity: 'blocking', msg: `第 ${num} 章缺少 file` });
+    else {
+      // 检查文件是否存在
+      const expectedPath = path.resolve(path.dirname(file), 'chapter_outlines', ch.file);
+      if (!fs.existsSync(expectedPath)) {
+        findings.push({ severity: 'blocking', msg: `第 ${num} 章声明的 file 不存在: ${ch.file}` });
+      }
+    }
     if (!ch.status) findings.push({ severity: 'blocking', msg: `第 ${num} 章缺少 status` });
     if (ch.words === null) findings.push({ severity: 'blocking', msg: `第 ${num} 章缺少 words` });
     if (!ch.summary) findings.push({ severity: 'blocking', msg: `第 ${num} 章缺少 summary` });

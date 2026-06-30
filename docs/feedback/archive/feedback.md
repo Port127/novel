@@ -20,10 +20,10 @@
 帮我看看有哪些欠缺，包括但不限于描述、提示词、上下文、引用文件
 你要整体的审查这个skill，放在我们整个系统、agent中所起到的作用，整体审查
 ------
-请帮我深度审查 `.agents/skills/`。为了保证审查质量，请严格按照以下步骤执行：
+请帮我深度审查 `.agents/skills/golden-chapters`。为了保证审查质量，请严格按照以下步骤执行：
 **1. 设定目标与上下文**
 - **目标检索**：完整读取目标 Skill 目录下的所有核心文件（`SKILL.md`, `references/`, `scripts/`）。
-- **参考标的路径**：`../oh-story-claudecode/`（或给出具体路径）
+- **参考标的路径**：`../oh-story-claudecode/`
 - **全局上下文**：请先回顾 `.agents/AGENTS.md` 中的系统架构，理解该 Skill 在整个 V4 创作流或协作系统中的定位。
 **2. 信息收集（强制使用工具）**
 - 使用文件读取工具，完整读取目标 Skill 目录下的所有文件，包括 `SKILL.md`（核心提示词与流程）、`references/`（知识库）、`scripts/`（验证脚本）以及任何相关联的数据字典（`schemas/`）。
@@ -42,7 +42,7 @@
 
 再审查一次.agents/skills/design-chapters（skill、references、scripts），从多角度、全局考虑，有任何问题都可以提出来
 ------
-请帮我深度审查 `.agents/skills/` 技能。我们需要从多角度、全局生态位出发，进行挑剔且严谨的诊断。为了保证审查深度，请严格执行以下步骤：
+请帮我深度审查 `.agents/skills/golden-chapters` 技能。我们需要从多角度、全局生态位出发，进行挑剔且严谨的诊断。为了保证审查深度，请严格执行以下步骤：
 **1. 强制信息获取与生态位定位（必须使用读取工具）**
 - **目标检索**：完整读取目标 Skill 目录下的所有核心文件（`SKILL.md`, `references/`, `scripts/`）。
 - **全局定位**：读取项目根目录的 `.agents/AGENTS.md`。你需要自行分析出该 Skill 处于哪一个状态流转阶段（如 planning, drafting, revising 等）。
