@@ -16,18 +16,15 @@
 
 ### 势力卡
 ```yaml
-faction:
-  name: 势力名称
-  type: 宗门/家族/公司/组织
-  strength: 强/中/弱
-  territory: 地盘
-  key_figures:
-    - name: leader
-      role: 掌门
-    - name: xxx
-      role: 长老
-  goals: 目标
-  conflicts: 与其他势力的矛盾
+factions:
+  - name: 势力名称
+    type: 宗门/王朝/公司/家族/军团/教会/帮派/组织/其他
+    stance: 正派/中立/反派/不确定
+    territory: 地盘
+    key_figures:
+      - leader (掌门)
+      - xxx (长老)
+    description: 势力描述，请将“综合实力（强/中/弱）”、“核心目标”以及“与其他势力的核心矛盾”写在这里。
 ```
 
 ### 势力关系矩阵
@@ -39,7 +36,7 @@ faction:
 
 ---
 
-## 社会规则设计
+## 社会规则设计 (写入 core_rules)
 
 | 类型 | 示例 | 冲突来源 |
 |------|------|---------|

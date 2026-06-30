@@ -15,15 +15,11 @@
 ## 规则设计模板
 
 ```yaml
-world_rules:
-  core_rules:
-    - rule: 规则描述
-      exception: 例外情况
-      cost: 使用代价
-    - rule: ...
-  taboos:
-    - 禁忌描述
-    - 违反后果
+core_rules:
+  - rule: 规则描述
+    implications: 使用代价或例外情况
+  - rule: 禁忌描述
+    implications: 违反后果
 ```
 
 ---
@@ -33,26 +29,25 @@ world_rules:
 ### 修仙世界
 ```yaml
 core_rules:
-  - rule: 灵气是修炼基础
-    exception: 某些秘境灵气稀薄
-    cost: 灵气枯竭会跌落境界
-  - rule: 渡劫才能升级
-    exception: 特殊体质可免劫
-    cost: 渡劫失败会陨落
-taboos:
-  - 弑师：被天下唾弃
-  - 使用禁术：折寿
+  - rule: 灵气是修炼基础，某些秘境灵气稀薄
+    implications: 灵气枯竭会跌落境界
+  - rule: 渡劫才能升级，特殊体质可免劫
+    implications: 渡劫失败会陨落
+  - rule: 禁忌：弑师
+    implications: 被天下唾弃
+  - rule: 禁忌：使用禁术
+    implications: 折寿
 ```
 
 ### 都市重生
 ```yaml
 core_rules:
-  - rule: 历史会按原样发生
-    exception: 主角改变了关键节点
-    cost: 改变越大，蝴蝶效应越强
-taboos:
-  - 暴露重生身份：被当成疯子
-  - 过度改变历史：失去先知优势
+  - rule: 历史会按原样发生，除非主角改变关键节点
+    implications: 改变越大，蝴蝶效应越强
+  - rule: 禁忌：暴露重生身份
+    implications: 被当成疯子或切片研究
+  - rule: 禁忌：过度改变历史
+    implications: 失去先知优势
 ```
 
 ---

@@ -23,13 +23,17 @@ power_system:
   type: 修炼
   ranks:
     - name: 练气期
-      capabilities: 基础法术
-      breakthrough: 灵石+悟性
+      description: 基础阶段，可使用基础法术
+      capabilities: [基础法术, 强身健体]
     - name: 筑基期
-      capabilities: 御剑飞行
-      breakthrough: 筑基丹
-  rules: 灵气浓度影响修炼速度
-  limitations: 渡劫失败会陨落
+      description: 寿元增加，可御剑
+      capabilities: [御剑飞行, 辟谷]
+  rules:
+    - rule: 灵气浓度决定修炼速度
+      implications: 洞天福地成为宗门必争之地
+  limitations:
+    - limitation: 渡劫
+      consequences: 失败会灰飞烟灭
 ```
 
 ---
@@ -37,27 +41,32 @@ power_system:
 ## 都市言情
 
 ### 必需要素
-- **era_details**：时代背景（2009/2015/现代...）、社会特征、科技水平
+- **core_rules**：时代铁律、社会法则、行业规矩
 - **locations**：城市、学校、公司、标志性地点
-- **social_rules**：社交规则、阶层差异、行业规则
+- **factions**：圈子、阶层、公司派系
 
 ### 设计重点
-- 时代细节要准确（物价、科技、流行文化）
+- 时代细节要准确写入 setting_period（如物价、科技、流行文化）
 - 地点要有真实感（可虚构但要有原型）
-- 社交规则要符合现实逻辑
+- 社交与行业规则写入 core_rules
 
 ### 模板
 ```yaml
-era_details:
-  year: 2009
-  characteristics:
-    - 智能手机刚普及
-    - 微博兴起
-    - 房价开始上涨
+setting_period: "2009年，智能手机刚普及，微博兴起，房价开始上涨"
+core_rules:
+  - rule: 娱乐圈潜规则
+    implications: 新人必须寻找靠山，否则寸步难行
+  - rule: 阶层壁垒
+    implications: 寒门难出贵子，圈层极度固化
 locations:
   - name: 合工大
-    type: 大学
-    description: 主场景，校园日常
+    type: 城市
+    description: 主场景，校园日常，周边有小吃街
+factions:
+  - name: 沪圈资本
+    type: 组织
+    stance: 反派
+    description: 垄断娱乐圈资源的资本巨头
 ```
 
 ---
@@ -65,28 +74,38 @@ locations:
 ## 系统文
 
 ### 必需要素
-- **system_rules**：系统名称、激活条件、功能
-- **quest_mechanics**：任务类型、奖励机制、惩罚机制
-- **reward_system**：奖励分类、升级曲线
+- **power_system**：系统机制（把系统视作一种独特的力量体系）
+- **core_rules**：系统的底层逻辑、任务与惩罚机制
+- **lore**：系统起源（如有）、特殊道具
 
 ### 设计重点
-- 系统规则要自洽（为什么有系统？限制是什么？）
-- 任务设计要有层次感（日常/主线/隐藏）
+- 系统底层逻辑要自洽写入 core_rules（为什么有系统？限制是什么？）
+- 系统的升级与奖励机制可以写进 power_system 的 ranks 和 rules
 - 奖励要有吸引力但不能太无敌
 
 ### 模板
 ```yaml
-system_rules:
+power_system:
   name: 全能系统
-  activation: 意外触发
-  functions: [任务发布, 奖励发放, 技能兑换]
-quest_mechanics:
-  daily_quests: 简单任务，稳定奖励
-  main_quests: 推动剧情，高奖励
-  hidden_quests: 触发条件特殊，稀有奖励
-reward_system:
-  currency: 积分
-  exchange: 技能/道具/属性点
+  type: 系统
+  ranks:
+    - name: LV1 菜鸟
+      description: 开启日常任务模块
+    - name: LV2 达人
+      description: 开启商城模块
+  rules:
+    - rule: 积分通过完成任务获得
+      implications: 必须不断卷任务才能维持消耗
+core_rules:
+  - rule: 惩罚机制
+    implications: 任务失败会扣除属性点
+  - rule: 权限限制
+    implications: 严禁向原住民透露系统存在，违者抹杀
+lore:
+  artifacts:
+    - name: 新手大礼包
+      type: 消耗品
+      description: 包含基础技能和100积分
 ```
 
 ---
@@ -94,14 +113,13 @@ reward_system:
 ## 悬疑推理
 
 ### 必需要素
-- **crime_rules**：犯罪类型、作案手法、破案逻辑
-- **investigation_procedures**：调查流程、证据链、推理方法
-- **suspect_pool**：嫌疑人列表、动机、不在场证明
+- **core_rules**：犯罪法则、作案手法限制、破案逻辑
+- **factions**：调查方（警方/侦探）、反派组织（嫌疑人池）
+- **locations**：案发地点、密室
 
 ### 设计重点
-- 推理逻辑要严密
-- 证据链要完整
-- 嫌疑人动机要合理
+- 核心规则要包含推理逻辑（例如：不存在超自然力量，所有线索必须指向物理证据）
+- 嫌疑人动机要合理（放入 factions 或人物卡中）
 
 ---
 
