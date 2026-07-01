@@ -4,6 +4,19 @@
 
 ---
 
+## Schema 对齐
+
+`settings/notes.yaml` 必须遵循 `data/schemas/notes.schema.yaml`。本文件中的状态追踪方法写入以下节点：
+
+- `tracking.recent_chapters`
+- `tracking.ten_chapter_summaries`
+- `tracking.volume_overview`
+- `tracking.character_states`
+- `tracking.foreshadowing`
+- `preferences`
+
+---
+
 ## 本节速记
 
 写作每一章/每一节前，从所有已加载的上下文中筛选出只与本节相关的信息。目的是避免全量加载导致 LLM 上下文被无关信息稀释。
@@ -78,16 +91,18 @@
 # 更新时机：大纲完成后创建初始状态；每章写完后更新变化。
 
 tracking:
-  characters:
-    {角色名}:
-      当前身份: {最新身份/职业}
-      当前能力: {最新能力水平}
-      关键关系:
-        {角色B}: {当前关系状态}（第{N}章变化）
-      公众形象: {外界如何看待该角色}
-      待回收伏笔: {与该角色相关的未回收伏笔}
-      状态变更记录:
-        - 第{N}章：{变化描述}
+  character_states:
+    - name: "{角色名}"
+      current_state: "{最新身份/能力/关系/公众形象}"
+      last_changed_chapter: {N}
+      unresolved_conflicts:
+        - "{与该角色相关的未解决矛盾}"
+  foreshadowing:
+    - id: "{伏笔ID}"
+      planted_chapter: {N}
+      status: "open"
+      planned_resolution_chapter: {M}
+      note: "{埋设细节与回收计划}"
 ```
 
 ### 更新规则

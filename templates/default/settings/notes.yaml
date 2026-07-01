@@ -1,2 +1,16 @@
-# 项目草稿区
-# 用户可以在此处存放想法、草稿、备注
+# 项目草稿区与长篇上下文追踪
+# 对齐 data/schemas/notes.schema.yaml
+
+version: 1
+
+tracking:
+  recent_chapters: []
+  ten_chapter_summaries: []
+  volume_overview: []
+  character_states: []
+  foreshadowing: []
+
+preferences:
+  style_notes: []
+  banned_settings: []
+  pending_confirmations: []

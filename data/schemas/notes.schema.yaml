@@ -1,0 +1,38 @@
+# notes.schema.yaml
+# 项目备忘与长篇上下文追踪 schema
+# 路径: novels/{project_id}/settings/notes.yaml
+
+# R = 必填, O = 可选
+
+version: 1                             # R | notes schema 版本
+
+tracking:                              # R | 长篇追踪节点
+  recent_chapters: []                  # R | 近 5 章详记
+  # - chapter: 1                       # R | 章节号
+  #   file: "content/chapter_001.md"   # R | 正文路径
+  #   summary: ""                      # R | 本章实际发生内容
+  #   state_changes: []                # O | 状态变化列表
+  #   open_hooks: []                   # O | 新增或延续钩子
+  ten_chapter_summaries: []            # R | 十章概要
+  # - range: "1-10"                    # R | 章节范围
+  #   summary: ""                      # R | 概要
+  volume_overview: []                  # R | 卷级总览
+  # - volume: 1                        # R | 卷号
+  #   goal: ""                         # R | 本卷目标
+  #   current_state: ""                # R | 当前状态
+  character_states: []                 # R | 角色状态追踪
+  # - name: ""                         # R | 角色名
+  #   current_state: ""                # R | 当前状态
+  #   last_changed_chapter: 0          # R | 最近变化章节
+  #   unresolved_conflicts: []         # O | 未解决矛盾
+  foreshadowing: []                    # R | 伏笔追踪
+  # - id: ""                           # R | 伏笔 ID
+  #   planted_chapter: 0               # R | 埋设章节
+  #   status: "open"                   # R | open/resolved/dropped
+  #   planned_resolution_chapter: 0    # O | 计划回收章节
+  #   note: ""                         # O | 说明
+
+preferences:                           # R | 写作偏好和禁用项
+  style_notes: []                      # R | 用户偏好
+  banned_settings: []                  # R | 禁用设定
+  pending_confirmations: []            # R | 待确认事项
