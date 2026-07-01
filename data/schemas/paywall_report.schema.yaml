@@ -1,0 +1,32 @@
+# paywall_report.schema.yaml
+# 付费卡点报告 schema
+# 路径: novels/{project_id}/paywall_report.yaml
+
+# R = 必填, O = 可选
+
+paywall_chapter: 20                    # R | 最终付费切点章节
+
+strategy:                              # R | 平台和切点策略
+  platform: ""                         # R | 平台名称
+  target_free_chapters: 0              # R | 目标免费章数
+  reason: ""                           # R | 策略理由
+
+candidate_cuts: []                     # R | 候选切点
+# - chapter: 20                        # R | 候选章节
+#   tension: 5                         # R | 候选章张力，1-5
+#   reason: ""                         # R | 候选理由
+
+final_cut:                             # R | 最终切点设计
+  chapter: 20                          # R | 最终切点章节，必须等于 paywall_chapter
+  free_last_chapter: 20                # R | 免费末章
+  paid_first_chapter: 21               # R | 付费首章
+  cliffhanger: ""                      # R | 免费末章悬念
+  payoff_promise: ""                   # R | 付费首章反馈承诺
+
+risks: []                              # O | 风险项
+# - level: "advisory"                  # R | advisory/blocking
+#   message: ""                        # R | 风险说明
+
+commercial_review:                     # R | 商业复核
+  verdict: "pass"                      # R | pass/rework
+  notes: ""                            # R | 复核说明

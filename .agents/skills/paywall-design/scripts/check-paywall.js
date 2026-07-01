@@ -25,10 +25,10 @@ function main() {
 
   const findings = [];
 
-  // 提取付费切割章节
   const paywallChapter = extractPaywallChapter(paywallContent);
+  validatePaywallFields(paywallContent, findings, paywallChapter);
+
   if (!paywallChapter) {
-    findings.push({ severity: 'blocking', message: '无法提取 paywall_chapter' });
     printResults(findings);
     return;
   }
@@ -81,6 +81,40 @@ function main() {
 function extractPaywallChapter(content) {
   const match = content.match(/paywall_chapter:\s*(\d+)/);
   return match ? parseInt(match[1]) : null;
+}
+
+function extractNumber(content, pattern) {
+  const match = content.match(pattern);
+  return match ? parseInt(match[1], 10) : null;
+}
+
+function validatePaywallFields(paywallContent, findings, paywallChapter) {
+  const requiredPatterns = [
+    [/paywall_chapter:\s*\d+/, '缺少 paywall_chapter'],
+    [/strategy:\s*\n[\s\S]*?platform:\s*["']?[^"'\n]+/, '缺少 strategy.platform'],
+    [/strategy:\s*\n[\s\S]*?target_free_chapters:\s*\d+/, '缺少 strategy.target_free_chapters'],
+    [/strategy:\s*\n[\s\S]*?reason:\s*["']?[^"'\n]+/, '缺少 strategy.reason'],
+    [/candidate_cuts:\s*\n\s*-\s+chapter:\s*\d+/, '缺少 candidate_cuts'],
+    [/final_cut:\s*\n[\s\S]*?chapter:\s*\d+/, '缺少 final_cut.chapter'],
+    [/final_cut:\s*\n[\s\S]*?free_last_chapter:\s*\d+/, '缺少 final_cut.free_last_chapter'],
+    [/final_cut:\s*\n[\s\S]*?paid_first_chapter:\s*\d+/, '缺少 final_cut.paid_first_chapter'],
+    [/final_cut:\s*\n[\s\S]*?cliffhanger:\s*["']?[^"'\n]+/, '缺少 final_cut.cliffhanger'],
+    [/final_cut:\s*\n[\s\S]*?payoff_promise:\s*["']?[^"'\n]+/, '缺少 final_cut.payoff_promise'],
+    [/commercial_review:\s*\n[\s\S]*?verdict:\s*["']?(pass|rework)/, '缺少 commercial_review.verdict'],
+    [/commercial_review:\s*\n[\s\S]*?notes:\s*["']?[^"'\n]+/, '缺少 commercial_review.notes'],
+  ];
+
+  for (const [pattern, message] of requiredPatterns) {
+    if (!pattern.test(paywallContent)) findings.push({ severity: 'blocking', message });
+  }
+
+  const finalChapter = extractNumber(paywallContent, /final_cut:\s*\n[\s\S]*?chapter:\s*(\d+)/);
+  if (finalChapter !== null && finalChapter <= 0) {
+    findings.push({ severity: 'blocking', message: `final_cut.chapter 必须大于 0: ${finalChapter}` });
+  }
+  if (finalChapter && paywallChapter && finalChapter !== paywallChapter) {
+    findings.push({ severity: 'blocking', message: `final_cut.chapter (${finalChapter}) 必须等于 paywall_chapter (${paywallChapter})` });
+  }
 }
 
 function extractTensions(content) {
