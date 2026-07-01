@@ -33,13 +33,13 @@
 | design-character | `settings/scout_report.yaml`、`settings/worldbuilding.yaml`、人物 references | `settings/characters.yaml` | `data/schemas/characters.schema.yaml` | `node .agents/skills/design-character/scripts/check-characters.js {project_dir}/settings/scout_report.yaml {project_dir}/settings/characters.yaml` | 无明确 `_progress.md` 合约 | 基本对齐；`{project_dir}` 占位符需要执行时替换。 |
 | design-outline | `settings/scout_report.yaml`、`settings/worldbuilding.yaml`、`settings/characters.yaml` | `settings/outline.yaml`、`settings/arcs.yaml`、`settings/pacing.yaml`、`settings/notes.yaml` | `data/schemas/outline.schema.yaml` 只覆盖 `outline.yaml` 主结构；`settings/notes.yaml` 使用 `data/schemas/notes.schema.yaml`；`arcs/pacing` 由模板与脚本门禁约束 | `node .agents/skills/design-outline/scripts/check-outline.js settings/scout_report.yaml settings/outline.yaml`；`node .agents/skills/design-outline/scripts/check-pacing.js settings/pacing.yaml` | `_progress.md` | 已对齐脚本路径，并补充 `outline/arcs/pacing/notes` 的 schema 边界。 |
 | design-chapters | `settings/outline.yaml`、`settings/scout_report.yaml`、章节 references | `settings/chapters_index.yaml`、`settings/chapter_outlines/chapter_*.md` | `data/schemas/chapters.schema.yaml` | `node .agents/skills/design-chapters/scripts/check-chapters.js settings/chapters_index.yaml`；`node .agents/skills/design-chapters/scripts/check-outlines.js settings/chapter_outlines/` | `_progress.md` | 已对齐脚本路径、总索引与单章蓝图关系，并统一 `chapter/file/outline_file/words_target/tension 1-5` 为当前标准。 |
-| golden-chapters | `settings/outline.yaml`、`settings/chapters_index.yaml`、`settings/scout_report.yaml`、`settings/characters.yaml` | `content/chapter_001.md`、`content/chapter_002.md`、`content/chapter_003.md`、`history/golden_chapters_report.md` | 正文无直接 schema；报告缺 dedicated schema | `node .agents/skills/golden-chapters/scripts/check-golden-structure.js ...`；`node .agents/skills/golden-chapters/scripts/check-ai-patterns.js ...`；`node .agents/skills/golden-chapters/scripts/check-degeneration.js ...` | `_progress.md` | 已对齐脚本路径，并说明前三章可读取 `chapter_outlines/` 补足微节拍。 |
+| golden-chapters | `settings/outline.yaml`、`settings/chapters_index.yaml`、`settings/scout_report.yaml`、`settings/characters.yaml` | `content/chapter_001.md`、`content/chapter_002.md`、`content/chapter_003.md`、`history/golden_chapters_report.md` | 正文无直接 schema；报告模板 `templates/default/golden_chapters_report.md` | `node .agents/skills/golden-chapters/scripts/check-golden-structure.js ...`；`node .agents/skills/golden-chapters/scripts/check-ai-patterns.js ...`；`node .agents/skills/golden-chapters/scripts/check-degeneration.js ...` | `_progress.md` | 已对齐脚本路径；`golden_chapters_report.md` 模板已新增。 |
 | paywall-design | `settings/outline.yaml`、`settings/chapters_index.yaml` | `paywall_report.yaml` | `data/schemas/paywall_report.schema.yaml` | `node .agents/skills/paywall-design/scripts/check-paywall.js settings/chapters_index.yaml paywall_report.yaml` | `_progress.md` | 已对齐脚本路径，保持根目录 `paywall_report.yaml` 口径，并新增报告字段门禁。 |
-| daily-write | `settings/chapters_index.yaml`、`settings/notes.yaml`、前文正文、可选 `settings/chapter_outlines/chapter_*.md`、可选 `paywall_report.yaml` | `content/chapter_XXX.md`，并更新 `settings/notes.yaml`、`settings/chapters_index.yaml` 状态 | 正文无直接 schema；`settings/notes.yaml` 使用 `data/schemas/notes.schema.yaml` | `node .agents/skills/_shared/scripts/check-ai-patterns.js --check content/chapter_XXX.md`、`node .agents/skills/daily-write/scripts/normalize-punctuation.js content/chapter_XXX.md`、`node .agents/skills/_shared/scripts/check-degeneration.js --check content/chapter_XXX.md` | `_progress.md` | 已明确 `chapters_index.yaml` 是调度入口，存在单章蓝图时优先读取 `settings/chapter_outlines/chapter_*.md`。 |
+| daily-write | `settings/chapters_index.yaml`、`settings/notes.yaml`、前文正文、可选 `settings/chapter_outlines/chapter_*.md`、可选 `paywall_report.yaml` | `content/chapter_XXX.md`，并更新 `settings/notes.yaml`、`settings/chapters_index.yaml` 状态 | 正文无直接 schema；`settings/notes.yaml` 使用 `data/schemas/notes.schema.yaml` | `node .agents/skills/_shared/scripts/check-ai-patterns.js --check content/chapter_XXX.md`、`node .agents/skills/daily-write/scripts/normalize-punctuation.js content/chapter_XXX.md`、`node .agents/skills/_shared/scripts/check-degeneration.js --check content/chapter_XXX.md`、`node .agents/skills/_shared/scripts/check-notes.js settings/notes.yaml` | `_progress.md` | 已明确 `chapters_index.yaml` 是调度入口；`check-notes.js` 已新增。 |
 | review | 正文、`settings/outline.yaml`、`settings/arcs.yaml`、`settings/pacing.yaml`、`settings/characters.yaml`、追踪记录 | 对话审查报告或用户指定路径 | 统一 Findings Schema 写在 Skill 内；无文件级 dedicated schema | 可运行共享 `check-ai-patterns.js`、`check-degeneration.js` | 无明确 `_progress.md` 合约 | 基本对齐；报告结构为文本合约。 |
-| data-diagnosis | 平台导出 CSV、可选 `settings/chapters_index.yaml` | `data_diagnosis_report.yaml` | 无直接 schema | 当前写法为 `scripts/analyze-metrics.js` 短路径 | 无明确 `_progress.md` 合约 | 非本轮高影响 Skill；后续应补脚本路径和报告 schema。 |
+| data-diagnosis | 平台导出 CSV、可选 `settings/chapters_index.yaml` | `data_diagnosis_report.yaml` | `data/schemas/data_diagnosis_report.schema.yaml` | `.agents/skills/data-diagnosis/scripts/analyze-metrics.js`；`check-diagnosis-report.js` | 无明确 `_progress.md` 合约 | 脚本路径已修正；报告 schema 已新增；`check-diagnosis-report.js` 已创建。 |
 | stock-check | 存稿目录、章节状态、成本信息 | 存稿看板输出 | 无直接 schema | 无脚本门禁 | 无明确 `_progress.md` 合约 | 辅助 Skill，当前不阻断主创作合约。 |
-| export-novel | `content/chapter_*.md`、项目元数据、导出目标 | `exports/` 下成稿文件 | 缺导出配置 schema | 无明确脚本门禁 | 无明确 `_progress.md` 合约 | 后续应补导出配置和目录职责说明。 |
+| export-novel | `content/chapter_*.md`、项目元数据、导出目标 | `exports/` 下成稿文件 | `data/schemas/export_config.schema.yaml` | `check-export-config.js` | 无明确 `_progress.md` 合约 | 导出配置 schema 已新增；`check-export-config.js` 已创建。 |
 | nm | 素材库查询条件、品类/关键词 | 检索结果、入库建议 | 无直接 schema | `nm search` 外部能力 | 无明确 `_progress.md` 合约 | 与创作主流程弱耦合；只作为参考素材输入。 |
 | feature-planning | 用户功能需求、现状代码/文档 | `docs/superpowers/specs/*.md` 或用户指定方案文档 | 无直接 schema | 无脚本门禁 | 无明确 `_progress.md` 合约 | 工程辅助 Skill，不参与小说产物 schema。 |
 | refactor-planning | 重构目标、现状代码/文档 | 重构痛点分析和执行计划文档 | 无直接 schema | 无脚本门禁 | 无明确 `_progress.md` 合约 | 工程辅助 Skill，不参与小说产物 schema。 |
@@ -60,8 +60,10 @@
 | `settings/pacing.yaml` | `design-outline` | `design-chapters`、`paywall-design`、`review` | 由模板和 `check-pacing.js` 约束，章节级 `tension` 范围统一为 1-5 | 暂不拆 dedicated schema，后续若多 Skill 写入再补。 |
 | `data/schemas/notes.schema.yaml` | `design-outline`、`daily-write` | `daily-write`、`review` | 覆盖 `settings/notes.yaml` 的三层上下文、角色状态、伏笔追踪和写作偏好节点 | 已新增 dedicated schema，后续可补脚本门禁。 |
 | `data/schemas/paywall_report.schema.yaml` | `paywall-design` | `daily-write` | 覆盖根目录 `paywall_report.yaml` 的付费切点、候选切点、最终切点、悬念承诺、风险项和商业复核 | 已由 `check-paywall.js` 检查必填字段、最终切点一致性和切点张力。 |
-| `history/golden_chapters_report.md` | `golden-chapters` | `review`、作者复盘 | Markdown 报告，无 dedicated schema | 报告结构不稳定但风险较低；可后续模板化。 |
-| `exports/` | `export-novel` | 作者、发布平台 | 由导出 Skill 说明，缺导出配置 schema | 目标格式、章节顺序、元数据和过滤规则需要后续单独设计。 |
+| `history/golden_chapters_report.md` | `golden-chapters` | `review`、作者复盘 | Markdown 报告，模板 `templates/default/golden_chapters_report.md` | 模板已新增，结构已稳定。 |
+| `exports/` | `export-novel` | 作者、发布平台 | `data/schemas/export_config.schema.yaml` | 导出配置 schema 已新增；`check-export-config.js` 已创建。 |
+| `data/schemas/data_diagnosis_report.schema.yaml` | `data-diagnosis` | `daily-write`（可选） | 覆盖报告日期、平台、指标、异常、建议 | 已由 `check-diagnosis-report.js` 检查必填字段。 |
+| `data/schemas/export_config.schema.yaml` | `export-novel` | 作者、发布平台 | 覆盖格式、章节范围、命名、编码 | 已由 `check-export-config.js` 检查格式枚举和章节范围。 |
 
 ## 跨 Skill 冲突清单
 
@@ -106,3 +108,11 @@
 3. 已明确 `outline.schema.yaml` 只约束 `settings/outline.yaml` 主结构，`arcs/pacing` 暂由模板、Skill 文档和脚本门禁约束。
 4. 后续可单独设计 Skill Runner、导出配置 schema、`data-diagnosis` 报告 schema 和历史文档隔离策略。
 5. 辅助 Skill 中的短脚本路径，如 `data-diagnosis`，可在下一轮统一清理。
+6. 已修正 `data-diagnosis` 脚本短路径为完整路径。
+7. 已新增 `data_diagnosis_report.schema.yaml` 和 `check-diagnosis-report.js`。
+8. 已新增 `export_config.schema.yaml` 和 `check-export-config.js`。
+9. 已新增 `golden_chapters_report.md` 模板。
+10. 已新增 `check-notes.js` 共享门禁脚本，约束 `notes.yaml` 结构。
+11. 已将 `docs/superpowers/` 移入 `docs/archive/superpowers/`，与正式文档隔离。
+12. 已精简 `docs/feedback/archive/analysis_report.md`，消除过时误导。
+13. 已补充 `templates/default/settings/scout_report.yaml` 模板。
