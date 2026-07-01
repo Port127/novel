@@ -101,8 +101,8 @@
 
 ## 后续实施建议
 
-1. 先修改主文档，把当前路径口径、双层章节规划、根目录 `paywall_report.yaml` 和冻结 Python 测试边界写清楚。
-2. 再修改高影响 Skill：`design-chapters`、`daily-write`、`golden-chapters`、`paywall-design`、`design-outline`。
-3. 本轮不新增 schema，避免把文档审计扩大成结构重建；但必须把缺口记录为后续单独设计项。
-4. 后续单独处理 `chapters.schema.yaml` 与 `templates/default/settings/chapters_index.yaml` 的字段漂移，因为它会影响新项目初始化质量。
+1. 已完成 `chapters.schema.yaml` 与 `templates/default/settings/chapters_index.yaml` 的字段、路径和张力范围对齐。
+2. 已新增 `chapter_outline_frontmatter.schema.yaml`、`notes.schema.yaml` 和 `paywall_report.schema.yaml`，并同步高影响 Skill 的读写规则。
+3. 已明确 `outline.schema.yaml` 只约束 `settings/outline.yaml` 主结构，`arcs/pacing` 暂由模板、Skill 文档和脚本门禁约束。
+4. 后续可单独设计 Skill Runner、导出配置 schema、`data-diagnosis` 报告 schema 和历史文档隔离策略。
 5. 辅助 Skill 中的短脚本路径，如 `data-diagnosis`，可在下一轮统一清理。

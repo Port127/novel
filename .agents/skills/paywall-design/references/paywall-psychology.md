@@ -95,21 +95,23 @@
 
 ```yaml
 paywall_chapter: 25
-paywall_evaluation:
-  satisfaction:
-    score: 8/10
-    source: "主角击败小反派"
-  curiosity:
-    score: 9/10
-    source: "大反派登场，悬念拉满"
-  expectation:
-    score: 8/10
-    source: "暗示更大的冲突即将展开"
-  attachment:
-    score: 7/10
-    source: "读者已认同主角"
-  total: 32/40
-  recommendation: "强烈推荐"
+strategy:
+  platform: "番茄"
+  target_free_chapters: 25
+  reason: "满足、好奇、期待和不舍四项心理状态同时达标。"
+candidate_cuts:
+  - chapter: 25
+    tension: 5
+    reason: "主角完成阶段性爽点后，立刻抛出更大反派悬念。"
+final_cut:
+  chapter: 25
+  free_last_chapter: 25
+  paid_first_chapter: 26
+  cliffhanger: "大反派登场，悬念拉满。"
+  payoff_promise: "付费首章 200 字内兑现对手震惊和主角反制。"
+commercial_review:
+  verdict: "pass"
+  notes: "满足 8/10，好奇 9/10，期待 8/10，不舍 7/10。"
 ```
 
 ---
