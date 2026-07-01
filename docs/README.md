@@ -24,16 +24,13 @@
 | `../data/schemas/` | YAML Schema 与完善度标准 |
 | `../templates/` | 新书项目模板 |
 
-## 工作流产出
-
-`superpowers/` 目录保存历史设计、计划与验证文档：
-
-- `specs/`：设计规格文档
-- `plans/`：实施计划文档
-- `verification/`：验证报告
-
-这些文档用于追溯历史决策，不一定代表当前主流程。若与 `.agents/skills/` 冲突，以当前 Skill 文件为准。
-
 ## 归档
 
-`feedback/archive/` 存放历史反馈和报告，仅供参考。
+以下内容均为历史产物，**不代表当前主流程**。若与 `.agents/skills/` 或正式文档冲突，以正式文档和 Skill 文件为准。
+
+| 路径 | 说明 |
+|------|------|
+| `archive/superpowers/specs/` | 历史设计规格文档（含已放弃的 CLI 自动化方向） |
+| `archive/superpowers/plans/` | 历史实施计划文档 |
+| `archive/superpowers/verification/` | 历史验证报告 |
+| `feedback/archive/` | 历史反馈和分析报告 |
