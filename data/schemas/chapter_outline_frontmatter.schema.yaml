@@ -1,0 +1,24 @@
+# chapter_outline_frontmatter.schema.yaml
+# 单章详细蓝图 Markdown frontmatter schema
+# 路径: novels/{project_id}/settings/chapter_outlines/chapter_*.md
+
+# R = 必填, O = 可选
+
+# chapter: 1                         # R | 章节号，必须与文件名 chapter_001.md 一致
+# title: ""                          # R | 章节标题
+# content_file: "content/chapter_001.md"  # R | 对应正文路径
+# outline_file: "settings/chapter_outlines/chapter_001.md"  # R | 当前细纲路径
+# status: "planned"                  # R | planned/draft/written/revised
+# density: "密"                      # R | 密/中/疏
+# tension: 3                         # R | 1-5
+# words_target: 3000                 # R | 目标字数
+# words: 0                           # R | 实际字数，初始为 0
+# functions: []                      # O | 章节功能标签
+# characters:                        # O | 出场角色
+#   - name: ""
+#     role: ""
+# arc_refs:                          # O | 对应大纲/弧线定位
+#   - act: 1
+#     sequence: 1
+#     beat: 1
+# ready_for_draft: true              # R | 是否可进入正文写作

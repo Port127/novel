@@ -39,7 +39,7 @@ function main() {
       continue;
     }
 
-    // 1. 检查 Frontmatter 是否存在并提取 target_words
+    // 1. 检查 Frontmatter 是否存在并提取字段
     const fmMatch = content.match(/^---\n([\s\S]*?)\n---/);
     if (!fmMatch) {
       findings.push({ severity: 'blocking', msg: `${file}: 缺少 YAML Frontmatter` });
@@ -47,12 +47,60 @@ function main() {
     }
 
     const fm = fmMatch[1];
-    const targetMatch = fm.match(/words_target:\s*(\d+)/);
-    if (!targetMatch) {
-      findings.push({ severity: 'blocking', msg: `${file}: Frontmatter 缺少 words_target 字段` });
-      continue;
+    const chapter = Number(getField(fm, 'chapter'));
+    const chapterFile = chapter ? `chapter_${String(chapter).padStart(3, '0')}.md` : null;
+    const contentFile = getField(fm, 'content_file');
+    const outlineFile = getField(fm, 'outline_file');
+    const status = getField(fm, 'status');
+    const density = getField(fm, 'density');
+    const tension = Number(getField(fm, 'tension'));
+    const wordsTarget = Number(getField(fm, 'words_target'));
+    const words = getField(fm, 'words');
+    const ready = getField(fm, 'ready_for_draft');
+
+    if (!chapter) {
+      findings.push({ severity: 'blocking', msg: `${file}: Frontmatter 缺少 chapter 字段` });
+    } else if (file !== chapterFile) {
+      findings.push({ severity: 'blocking', msg: `${file}: 文件名应为 ${chapterFile}` });
     }
-    const wordsTarget = parseInt(targetMatch[1], 10);
+
+    if (!getField(fm, 'title')) findings.push({ severity: 'blocking', msg: `${file}: Frontmatter 缺少 title 字段` });
+
+    if (!contentFile) {
+      findings.push({ severity: 'blocking', msg: `${file}: Frontmatter 缺少 content_file 字段` });
+    } else if (chapter && contentFile !== `content/chapter_${String(chapter).padStart(3, '0')}.md`) {
+      findings.push({ severity: 'blocking', msg: `${file}: content_file 与章节号不一致` });
+    }
+
+    if (!outlineFile) {
+      findings.push({ severity: 'blocking', msg: `${file}: Frontmatter 缺少 outline_file 字段` });
+    } else if (chapterFile && outlineFile !== `settings/chapter_outlines/${chapterFile}`) {
+      findings.push({ severity: 'blocking', msg: `${file}: outline_file 与文件名不一致` });
+    }
+
+    if (!['planned', 'draft', 'written', 'revised'].includes(status)) {
+      findings.push({ severity: 'blocking', msg: `${file}: status 非法或缺失` });
+    }
+
+    if (!['密', '中', '疏'].includes(density)) {
+      findings.push({ severity: 'blocking', msg: `${file}: density 非法或缺失` });
+    }
+
+    if (!tension || tension < 1 || tension > 5) {
+      findings.push({ severity: 'blocking', msg: `${file}: tension 必须在 1-5` });
+    }
+
+    if (!wordsTarget) {
+      findings.push({ severity: 'blocking', msg: `${file}: Frontmatter 缺少 words_target 字段` });
+    }
+
+    if (words === null) {
+      findings.push({ severity: 'blocking', msg: `${file}: Frontmatter 缺少 words 字段` });
+    }
+
+    if (!['true', 'false'].includes(String(ready))) {
+      findings.push({ severity: 'blocking', msg: `${file}: ready_for_draft 必须为 true/false` });
+    }
 
     // 2. 检查 Markdown 核心结构结构
     if (!content.includes('#### 情节细化与字数预算')) {
@@ -81,9 +129,9 @@ function main() {
       
       if (totalBudget === 0) {
         findings.push({ severity: 'blocking', msg: `${file}: 未提取到任何有效字数节点（缺少 [密/疏·X字] 格式）` });
-      } else if (totalBudget < minAllowed) {
+      } else if (wordsTarget && totalBudget < minAllowed) {
         findings.push({ severity: 'blocking', msg: `${file}: 实际字数预算求和(${totalBudget}) 严重低于目标字数(${wordsTarget})` });
-      } else if (totalBudget > maxAllowed) {
+      } else if (wordsTarget && totalBudget > maxAllowed) {
         findings.push({ severity: 'advisory', msg: `${file}: 实际字数预算求和(${totalBudget}) 高出目标字数(${wordsTarget})` });
       }
     }
@@ -98,6 +146,12 @@ function main() {
   for (const f of findings) console.log(`[${f.severity}] ${f.msg}`);
   console.log(`\n共检查 ${files.length} 个文件: ${blocking.length} 个阻塞，${findings.length - blocking.length} 个建议`);
   process.exit(blocking.length > 0 ? 1 : 0);
+}
+
+function getField(fm, name) {
+  const re = new RegExp(`^${name}:\\s*["']?([^"'\\n]+)["']?\\s*$`, 'm');
+  const match = fm.match(re);
+  return match ? match[1].trim() : null;
 }
 
 main();

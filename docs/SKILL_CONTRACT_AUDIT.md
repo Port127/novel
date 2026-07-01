@@ -54,7 +54,8 @@
 | `data/schemas/worldbuilding.schema.yaml` | `worldbuilding` | `design-character`、`design-outline`、`daily-write` | 覆盖世界类型、核心规则、力量体系、势力、地点、lore | 与 `required_elements.worldbuilding` 依赖脚本校验，基本可用。 |
 | `data/schemas/characters.schema.yaml` | `design-character` | `design-outline`、`golden-chapters`、`daily-write`、`review` | 覆盖顶级 `characters: []`、角色类型、关系、心理和弧线 | 语言风格、爽感维度主要靠 Skill references，不完全由 schema 约束。 |
 | `data/schemas/outline.schema.yaml` | `design-outline` | `design-chapters`、`paywall-design`、`review` | 覆盖 `settings/outline.yaml` 核心结构、幕/序列/节拍、hooks、pacing_curve | 不能完整代表 `settings/arcs.yaml`、`settings/pacing.yaml`、`settings/notes.yaml`。 |
-| `data/schemas/chapters.schema.yaml` | `design-chapters` | `golden-chapters`、`paywall-design`、`daily-write`、`data-diagnosis` | 覆盖 `settings/chapters_index.yaml` 的章节列表、正文路径、细纲路径、状态、摘要、节拍、张力和统计 | 已与默认 `chapters_index.yaml` 模板对齐；仍缺少对 `chapter_outlines/` frontmatter 的 dedicated schema。 |
+| `data/schemas/chapters.schema.yaml` | `design-chapters` | `golden-chapters`、`paywall-design`、`daily-write`、`data-diagnosis` | 覆盖 `settings/chapters_index.yaml` 的章节列表、正文路径、细纲路径、状态、摘要、节拍、张力和统计 | 已与默认 `chapters_index.yaml` 模板对齐；单章细纲 frontmatter 由 `data/schemas/chapter_outline_frontmatter.schema.yaml` 约束。 |
+| `data/schemas/chapter_outline_frontmatter.schema.yaml` | `design-chapters` | `daily-write`、`golden-chapters`、`review` | 覆盖 `settings/chapter_outlines/chapter_*.md` 的 YAML Frontmatter，正文 Markdown 结构继续由 `references/chapter-template.md` 约束 | 已由 `check-outlines.js` 检查必要字段、章节号、路径、状态、密度、张力和预算。 |
 | `settings/arcs.yaml` | `design-outline` | `daily-write`、`review` | 由 Skill 文档说明，缺 dedicated schema | 情节点与章节关系字段可能随 Agent 扩展而漂移。 |
 | `settings/pacing.yaml` | `design-outline` | `design-chapters`、`paywall-design`、`review` | 由 Skill 文档和 `check-pacing.js` 约束，缺 dedicated schema | 与 `chapters_index.yaml` 的 tension 字段可能重复或范围不一致。 |
 | `settings/notes.yaml` | `design-outline`、`daily-write` | `daily-write`、`review` | 只有模板注释和 Skill 文档，缺 dedicated schema | 伏笔、角色状态、上下文摘要等 tracking 节点容易被不同 Skill 写成不同结构。 |
@@ -82,7 +83,7 @@
 |------|------|------|--------|----------|
 | 新增 `notes.schema.yaml` | dedicated schema | `settings/notes.yaml` 被 `design-outline` 和 `daily-write` 共同读写，承载伏笔、角色状态、上下文摘要 | P2 | 仅记录 |
 | 新增 `paywall_report.schema.yaml` | dedicated schema | `paywall_report.yaml` 连接付费设计与日更执行，当前脚本只检查部分字段 | P2 | Skill 文档说明 |
-| 为 `settings/chapter_outlines/chapter_*.md` 增加 schema 或模板约束 | frontmatter/schema | 单章蓝图是下游写作的重要输入，目前主要依赖 `references/chapter-template.md` | P2 | 主文档说明 |
+| 为 `settings/chapter_outlines/chapter_*.md` 增加 schema 或模板约束 | frontmatter/schema | 单章蓝图是下游写作的重要输入，目前主要依赖 `references/chapter-template.md` | P2 | 已新增 `chapter_outline_frontmatter.schema.yaml`，并由 `check-outlines.js` 执行字段门禁 |
 | 新增 `golden_chapters_report` 模板或 schema | 报告模板 | `history/golden_chapters_report.md` 用于复盘和后续审查，但结构稳定性要求低于 YAML | P3 | 仅记录 |
 | 新增导出配置 schema | dedicated schema | `exports/` 的格式、章节顺序、元数据过滤会影响发布成稿 | P3 | 后续单独设计 |
 | 评估 `outline/arcs/pacing` 是否拆分 schema | schema 拆分 | `outline.schema.yaml` 只明确覆盖 `outline.yaml` 核心结构，无法完整约束 `arcs.yaml` 与 `pacing.yaml` | P2 | Skill 文档说明 |

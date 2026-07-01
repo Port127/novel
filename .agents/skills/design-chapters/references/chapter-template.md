@@ -13,29 +13,23 @@
 ---
 chapter: 1
 title: "第一章 开始"
-file: "chapter_001.md"        # 文件名
-status: "planned"             # 初始固定为 planned
-density: "密"                 # 密/中/疏
-tension: 3                    # 1-5
+content_file: "content/chapter_001.md"
+outline_file: "settings/chapter_outlines/chapter_001.md"
+status: "planned"
+density: "密"
+tension: 3
 words_target: 3000
-words: 0                      # 实际字数（初始为0）
-summary:                      # 摘要（嵌套对象结构）
-  main_plot: ""               # 主线推进
-  character_change: ""        # 人物变化
-  foreshadowing: ""           # 伏笔（埋设/回收）
-  emotion: ""                 # 情绪基调
-  hook: ""                    # 章末钩子
-plotlines:
-  main: ""
-  sub: ""                     # 可选（辅线推进）
-  hidden: ""                  # 可选
+words: 0
+functions:
+  - "开局引入"
 characters:
   - name: ""
-    role: protagonist
-    function: ""
-beats:                        # 节拍列表摘要
-  - 节拍 1
-  - 节拍 2
+    role: "protagonist"
+arc_refs:
+  - act: 1
+    sequence: 1
+    beat: 1
+ready_for_draft: true
 ---
 ```
 
