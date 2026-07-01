@@ -1,0 +1,37 @@
+# data_diagnosis_report.schema.yaml
+# 数据诊断报告 schema
+# 路径: novels/{project_id}/data_diagnosis_report.yaml
+# 生产 Skill: data-diagnosis
+# 消费 Skill: daily-write（可选参考）
+
+# R = 必填, O = 可选
+
+report_date: ""                  # R | 报告生成日期 (YYYY-MM-DD)
+platform: ""                     # R | 数据来源平台
+project_id: ""                   # R | 关联项目 ID
+
+data_source: ""                  # O | 原始 CSV 文件路径
+
+metrics_summary:                 # O | 总体指标
+  total_chapters: 0              # 总章数
+  avg_retention_rate: ""         # 平均追读率
+  avg_completion_rate: ""        # 平均完读率
+  avg_engagement_rate: ""        # 平均互动率
+
+chapter_metrics: []              # O | 逐章指标列表
+# - chapter: 0                   # R | 章节号
+#   reads: 0                     # O | 阅读数
+#   retention_rate: ""           # O | 追读率
+#   completion_rate: ""          # O | 完读率
+#   engagement_rate: ""          # O | 互动率
+
+anomalies: []                    # O | 异常章节列表
+# - chapter: 0                   # R | 章节号
+#   type: ""                     # R | 异常类型
+#   severity: ""                 # R | P0/P1/P2
+#   detail: ""                   # R | 详细说明
+
+recommendations: []              # O | 改进建议列表
+# - priority: ""                 # R | 优先级
+#   chapter_range: ""            # O | 影响章节范围
+#   description: ""              # R | 建议说明

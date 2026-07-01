@@ -1,0 +1,20 @@
+# export_config.schema.yaml
+# 导出配置 schema
+# 路径: novels/{project_id}/export_config.yaml（运行时生成）
+# 生产 Skill: export-novel
+
+# R = 必填, O = 可选
+
+format: ""                       # R | 导出格式 (txt / markdown / epub)
+
+chapter_range:                   # O | 导出章节范围
+  start: 1                       # 起始章节
+  end: null                      # 结束章节，null = 全部
+
+include_metadata: true           # O | 是否包含元信息（书名、作者、目录）
+
+output_dir: "exports"            # O | 输出目录
+
+file_naming: "sequential"        # O | 文件命名规则 (sequential / by_title)
+
+encoding: "utf-8"                # O | 文件编码
