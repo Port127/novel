@@ -27,6 +27,16 @@ function main() {
 
   const findings = [];
 
+  // 0. 张力范围检测
+  for (const item of tensionData) {
+    if (item.tension < 1 || item.tension > 5) {
+      findings.push({
+        severity: 'blocking',
+        message: `第${item.ch}章张力值越界：${item.tension}，必须在 1-5`,
+      });
+    }
+  }
+
   // 1. 连续慢章检测
   const slowGroups = findConsecutiveBy(tensionData, t => t <= 2, 3);
   for (const group of slowGroups) {

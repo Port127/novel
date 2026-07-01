@@ -1,6 +1,9 @@
 # outline.yaml schema
 # 大纲设定文件
 # 路径: novels/{project_id}/settings/outline.yaml
+# 本 schema 约束 settings/outline.yaml 的主结构。
+# settings/arcs.yaml、settings/pacing.yaml、settings/notes.yaml 是同一 Skill 的相邻产物，但不由本文件完整约束。
+# arcs/pacing 的字段边界由对应模板、Skill 文档和脚本门禁约束；notes 由 data/schemas/notes.schema.yaml 约束。
 
 # 字段说明格式：
 # 字段名: 示例值                  # [R|O] | 字段说明

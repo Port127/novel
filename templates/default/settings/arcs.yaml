@@ -1,4 +1,5 @@
-# 细纲（Arc）模板
+# 叙事弧线模板
+# 可被 daily-write 按 chapter_range 或 beat_refs 定位。
 # [R] = 必填字段，[O] = 可选字段
 
 # Arc 列表
@@ -6,9 +7,17 @@ arcs: []
 # 每个 Arc 包含：
 #   id: ""                    # Arc 编号
 #   name: ""                  # Arc 名称
-#   chapters: ""              # 章节范围（如 "1-20"）
+#   chapter_range: ""         # 章节范围（如 "1-20"）
+#   beat_refs: []             # 对应大纲节拍
+#   # 每个 beat_ref 包含：
+#   #   act: 1
+#   #   sequence: 1
+#   #   beat: 1
 #   time: ""                  # 故事内时间
 #   theme: ""                 # 主题
+#   goal: ""                  # 弧线目标
+#   conflict: ""              # 核心冲突
+#   payoff: ""                # 兑现方式
 #
 #   core_events: []           # 核心事件列表
 #   chapter_beats: []         # 章节节拍
