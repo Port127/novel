@@ -1,0 +1,35 @@
+version: 1
+
+tracking:
+  recent_chapters:
+    - chapter: 1
+      file: "content/chapter_001.md"
+      summary: "主角确认时间线并抢先行动。"
+      state_changes:
+        - "林周从被动求生转为主动布局。"
+      open_hooks:
+        - "账本第一页写着主角名字。"
+  ten_chapter_summaries:
+    - range: "1-10"
+      summary: "主角完成重生确认并取得第一条账本线索。"
+  volume_overview:
+    - volume: 1
+      goal: "查清账本来源。"
+      current_state: "主角已拿到关键线索。"
+  character_states:
+    - name: "林周"
+      current_state: "已确认重生并掌握账本线索。"
+      last_changed_chapter: 1
+      unresolved_conflicts: []
+  foreshadowing:
+    - id: "ledger-name"
+      planted_chapter: 1
+      status: "open"
+      planned_resolution_chapter: 5
+      note: "账本第一页出现主角名字。"
+
+preferences:
+  style_notes:
+    - "保持短句压迫感。"
+  banned_settings: []
+  pending_confirmations: []

@@ -1,0 +1,7 @@
+report_date: "2026/07/01"
+project_id: ""
+anomalies:
+  - chapter: 12
+    severity: "P9"
+recommendations:
+  - description: "缺少 priority。"

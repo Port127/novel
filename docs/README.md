@@ -23,14 +23,16 @@
 | `../.agents/skills/` | 当前实际执行入口，每个 Skill 的 `SKILL.md` 是具体流程真相源 |
 | `../data/schemas/` | YAML Schema 与完善度标准 |
 | `../templates/` | 新书项目模板 |
+| `superpowers/specs/` | 当前阶段的 Superpower 设计规格文档，新工作默认写入此处 |
+| `superpowers/plans/` | 当前阶段的 Superpower TDD 实施计划，新工作默认写入此处 |
 
 ## 归档
 
-以下内容均为历史产物，**不代表当前主流程**。若与 `.agents/skills/` 或正式文档冲突，以正式文档和 Skill 文件为准。
+以下内容均为阶段性归档或历史产物，**不代表当前主流程**。若与 `.agents/skills/` 或正式文档冲突，以正式文档和 Skill 文件为准。需要重新启用某份归档设计时，应复制或重建到 `superpowers/specs/` 或 `superpowers/plans/`，不要直接在 archive 中继续迭代。
 
 | 路径 | 说明 |
 |------|------|
-| `archive/superpowers/specs/` | 历史设计规格文档（含已放弃的 CLI 自动化方向） |
-| `archive/superpowers/plans/` | 历史实施计划文档 |
-| `archive/superpowers/verification/` | 历史验证报告 |
+| `archive/superpowers/specs/` | 阶段性归档的设计规格文档（含已放弃的 CLI 自动化方向） |
+| `archive/superpowers/plans/` | 阶段性归档的实施计划文档 |
+| `archive/superpowers/verification/` | 阶段性归档的验证报告 |
 | `feedback/archive/` | 历史反馈和分析报告 |

@@ -1,0 +1,8 @@
+format: "markdown"
+chapter_range:
+  start: 1
+  end: 20
+include_metadata: true
+output_dir: "exports"
+file_naming: "sequential"
+encoding: "utf-8"
