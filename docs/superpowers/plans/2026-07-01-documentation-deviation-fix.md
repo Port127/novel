@@ -1,88 +1,37 @@
-# 文档偏差修复实施计划
+# 文档偏差修复与 P2/P3 缺口关闭 实施计划
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 修复 6 项文档/模板偏差，让项目文档体系口径完全统一、无误导、无缺口。
+**Goal:** 修复文档偏差 + 关闭 SKILL_CONTRACT_AUDIT 全部 P2/P3 缺口，全量验证通过。
 
-**Architecture:** 纯文档与模板修改，不涉及代码变更。按影响面从大到小排序：先隔离历史文档（防止误导），再补内容遗漏（让文档完整），最后关闭已知缺口（Schema/路径对齐）。每个 Task 独立可验证、可提交。
+**Architecture:** 4 批交付——文档修复 → Schema/模板 → JS 门禁脚本 → 全量验证。纯文档/Schema/脚本修改，无 Python 代码变更。
 
-**Tech Stack:** Markdown、YAML
+**Tech Stack:** Markdown, YAML, Node.js (纯内建模块)
 
----
-
-## 偏差总览
-
-| # | 偏差 | 严重级别 | 对应 Task |
-|---|------|----------|-----------|
-| 1 | `docs/superpowers/` 历史文档未归档隔离，38 篇混在正式文档目录 | 中 | Task 1 |
-| 2 | `REQUIREMENTS.md` §5.3 辅助 Skill 列表漏列 `review` | 低 | Task 2 |
-| 3 | `templates/default/settings/` 缺少 `scout_report.yaml` 模板 | 低 | Task 3 |
-| 4 | `data-diagnosis/SKILL.md` 脚本路径仍为短路径 `scripts/analyze-metrics.js` | 中 | Task 4 |
-| 5 | `feedback/archive/analysis_report.md` 内容严重过时且误导性强 | 中 | Task 5 |
-| 6 | `SKILL_CONTRACT_AUDIT.md` 更新——标记已关闭项 | 低 | Task 6 |
+**Spec:** `docs/superpowers/specs/2026-07-01-documentation-deviation-fix-design.md`
 
 ---
 
-## Task 1: 归档隔离 `docs/superpowers/` 历史文档
+## Batch 1: 文档修复
 
-**目标：** 让 `docs/superpowers/` 下的 38 篇历史文档不再被误认为当前真相源。
+### Task 1: 归档 superpowers 历史文档
 
 **Files:**
+- Move: `docs/superpowers/` → `docs/archive/superpowers/`
 - Modify: `docs/README.md`
-- Rename: `docs/superpowers/` → `docs/archive/superpowers/`
 
-- [ ] **Step 1: 移动 superpowers 目录到 archive 下**
+- [ ] **Step 1: 创建 archive 目录并移动 superpowers**
 
 ```bash
 mkdir -p docs/archive
 git mv docs/superpowers docs/archive/superpowers
 ```
 
-> 注意：本计划文件也会随之移动到 `docs/archive/superpowers/plans/2026-07-01-documentation-deviation-fix.md`，这是预期行为。
+- [ ] **Step 2: 更新 docs/README.md**
 
-- [ ] **Step 2: 更新 `docs/README.md`，将 `superpowers/` 从"相关资料"移到"归档"区**
-
-在 `docs/README.md` 中找到以下段落：
+将 `docs/README.md` 中从"## 工作流产出"到文件末尾（含"## 归档"段落）整体替换为：
 
 ```markdown
-## 相关资料
-
-| 路径 | 说明 |
-|------|------|
-| `../README.md` | 项目总入口 |
-| `../.agents/AGENTS.md` | Agent 行为规则与项目硬约束 |
-| `../.agents/skills/` | 当前实际执行入口，每个 Skill 的 `SKILL.md` 是具体流程真相源 |
-| `../data/schemas/` | YAML Schema 与完善度标准 |
-| `../templates/` | 新书项目模板 |
-
-## 工作流产出
-
-`superpowers/` 目录保存历史设计、计划与验证文档：
-
-- `specs/`：设计规格文档
-- `plans/`：实施计划文档
-- `verification/`：验证报告
-
-这些文档用于追溯历史决策，不一定代表当前主流程。若与 `.agents/skills/` 冲突，以当前 Skill 文件为准。
-
-## 归档
-
-`feedback/archive/` 存放历史反馈和报告，仅供参考。
-```
-
-替换为：
-
-```markdown
-## 相关资料
-
-| 路径 | 说明 |
-|------|------|
-| `../README.md` | 项目总入口 |
-| `../.agents/AGENTS.md` | Agent 行为规则与项目硬约束 |
-| `../.agents/skills/` | 当前实际执行入口，每个 Skill 的 `SKILL.md` 是具体流程真相源 |
-| `../data/schemas/` | YAML Schema 与完善度标准 |
-| `../templates/` | 新书项目模板 |
-
 ## 归档
 
 以下内容均为历史产物，**不代表当前主流程**。若与 `.agents/skills/` 或正式文档冲突，以正式文档和 Skill 文件为准。
@@ -95,180 +44,32 @@ git mv docs/superpowers docs/archive/superpowers
 | `feedback/archive/` | 历史反馈和分析报告 |
 ```
 
-- [ ] **Step 3: 确认移动后目录结构正确**
+- [ ] **Step 3: 验证**
 
-Run: `ls docs/archive/superpowers/`
-Expected: `plans  specs  verification`
+```bash
+ls docs/archive/superpowers/
+# Expected: plans  specs  verification
+ls docs/ | grep superpowers
+# Expected: 无输出
+```
 
 - [ ] **Step 4: Commit**
 
 ```bash
 git add -A
-git commit -m "docs(archive): 将 superpowers 历史文档移入 archive 隔离
-
-38 篇历史设计/计划/验证文档不再混在正式文档目录中，
-防止新维护者误将已放弃的 CLI 自动化方向当作当前真相源。"
+git commit -m "docs(archive): 将 superpowers 历史文档移入 archive 隔离"
 ```
 
 ---
 
-## Task 2: 补 `REQUIREMENTS.md` 漏列的 `review` Skill
-
-**目标：** 在辅助类 Skills 表中补上 `review`。
-
-**Files:**
-- Modify: `docs/REQUIREMENTS.md:115-126`
-
-- [ ] **Step 1: 在辅助类 Skills 表中补充 `review`**
-
-在 `docs/REQUIREMENTS.md` 中找到 §5.3 辅助类 Skills 表格：
-
-```markdown
-| Skill | 用途 |
-|-------|------|
-| `nm` | 调用 novel-material 检索素材 |
-| `review` | 多视角对抗式审查 |
-| `data-diagnosis` | 平台数据诊断 |
-```
-
-等等，让我重新确认——实际当前内容是：
-
-```markdown
-| Skill | 用途 |
-|-------|------|
-| `nm` | 调用 novel-material 检索素材 |
-| `review` | 多视角对抗式审查 |
-| `data-diagnosis` | 平台数据诊断 |
-| `stock-check` | 存稿水位检查 |
-| `feature-planning` | 新功能规划 |
-| `refactor-planning` | 重构规划 |
-| `code-review-change` | 变动影响审查 |
-| `commit-msg` | 规范化提交信息 |
-```
-
-经重新确认，`review` **已在表中**。此偏差不存在，跳过本 Task。
-
-> **自我修正**：在写计划时重新阅读了 `REQUIREMENTS.md` 第 117-127 行，`review` 确实已列出。前一轮分析遗漏了这一点。此 Task 取消。
-
-- [ ] **Step 1: 无需操作，Commit 跳过**
-
----
-
-## Task 3: 补充 `scout_report.yaml` 模板
-
-**目标：** 在 `templates/default/settings/` 中新增 `scout_report.yaml` 空模板，与 schema 对齐。
-
-**Files:**
-- Create: `templates/default/settings/scout_report.yaml`
-
-- [ ] **Step 1: 创建模板文件**
-
-```yaml
-# 选题侦察报告模板
-# [R] = 必填字段，[O] = 可选字段
-# 由 /scout-topic 生成，后续 Skill 根据 required_elements 动态检查
-
-platform: ""                    # [R] 目标平台（番茄小说、起点、晋江等）
-channel: ""                     # [O] 频道（男频/女频）
-genre: ""                       # [R] 品类（都市、玄幻、系统、言情等）
-target_audience: ""             # [R] 目标读者群体
-
-premise: ""                     # [R] 一句话前提（50字以上的故事概述）
-core_hooks: []                  # [O] 核心钩子列表
-# 每个钩子包含：name, description, hook_type
-
-recommended_tags:               # [R] 标签组合
-  primary: []                   # 主要标签（3-6个）
-  secondary: []                 # 次要标签
-
-tag_analysis: {}                # [O] 标签分析详情
-competition_analysis: {}        # [O] 竞争分析
-
-required_elements:              # [O] 品类感知的必要元素声明
-  worldbuilding:
-    required: []
-    optional: []
-  characters: {}
-  opening_hook:
-    type: ""
-    description: ""
-  structure:
-    type: ""
-    target_arcs: 1
-
-risks: []                       # [O] 风险提示
-```
-
-- [ ] **Step 2: 确认模板字段与 `data/schemas/scout_report.schema.yaml` 的 required 字段一致**
-
-Run: `grep -A1 "required:" data/schemas/scout_report.schema.yaml | head -10`
-Expected: `platform`, `genre`, `target_audience`, `premise`, `recommended_tags` 均出现在模板中
-
-- [ ] **Step 3: Commit**
-
-```bash
-git add templates/default/settings/scout_report.yaml
-git commit -m "templates: 补充 scout_report.yaml 空模板
-
-与 data/schemas/scout_report.schema.yaml 的 required 字段对齐，
-新书初始化时有模板可参考。"
-```
-
----
-
-## Task 4: 修正 `data-diagnosis/SKILL.md` 中的脚本短路径
-
-**目标：** 将 `scripts/analyze-metrics.js` 短路径修正为完整路径。
-
-**Files:**
-- Modify: `.agents/skills/data-diagnosis/SKILL.md:35`
-
-- [ ] **Step 1: 读取当前内容确认行号**
-
-Run: `grep -n "scripts/" .agents/skills/data-diagnosis/SKILL.md`
-Expected: 第 35 行有 `scripts/analyze-metrics.js`
-
-- [ ] **Step 2: 将短路径替换为完整路径**
-
-将：
-
-```
-3. 运行 `scripts/analyze-metrics.js` 解析数据
-```
-
-替换为：
-
-```
-3. 运行 `.agents/skills/data-diagnosis/scripts/analyze-metrics.js` 解析数据
-```
-
-- [ ] **Step 3: 验证脚本文件确实在该路径**
-
-Run: `ls .agents/skills/data-diagnosis/scripts/analyze-metrics.js`
-Expected: 文件存在
-
-- [ ] **Step 4: Commit**
-
-```bash
-git add .agents/skills/data-diagnosis/SKILL.md
-git commit -m "fix(data-diagnosis): 修正脚本短路径为完整路径
-
-scripts/analyze-metrics.js → .agents/skills/data-diagnosis/scripts/analyze-metrics.js
-与 SKILL_CONTRACT_AUDIT 中 P2 修正项对齐。"
-```
-
----
-
-## Task 5: 精简过时的 `analysis_report.md`
-
-**目标：** 将已失效且误导性强的分析报告精简为简短摘要，避免新维护者被旧方向带偏。
+### Task 2: 精简 analysis_report.md
 
 **Files:**
 - Modify: `docs/feedback/archive/analysis_report.md`
 
-- [ ] **Step 1: 将原文件内容替换为精简版**
+- [ ] **Step 1: 将文件内容替换为精简版**
 
-将整个文件内容替换为：
+用以下内容覆写 `docs/feedback/archive/analysis_report.md`：
 
 ```markdown
 > **历史归档**：此文档为项目转型前（V3 引擎重构前）生成的分析报告。
@@ -286,115 +87,777 @@ scripts/analyze-metrics.js → .agents/skills/data-diagnosis/scripts/analyze-met
 
 如需了解当前项目能力，请参阅：
 - [README.md](../../README.md)
-- [用户手册](../../USER_MANUAL.md)
-- [需求文档](../../REQUIREMENTS.md)
+- [用户手册](../USER_MANUAL.md)
+- [需求文档](../REQUIREMENTS.md)
 ```
 
 - [ ] **Step 2: Commit**
 
 ```bash
 git add docs/feedback/archive/analysis_report.md
-git commit -m "docs(archive): 精简过时的 analysis_report.md
-
-原报告基于已放弃的 CLI 自动化方向，'致命问题'描述严重误导。
-精简为历史摘要 + 当前文档导航，防止新维护者被旧方向带偏。"
+git commit -m "docs(archive): 精简过时的 analysis_report.md"
 ```
 
 ---
 
-## Task 6: 更新 `SKILL_CONTRACT_AUDIT.md` 关闭已修正项
-
-**目标：** 在审计文档中标记本轮已关闭的缺口（data-diagnosis 路径修正、scout_report 模板补充）。
+### Task 3: 补充 scout_report.yaml 模板
 
 **Files:**
-- Modify: `docs/SKILL_CONTRACT_AUDIT.md`
+- Create: `templates/default/settings/scout_report.yaml`
 
-- [ ] **Step 1: 更新 `data-diagnosis` 行的"对齐结论"列**
+- [ ] **Step 1: 创建模板文件**
 
-在 Skill 输入输出总表中，找到 `data-diagnosis` 行，将：
+```yaml
+# 选题侦察报告模板
+# [R] = 必填字段，[O] = 可选字段
+# 由 /scout-topic 生成，后续 Skill 根据 required_elements 动态检查
+# 对齐 data/schemas/scout_report.schema.yaml
+
+platform: ""                    # [R] 目标平台（番茄小说、起点、晋江等）
+channel: ""                     # [O] 频道（男频/女频）
+genre: ""                       # [R] 品类（都市、玄幻、系统、言情等）
+target_audience: ""             # [R] 目标读者群体
+
+premise: ""                     # [R] 一句话前提（50字以上的故事概述）
+core_hooks: []                  # [O] 核心钩子列表
+# 每个钩子包含：
+#   name, description, hook_type
+
+recommended_tags:               # [R] 标签组合
+  primary: []                   # 主要标签（3-6个）
+  secondary: []                 # 次要标签
+
+tag_analysis: {}                # [O] 标签分析详情
+competition_analysis: {}        # [O] 竞争分析
+
+required_elements:              # [O] 品类感知的必要元素声明
+  worldbuilding:
+    required: []
+    optional: []
+  characters: {}
+  opening_hook:
+    type: ""                    # golden_finger / reborn_advantage / meet_cute / conflict / mystery_hook
+    description: ""
+  structure:
+    type: ""                    # 三幕式 / 起承转合 / 英雄之旅
+    target_arcs: 1
+
+risks: []                       # [O] 风险提示
+# 每条风险包含：
+#   type, severity（低/低-中/中/中-高/高）, description, mitigation[]
+```
+
+- [ ] **Step 2: Commit**
+
+```bash
+git add templates/default/settings/scout_report.yaml
+git commit -m "templates: 补充 scout_report.yaml 空模板"
+```
+
+---
+
+### Task 4: 修正 data-diagnosis 脚本路径
+
+**Files:**
+- Modify: `.agents/skills/data-diagnosis/SKILL.md`
+
+- [ ] **Step 1: 替换短路径**
+
+在 `.agents/skills/data-diagnosis/SKILL.md` 中找到：
 
 ```
-| `data-diagnosis` | 平台导出 CSV、可选 `settings/chapters_index.yaml` | `data_diagnosis_report.yaml` | 无直接 schema | 当前写法为 `scripts/analyze-metrics.js` 短路径 | 无明确 `_progress.md` 合约 | 非本轮高影响 Skill；后续应补脚本路径和报告 schema。 |
+3. 运行 `scripts/analyze-metrics.js` 解析数据
 ```
 
 替换为：
 
 ```
-| `data-diagnosis` | 平台导出 CSV、可选 `settings/chapters_index.yaml` | `data_diagnosis_report.yaml` | 无直接 schema | `.agents/skills/data-diagnosis/scripts/analyze-metrics.js` | 无明确 `_progress.md` 合约 | 脚本路径已修正；报告 schema 待后续补充。 |
+3. 运行 `.agents/skills/data-diagnosis/scripts/analyze-metrics.js` 解析数据
 ```
 
-- [ ] **Step 2: 在"后续实施建议"中追加本轮完成项**
+- [ ] **Step 2: Commit**
 
-在 `docs/SKILL_CONTRACT_AUDIT.md` 末尾的"后续实施建议"段落中，在第 5 条之后追加：
+```bash
+git add .agents/skills/data-diagnosis/SKILL.md
+git commit -m "fix(data-diagnosis): 修正脚本短路径为完整路径"
+```
+
+---
+
+## Batch 2: Schema 与模板新增
+
+### Task 5: 新增 data_diagnosis_report.schema.yaml
+
+**Files:**
+- Create: `data/schemas/data_diagnosis_report.schema.yaml`
+
+- [ ] **Step 1: 创建 Schema 文件**
+
+```yaml
+# data_diagnosis_report.schema.yaml
+# 数据诊断报告 schema
+# 路径: novels/{project_id}/data_diagnosis_report.yaml
+# 生产 Skill: data-diagnosis
+# 消费 Skill: daily-write（可选参考）
+
+# R = 必填, O = 可选
+
+report_date: ""                  # R | 报告生成日期 (YYYY-MM-DD)
+platform: ""                     # R | 数据来源平台
+project_id: ""                   # R | 关联项目 ID
+
+data_source: ""                  # O | 原始 CSV 文件路径
+
+metrics_summary:                 # O | 总体指标
+  total_chapters: 0              # 总章数
+  avg_retention_rate: ""         # 平均追读率
+  avg_completion_rate: ""        # 平均完读率
+  avg_engagement_rate: ""        # 平均互动率
+
+chapter_metrics: []              # O | 逐章指标列表
+# - chapter: 0                   # R | 章节号
+#   reads: 0                     # O | 阅读数
+#   retention_rate: ""           # O | 追读率
+#   completion_rate: ""          # O | 完读率
+#   engagement_rate: ""          # O | 互动率
+
+anomalies: []                    # O | 异常章节列表
+# - chapter: 0                   # R | 章节号
+#   type: ""                     # R | 异常类型
+#   severity: ""                 # R | P0/P1/P2
+#   detail: ""                   # R | 详细说明
+
+recommendations: []              # O | 改进建议列表
+# - priority: ""                 # R | 优先级
+#   chapter_range: ""            # O | 影响章节范围
+#   description: ""              # R | 建议说明
+```
+
+- [ ] **Step 2: Commit**
+
+```bash
+git add data/schemas/data_diagnosis_report.schema.yaml
+git commit -m "schemas: 新增 data_diagnosis_report.schema.yaml"
+```
+
+---
+
+### Task 6: 新增 export_config.schema.yaml
+
+**Files:**
+- Create: `data/schemas/export_config.schema.yaml`
+
+- [ ] **Step 1: 创建 Schema 文件**
+
+```yaml
+# export_config.schema.yaml
+# 导出配置 schema
+# 路径: novels/{project_id}/export_config.yaml（运行时生成）
+# 生产 Skill: export-novel
+
+# R = 必填, O = 可选
+
+format: ""                       # R | 导出格式 (txt / markdown / epub)
+
+chapter_range:                   # O | 导出章节范围
+  start: 1                       # 起始章节
+  end: null                      # 结束章节，null = 全部
+
+include_metadata: true           # O | 是否包含元信息（书名、作者、目录）
+
+output_dir: "exports"            # O | 输出目录
+
+file_naming: "sequential"        # O | 文件命名规则 (sequential / by_title)
+
+encoding: "utf-8"                # O | 文件编码
+```
+
+- [ ] **Step 2: Commit**
+
+```bash
+git add data/schemas/export_config.schema.yaml
+git commit -m "schemas: 新增 export_config.schema.yaml"
+```
+
+---
+
+### Task 7: 新增 golden_chapters_report.md 模板
+
+**Files:**
+- Create: `templates/default/golden_chapters_report.md`
+
+- [ ] **Step 1: 创建模板文件**
 
 ```markdown
-6. 已修正 `data-diagnosis` 脚本短路径为完整路径。
-7. 已补充 `templates/default/settings/scout_report.yaml` 模板。
-8. 已将 `docs/superpowers/` 移入 `docs/archive/superpowers/`，与正式文档隔离。
-9. 已精简 `docs/feedback/archive/analysis_report.md`，消除过时误导。
+# 黄金三章检查报告
+
+> 生成时间：{timestamp}
+> 项目：{project_name}
+
+## 逐章评分
+
+| 章节 | 钩子强度 | AI 味 | 退化 | 结构 | 综合 |
+|------|----------|--------|------|------|------|
+| 第 1 章 | /5 | /5 | /5 | /5 | /5 |
+| 第 2 章 | /5 | /5 | /5 | /5 | /5 |
+| 第 3 章 | /5 | /5 | /5 | /5 | /5 |
+
+## 综合结论
+
+- **结果**：{通过 / 需修改 / 需重写}
+- **最强章节**：第 N 章
+- **最弱章节**：第 N 章
+
+## 修改建议
+
+1. {建议 1}
+2. {建议 2}
+
+## 详细备注
+
+{其他需要记录的观察}
+```
+
+- [ ] **Step 2: Commit**
+
+```bash
+git add templates/default/golden_chapters_report.md
+git commit -m "templates: 新增 golden_chapters_report.md 模板"
+```
+
+---
+
+### Task 8: 更新 SKILL_CONTRACT_AUDIT.md
+
+**Files:**
+- Modify: `docs/SKILL_CONTRACT_AUDIT.md`
+
+- [ ] **Step 1: 更新 data-diagnosis 行的"对齐结论"**
+
+替换为：
+
+```
+脚本路径已修正；报告 schema 已新增（`data/schemas/data_diagnosis_report.schema.yaml`）；`check-diagnosis-report.js` 已创建。
+```
+
+- [ ] **Step 2: 更新 export-novel 行的"对齐结论"**
+
+替换为：
+
+```
+导出配置 schema 已新增（`data/schemas/export_config.schema.yaml`）；`check-export-config.js` 已创建。
+```
+
+- [ ] **Step 3: 更新 golden-chapters 行的"对齐结论"**
+
+在现有内容后追加：`golden_chapters_report.md 模板已新增（`templates/default/golden_chapters_report.md`）。`
+
+- [ ] **Step 4: 更新 daily-write 行的门禁脚本**
+
+在门禁脚本列追加：`node .agents/skills/_shared/scripts/check-notes.js settings/notes.yaml`
+
+- [ ] **Step 5: Schema 使用矩阵末尾追加两行**
+
+```markdown
+| `data/schemas/data_diagnosis_report.schema.yaml` | `data-diagnosis` | `daily-write`（可选） | 覆盖报告日期、平台、指标、异常、建议 | 已由 `check-diagnosis-report.js` 检查必填字段。 |
+| `data/schemas/export_config.schema.yaml` | `export-novel` | 作者、发布平台 | 覆盖格式、章节范围、命名、编码 | 已由 `check-export-config.js` 检查格式枚举和章节范围。 |
+```
+
+- [ ] **Step 6: "后续实施建议"末尾追加**
+
+```markdown
+6. 已修正 `data-diagnosis` 脚本短路径。
+7. 已新增 `data_diagnosis_report.schema.yaml` 和 `check-diagnosis-report.js`。
+8. 已新增 `export_config.schema.yaml` 和 `check-export-config.js`。
+9. 已新增 `golden_chapters_report.md` 模板。
+10. 已新增 `check-notes.js` 共享门禁脚本。
+11. 已将 `docs/superpowers/` 移入 `docs/archive/superpowers/`。
+12. 已精简 `docs/feedback/archive/analysis_report.md`。
+13. 已补充 `templates/default/settings/scout_report.yaml` 模板。
+```
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add docs/SKILL_CONTRACT_AUDIT.md
+git commit -m "docs(audit): 更新 SKILL_CONTRACT_AUDIT 关闭全部 P2/P3 缺口"
+```
+
+---
+
+## Batch 3: JS 门禁脚本
+
+### Task 9: 创建 check-notes.js
+
+**Files:**
+- Create: `.agents/skills/_shared/scripts/check-notes.js`
+
+- [ ] **Step 1: 创建脚本**
+
+```javascript
+#!/usr/bin/env node
+'use strict';
+
+// check-notes.js — notes.yaml 结构验证
+// Usage: node check-notes.js <notes.yaml>
+// 纯 Node.js 内建模块，无外部依赖。
+
+const fs = require('fs');
+const path = require('path');
+
+function main() {
+  const notesFile = process.argv[2];
+  if (!notesFile) {
+    console.error('Usage: node check-notes.js <notes.yaml>');
+    process.exit(2);
+  }
+
+  let content;
+  try { content = fs.readFileSync(path.resolve(notesFile), 'utf8'); }
+  catch (err) { console.error(`无法读取文件: ${err.message}`); process.exit(2); }
+
+  // 跳过纯注释或空文件
+  const meaningfulLines = content.split('\n').filter(l => l.trim() && !l.trim().startsWith('#'));
+  if (meaningfulLines.length === 0) {
+    console.log('[advisory] notes.yaml 为空，无结构化数据');
+    console.log('\n共 0 个阻塞，1 个建议');
+    process.exit(0);
+  }
+
+  const findings = [];
+
+  // 检查 1: version 字段
+  if (!/^version:\s*\d+/m.test(content)) {
+    findings.push({ severity: 'blocking', message: '缺少 version 字段（必须为整数）' });
+  }
+
+  // 检查 2: tracking 节点
+  if (!/^tracking:\s*$/m.test(content)) {
+    findings.push({ severity: 'blocking', message: '缺少 tracking 节点' });
+  } else {
+    const trackingFields = ['recent_chapters', 'ten_chapter_summaries', 'volume_overview', 'character_states', 'foreshadowing'];
+    for (const field of trackingFields) {
+      if (!new RegExp(`^\\s+${field}:\\s*`, 'm').test(content)) {
+        findings.push({ severity: 'blocking', message: `tracking 缺少 ${field} 字段` });
+      }
+    }
+  }
+
+  // 检查 3: foreshadowing status 枚举
+  const foreshadowingSection = extractSection(content, 'foreshadowing');
+  if (foreshadowingSection) {
+    const statuses = [];
+    const pattern = /^\s+status:\s*["']?(\w+)["']?/gm;
+    let m;
+    while ((m = pattern.exec(foreshadowingSection)) !== null) statuses.push(m[1]);
+    const valid = ['open', 'resolved', 'dropped'];
+    for (const s of statuses) {
+      if (!valid.includes(s)) {
+        findings.push({ severity: 'blocking', message: `foreshadowing.status "${s}" 不在允许值中 (open/resolved/dropped)` });
+      }
+    }
+
+    // 检查 planted_chapter
+    const entries = foreshadowingSection.split(/^\s*-\s+/m).filter(s => s.trim());
+    for (let i = 0; i < entries.length; i++) {
+      if (!/planted_chapter:\s*\d+/.test(entries[i])) {
+        findings.push({ severity: 'blocking', message: `foreshadowing 第 ${i + 1} 项缺少 planted_chapter` });
+      }
+    }
+  }
+
+  // 检查 4: character_states name 非空
+  const charSection = extractSection(content, 'character_states');
+  if (charSection) {
+    const entries = charSection.split(/^\s*-\s+/m).filter(s => s.trim());
+    for (let i = 0; i < entries.length; i++) {
+      if (!/name:\s*["']?[^\s"']+/.test(entries[i])) {
+        findings.push({ severity: 'blocking', message: `character_states 第 ${i + 1} 项缺少 name` });
+      }
+    }
+  }
+
+  // 检查 5: preferences 节点 (advisory)
+  if (!/^preferences:\s*$/m.test(content)) {
+    findings.push({ severity: 'advisory', message: '缺少 preferences 节点（style_notes / banned_settings / pending_confirmations）' });
+  }
+
+  printResults(findings);
+}
+
+function extractSection(content, key) {
+  const lines = content.split('\n');
+  const startIdx = lines.findIndex(l => new RegExp(`^\\s+${key}:\\s*`).test(l));
+  if (startIdx === -1) return '';
+
+  const section = [];
+  const indent = lines[startIdx].match(/^(\s*)/)[1].length;
+  for (let i = startIdx + 1; i < lines.length; i++) {
+    if (lines[i].trim() === '' || lines[i].trim().startsWith('#')) continue;
+    const currentIndent = lines[i].match(/^(\s*)/)[1].length;
+    if (currentIndent <= indent && lines[i].trim()) break;
+    section.push(lines[i]);
+  }
+  return section.join('\n');
+}
+
+function printResults(findings) {
+  if (findings.length === 0) {
+    console.log('✓ notes.yaml 结构检查通过');
+    process.exit(0);
+  }
+
+  const blocking = findings.filter(f => f.severity === 'blocking');
+  for (const f of findings) console.log(`[${f.severity}] ${f.message}`);
+  console.log(`\n共 ${blocking.length} 个阻塞，${findings.length - blocking.length} 个建议`);
+  process.exit(blocking.length > 0 ? 1 : 0);
+}
+
+main();
+```
+
+- [ ] **Step 2: 设置可执行权限并试跑**
+
+```bash
+chmod +x .agents/skills/_shared/scripts/check-notes.js
+node .agents/skills/_shared/scripts/check-notes.js novels/nv_20260625_00t3/settings/notes.yaml || true
+# Expected: 多个 blocking（现有 notes.yaml 用旧格式，缺少 version/tracking/preferences）
 ```
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add docs/SKILL_CONTRACT_AUDIT.md
-git commit -m "docs(audit): 更新 SKILL_CONTRACT_AUDIT 关闭本轮已修正项
-
-- data-diagnosis 脚本路径已修正
-- scout_report 模板已补充
-- superpowers 历史文档已归档
-- analysis_report 已精简"
+git add .agents/skills/_shared/scripts/check-notes.js
+git commit -m "scripts: 新增 check-notes.js 共享门禁脚本"
 ```
 
 ---
 
-## Task 7: 最终验证
+### Task 10: 创建 check-diagnosis-report.js
 
-**目标：** 确认所有修改正确、无遗漏。
+**Files:**
+- Create: `.agents/skills/data-diagnosis/scripts/check-diagnosis-report.js`
 
-- [ ] **Step 1: 确认目录结构**
+- [ ] **Step 1: 创建脚本**
 
-Run:
+```javascript
+#!/usr/bin/env node
+'use strict';
+
+// check-diagnosis-report.js — 数据诊断报告结构验证
+// Usage: node check-diagnosis-report.js <data_diagnosis_report.yaml>
+
+const fs = require('fs');
+const path = require('path');
+
+function main() {
+  const reportFile = process.argv[2];
+  if (!reportFile) {
+    console.error('Usage: node check-diagnosis-report.js <data_diagnosis_report.yaml>');
+    process.exit(2);
+  }
+
+  let content;
+  try { content = fs.readFileSync(path.resolve(reportFile), 'utf8'); }
+  catch (err) { console.error(`无法读取文件: ${err.message}`); process.exit(2); }
+
+  const meaningfulLines = content.split('\n').filter(l => l.trim() && !l.trim().startsWith('#'));
+  if (meaningfulLines.length === 0) {
+    console.log('[advisory] 报告文件为空');
+    console.log('\n共 0 个阻塞，1 个建议');
+    process.exit(0);
+  }
+
+  const findings = [];
+
+  if (!/^report_date:\s*["']?\d{4}-\d{2}-\d{2}["']?\s*$/m.test(content))
+    findings.push({ severity: 'blocking', message: '缺少 report_date 或格式不正确 (YYYY-MM-DD)' });
+
+  if (!/^platform:\s*["']?[^\s"']+["']?\s*$/m.test(content))
+    findings.push({ severity: 'blocking', message: '缺少 platform' });
+
+  if (!/^project_id:\s*["']?[^\s"']+["']?\s*$/m.test(content))
+    findings.push({ severity: 'blocking', message: '缺少 project_id' });
+
+  // anomalies severity 枚举
+  const anomaliesSection = extractSection(content, 'anomalies');
+  if (anomaliesSection) {
+    const entries = anomaliesSection.split(/^\s*-\s+/m).filter(s => s.trim());
+    const validSeverities = ['P0', 'P1', 'P2'];
+    for (let i = 0; i < entries.length; i++) {
+      const sevMatch = entries[i].match(/severity:\s*["']?(\w+)["']?/);
+      if (sevMatch && !validSeverities.includes(sevMatch[1])) {
+        findings.push({ severity: 'advisory', message: `anomalies[${i + 1}] severity "${sevMatch[1]}" 不在允许值中` });
+      }
+    }
+  }
+
+  // recommendations priority
+  const recsSection = extractSection(content, 'recommendations');
+  if (recsSection) {
+    const entries = recsSection.split(/^\s*-\s+/m).filter(s => s.trim());
+    for (let i = 0; i < entries.length; i++) {
+      if (!/priority:\s*/.test(entries[i])) {
+        findings.push({ severity: 'advisory', message: `recommendations[${i + 1}] 缺少 priority` });
+      }
+    }
+  }
+
+  printResults(findings);
+}
+
+function extractSection(content, key) {
+  const lines = content.split('\n');
+  const startIdx = lines.findIndex(l => new RegExp(`^${key}:\\s*`).test(l));
+  if (startIdx === -1) return '';
+  const section = [];
+  for (let i = startIdx + 1; i < lines.length; i++) {
+    if (lines[i].trim() === '' || lines[i].trim().startsWith('#')) continue;
+    if (/^[A-Za-z_][\w-]*:\s*/.test(lines[i])) break;
+    section.push(lines[i]);
+  }
+  return section.join('\n');
+}
+
+function printResults(findings) {
+  if (findings.length === 0) {
+    console.log('✓ 数据诊断报告结构检查通过');
+    process.exit(0);
+  }
+  const blocking = findings.filter(f => f.severity === 'blocking');
+  for (const f of findings) console.log(`[${f.severity}] ${f.message}`);
+  console.log(`\n共 ${blocking.length} 个阻塞，${findings.length - blocking.length} 个建议`);
+  process.exit(blocking.length > 0 ? 1 : 0);
+}
+
+main();
+```
+
+- [ ] **Step 2: 设置权限并试跑**
+
 ```bash
-echo "=== archive 目录 ==="
-ls docs/archive/superpowers/
-echo "=== templates 目录 ==="
-ls templates/default/settings/
-echo "=== 正式 docs 目录（不应有 superpowers）==="
-ls docs/ | grep -v archive
+chmod +x .agents/skills/data-diagnosis/scripts/check-diagnosis-report.js
+
+# 正常输入
+cat > /tmp/test_report.yaml << 'EOF'
+report_date: "2026-07-01"
+platform: "起点中文网"
+project_id: "nv_20260625_00t3"
+anomalies:
+  - chapter: 12
+    type: "追读率骤降"
+    severity: P1
+    detail: "下降 18%"
+recommendations:
+  - priority: "高"
+    chapter_range: "10-15"
+    description: "收紧节奏"
+EOF
+node .agents/skills/data-diagnosis/scripts/check-diagnosis-report.js /tmp/test_report.yaml
+# Expected: ✓ 检查通过
+
+# 异常输入
+cat > /tmp/test_bad.yaml << 'EOF'
+report_date: "bad"
+anomalies:
+  - severity: P9
+EOF
+node .agents/skills/data-diagnosis/scripts/check-diagnosis-report.js /tmp/test_bad.yaml
+# Expected: blocking（缺 platform/project_id/date 格式错）+ advisory（P9 不合法）
+
+rm -f /tmp/test_report.yaml /tmp/test_bad.yaml
 ```
 
-Expected:
-- `docs/archive/superpowers/` 存在且包含 `plans/ specs/ verification/`
-- `templates/default/settings/` 包含 `scout_report.yaml`
-- `docs/` 根目录下不再有 `superpowers/`
+- [ ] **Step 3: Commit**
 
-- [ ] **Step 2: 确认 `data-diagnosis` 脚本路径已修正**
-
-Run: `grep "scripts/" .agents/skills/data-diagnosis/SKILL.md`
-Expected: 包含 `.agents/skills/data-diagnosis/scripts/analyze-metrics.js`，不再有裸 `scripts/analyze-metrics.js`
-
-- [ ] **Step 3: 确认 `analysis_report.md` 已精简**
-
-Run: `wc -l docs/feedback/archive/analysis_report.md`
-Expected: 行数从 ~248 行降至 ~20 行以内
-
-- [ ] **Step 4: 检查 git log 确认所有 commit**
-
-Run: `git log --oneline -6`
-Expected: 5 个新 commit（Task 2 已取消）
-
-- [ ] **Step 5: 通读 `docs/README.md` 确认归档区正确**
-
-Run: `cat docs/README.md`
-Expected: 包含 `archive/superpowers/` 和 `feedback/archive/` 的归档表格，无旧的"工作流产出"段落
+```bash
+git add .agents/skills/data-diagnosis/scripts/check-diagnosis-report.js
+git commit -m "scripts: 新增 check-diagnosis-report.js 门禁脚本"
+```
 
 ---
 
-## 执行建议
+### Task 11: 创建 check-export-config.js
 
-本计划共 5 个实质 Task（Task 2 已取消）+ 1 个验证 Task，全部为文档/模板修改。建议：
+**Files:**
+- Create: `.agents/skills/export-novel/scripts/check-export-config.js`
 
-1. **顺序执行**：每个 Task 独立 commit，按编号顺序推进
-2. **验证节点**：Task 7 做最终全量检查
-3. **预计耗时**：15-20 分钟
+- [ ] **Step 1: 创建目录和脚本**
+
+```bash
+mkdir -p .agents/skills/export-novel/scripts
+```
+
+```javascript
+#!/usr/bin/env node
+'use strict';
+
+// check-export-config.js — 导出配置结构验证
+// Usage: node check-export-config.js <export_config.yaml>
+
+const fs = require('fs');
+const path = require('path');
+
+function main() {
+  const configFile = process.argv[2];
+  if (!configFile) {
+    console.error('Usage: node check-export-config.js <export_config.yaml>');
+    process.exit(2);
+  }
+
+  let content;
+  try { content = fs.readFileSync(path.resolve(configFile), 'utf8'); }
+  catch (err) { console.error(`无法读取文件: ${err.message}`); process.exit(2); }
+
+  const findings = [];
+
+  // format 必填且为枚举值
+  const formatMatch = content.match(/^format:\s*["']?(\w+)["']?\s*$/m);
+  if (!formatMatch) {
+    findings.push({ severity: 'blocking', message: '缺少 format 字段' });
+  } else {
+    const validFormats = ['txt', 'markdown', 'epub'];
+    if (!validFormats.includes(formatMatch[1])) {
+      findings.push({ severity: 'blocking', message: `format "${formatMatch[1]}" 不在允许值中 (txt/markdown/epub)` });
+    }
+  }
+
+  // chapter_range.start >= 1
+  const startMatch = content.match(/^\s+start:\s*(\d+)/m);
+  if (startMatch && parseInt(startMatch[1]) < 1) {
+    findings.push({ severity: 'blocking', message: `chapter_range.start (${startMatch[1]}) 必须 >= 1` });
+  }
+
+  // chapter_range.end >= start
+  const endMatch = content.match(/^\s+end:\s*(\d+)/m);
+  if (startMatch && endMatch) {
+    const s = parseInt(startMatch[1]), e = parseInt(endMatch[1]);
+    if (e < s) findings.push({ severity: 'blocking', message: `chapter_range.end (${e}) < start (${s})` });
+  }
+
+  // encoding (advisory)
+  const encMatch = content.match(/^encoding:\s*["']?([\w-]+)["']?\s*$/m);
+  if (encMatch && encMatch[1].toLowerCase() !== 'utf-8') {
+    findings.push({ severity: 'advisory', message: `encoding "${encMatch[1]}" 非标准，推荐 utf-8` });
+  }
+
+  // file_naming (advisory)
+  const namingMatch = content.match(/^file_naming:\s*["']?(\w+)["']?\s*$/m);
+  if (namingMatch) {
+    const valid = ['sequential', 'by_title'];
+    if (!valid.includes(namingMatch[1])) {
+      findings.push({ severity: 'advisory', message: `file_naming "${namingMatch[1]}" 不在推荐值中 (sequential/by_title)` });
+    }
+  }
+
+  printResults(findings);
+}
+
+function printResults(findings) {
+  if (findings.length === 0) {
+    console.log('✓ 导出配置检查通过');
+    process.exit(0);
+  }
+  const blocking = findings.filter(f => f.severity === 'blocking');
+  for (const f of findings) console.log(`[${f.severity}] ${f.message}`);
+  console.log(`\n共 ${blocking.length} 个阻塞，${findings.length - blocking.length} 个建议`);
+  process.exit(blocking.length > 0 ? 1 : 0);
+}
+
+main();
+```
+
+- [ ] **Step 2: 设置权限并试跑**
+
+```bash
+chmod +x .agents/skills/export-novel/scripts/check-export-config.js
+
+# 正常输入
+cat > /tmp/test_export.yaml << 'EOF'
+format: "epub"
+chapter_range:
+  start: 1
+  end: 50
+include_metadata: true
+output_dir: "exports"
+file_naming: "sequential"
+encoding: "utf-8"
+EOF
+node .agents/skills/export-novel/scripts/check-export-config.js /tmp/test_export.yaml
+# Expected: ✓ 检查通过
+
+# 异常输入
+cat > /tmp/test_export_bad.yaml << 'EOF'
+format: "pdf"
+chapter_range:
+  start: 10
+  end: 5
+encoding: "gbk"
+file_naming: "random"
+EOF
+node .agents/skills/export-novel/scripts/check-export-config.js /tmp/test_export_bad.yaml
+# Expected: blocking (pdf 不合法, end < start) + advisory (gbk, random)
+
+rm -f /tmp/test_export.yaml /tmp/test_export_bad.yaml
+```
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add .agents/skills/export-novel/scripts/check-export-config.js
+git commit -m "scripts: 新增 check-export-config.js 门禁脚本"
+```
+
+---
+
+## Batch 4: 全量验证
+
+### Task 12: 全量验证
+
+- [ ] **Step 1: 目录结构验证**
+
+```bash
+echo "=== archive ==="
+ls docs/archive/superpowers/
+echo "=== templates/settings ==="
+ls templates/default/settings/
+echo "=== templates 根 ==="
+ls templates/default/*.md 2>/dev/null
+echo "=== schemas ==="
+ls data/schemas/ | grep -E "diagnosis|export"
+echo "=== docs 根（无 superpowers）==="
+ls docs/ | grep superpowers && echo "FAIL" || echo "OK"
+```
+
+- [ ] **Step 2: 脚本试跑**
+
+```bash
+echo "=== check-notes.js ==="
+node .agents/skills/_shared/scripts/check-notes.js novels/nv_20260625_00t3/settings/notes.yaml || true
+echo ""
+echo "=== check-diagnosis-report.js (空文件) ==="
+echo "# empty" | node .agents/skills/data-diagnosis/scripts/check-diagnosis-report.js /dev/stdin || true
+echo ""
+echo "=== check-export-config.js (空文件) ==="
+echo "format: txt" | node .agents/skills/export-novel/scripts/check-export-config.js /dev/stdin || true
+```
+
+- [ ] **Step 3: 路径残留检查**
+
+```bash
+grep -rn "^\s*node scripts/" .agents/skills/*/SKILL.md || echo "OK: 无短路径残留"
+grep -rn "^\s*scripts/" .agents/skills/*/SKILL.md | grep -v ".agents/skills/" || echo "OK: 无裸短路径"
+```
+
+- [ ] **Step 4: analysis_report.md 行数**
+
+```bash
+wc -l docs/feedback/archive/analysis_report.md
+# Expected: ~20 行
+```
+
+- [ ] **Step 5: git log 确认**
+
+```bash
+git log --oneline -12
+```
