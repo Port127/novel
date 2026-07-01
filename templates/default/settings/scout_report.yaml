@@ -1,0 +1,37 @@
+# 选题侦察报告模板
+# [R] = 必填字段，[O] = 可选字段
+# 由 /scout-topic 生成，后续 Skill 根据 required_elements 动态检查
+# 对齐 data/schemas/scout_report.schema.yaml
+
+platform: ""                    # [R] 目标平台（番茄小说、起点、晋江等）
+channel: ""                     # [O] 频道（男频/女频）
+genre: ""                       # [R] 品类（都市、玄幻、系统、言情等）
+target_audience: ""             # [R] 目标读者群体
+
+premise: ""                     # [R] 一句话前提（50字以上的故事概述）
+core_hooks: []                  # [O] 核心钩子列表
+# 每个钩子包含：
+#   name, description, hook_type
+
+recommended_tags:               # [R] 标签组合
+  primary: []                   # 主要标签（3-6个）
+  secondary: []                 # 次要标签
+
+tag_analysis: {}                # [O] 标签分析详情
+competition_analysis: {}        # [O] 竞争分析
+
+required_elements:              # [O] 品类感知的必要元素声明
+  worldbuilding:
+    required: []
+    optional: []
+  characters: {}
+  opening_hook:
+    type: ""                    # golden_finger / reborn_advantage / meet_cute / conflict / mystery_hook
+    description: ""
+  structure:
+    type: ""                    # 三幕式 / 起承转合 / 英雄之旅
+    target_arcs: 1
+
+risks: []                       # [O] 风险提示
+# 每条风险包含：
+#   type, severity（低/低-中/中/中-高/高）, description, mitigation[]
