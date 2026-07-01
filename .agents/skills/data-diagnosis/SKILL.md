@@ -32,7 +32,7 @@ description: 数据诊断。导入平台数据，分析追读率/互动率，定
 **步骤**：
 1. 用户从平台后台导出数据 CSV
 2. 读取 CSV 文件
-3. 运行 `scripts/analyze-metrics.js` 解析数据
+3. 运行 `.agents/skills/data-diagnosis/scripts/analyze-metrics.js` 解析数据
 4. 展示数据概览（总章数、时间范围、关键指标）
 
 **出口条件**：数据已解析
