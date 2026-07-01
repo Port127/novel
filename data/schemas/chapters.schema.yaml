@@ -2,57 +2,38 @@
 # 章节索引文件
 # 路径: novels/{project_id}/settings/chapters_index.yaml
 
-# 字段说明格式：
-# 字段名: 示例值                  # [R|O] | 字段说明
 # R = 必填, O = 可选
-# 示例值仅作格式参考，实际内容由用户/AI生成
 
 chapters: []                          # R | 章节列表
 
-# ──────────────────────────────────────────────
-# 章节结构定义
-# ──────────────────────────────────────────────
-
 # 每个章节包含：
-
-# === 基本信息 ===
-# chapter: 1                          # R | 章节号
-# title: ""                           # R | 章节标题
-# file: ""                            # R | 文件名（如 chapter_001.md）
-# status: ""                          # R | 状态
-#                                      # 可选值：planned/draft/written/revised
-#                                      # planned  = 已规划，有摘要，无正文
-#                                      # draft    = 有正文草稿
-#                                      # written  = 正文完成
-#                                      # revised  = 已润色
-# words_target: 0                     # R | 目标字数
-# density: "密"                       # R | 密度（密/中/疏）
-# words: 0                            # R | 实际字数（自动统计）
-# summary: |                          # R | 章节摘要（可为纯文本，也可按五要素格式嵌套）
-#   main_plot: "主线推进"
-#   character_change: "人物变化"
-# beats:                              # R | 节拍列表摘要
-#   - 节拍 1
-#   - 节拍 2
-# tension: 0                          # R | 张力值（1-5）
-
-# === 可选信息 ===
-# functions: []                       # O | 章节功能标签列表
-#                                      # 示例值类型：开局引入/转折推进/高潮爆发/过渡铺垫/收尾总结
-# characters: []                      # O | 出场人物列表
-# beat_ref:                           # O | 对应大纲节拍
-#   act: 0                            # 幕编号
-#   sequence: 0                       # 序列编号
-#   beat: 0                           # 节拍编号
-
-# ──────────────────────────────────────────────
-# 统计信息（自动生成）
-# ──────────────────────────────────────────────
+# chapter: 1                         # R | 章节号
+# title: ""                          # R | 章节标题
+# file: "content/chapter_001.md"     # R | 正文路径
+# outline_file: "settings/chapter_outlines/chapter_001.md"  # R | 单章详细蓝图路径
+# status: "planned"                  # R | 状态 planned/draft/written/revised
+# words_target: 3000                 # R | 目标字数
+# words: 0                           # R | 实际字数
+# density: "密"                      # R | 密度（密/中/疏）
+# tension: 3                         # R | 张力值（1-5）
+# summary:                           # R | 五要素摘要
+#   main_plot: ""
+#   character_change: ""
+#   foreshadowing: ""
+#   emotion: ""
+#   hook: ""
+# beats: []                          # R | 节拍列表，3-15 个
+# functions: []                      # O | 章节功能标签列表
+# characters: []                     # O | 出场人物列表
+# beat_ref:                          # O | 对应大纲节拍
+#   act: 1
+#   sequence: 1
+#   beat: 1
 
 stats:
-  total: 0                            # R | 总计划章节数
-  planned: 0                          # R | 已规划数（status=planned）
-  draft: 0                            # R | 草稿数（status=draft）
-  written: 0                          # R | 已写数（status=written）
-  revised: 0                          # R | 已修改数（status=revised）
-  total_words: 0                      # R | 总字数
+  total: 0
+  planned: 0
+  draft: 0
+  written: 0
+  revised: 0
+  total_words: 0

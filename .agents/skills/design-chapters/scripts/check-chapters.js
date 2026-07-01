@@ -13,6 +13,8 @@ const MAX_BEATS = 15;
 const MIN_WORDS = 2000;
 const MAX_WORDS = 5000;
 const MAX_SAME_DENSITY = 3;
+const VALID_STATUS = new Set(['planned', 'draft', 'written', 'revised']);
+const VALID_DENSITY = new Set(['密', '中', '疏']);
 
 function main() {
   const file = process.argv[2];
@@ -45,19 +47,26 @@ function main() {
   }
 
   for (const ch of chapters) {
-    const num = ch.number || '?';
+    const num = ch.chapter || '?';
 
     // 必填字段
+    if (ch.legacyKey) findings.push({ severity: 'blocking', msg: `第 ${num} 章使用旧字段 ${ch.legacyKey}，当前标准为 chapter` });
     if (!ch.title) findings.push({ severity: 'blocking', msg: `第 ${num} 章缺少 title` });
     if (!ch.file) findings.push({ severity: 'blocking', msg: `第 ${num} 章缺少 file` });
+    else if (!/^content\/chapter_\d{3}\.md$/.test(ch.file)) {
+      findings.push({ severity: 'blocking', msg: `第 ${num} 章 file 必须形如 content/chapter_001.md: ${ch.file}` });
+    }
+
+    if (!ch.outline_file) findings.push({ severity: 'blocking', msg: `第 ${num} 章缺少 outline_file` });
     else {
-      // 检查文件是否存在
-      const expectedPath = path.resolve(path.dirname(file), 'chapter_outlines', ch.file);
-      if (!fs.existsSync(expectedPath)) {
-        findings.push({ severity: 'blocking', msg: `第 ${num} 章声明的 file 不存在: ${ch.file}` });
+      const expectedOutline = `settings/chapter_outlines/chapter_${String(num).padStart(3, '0')}.md`;
+      if (ch.outline_file !== expectedOutline) {
+        findings.push({ severity: 'blocking', msg: `第 ${num} 章 outline_file 应为 ${expectedOutline}: ${ch.outline_file}` });
       }
     }
-    if (!ch.status) findings.push({ severity: 'blocking', msg: `第 ${num} 章缺少 status` });
+
+    if (!VALID_STATUS.has(ch.status)) findings.push({ severity: 'blocking', msg: `第 ${num} 章 status 非法: ${ch.status}` });
+    if (!VALID_DENSITY.has(ch.density)) findings.push({ severity: 'blocking', msg: `第 ${num} 章 density 非法: ${ch.density}` });
     if (ch.words === null) findings.push({ severity: 'blocking', msg: `第 ${num} 章缺少 words` });
     if (!ch.summary) findings.push({ severity: 'blocking', msg: `第 ${num} 章缺少 summary` });
     if (ch.tension === null) findings.push({ severity: 'blocking', msg: `第 ${num} 章缺少 tension` });
@@ -79,7 +88,7 @@ function main() {
   for (let i = 0; i <= chapters.length - MAX_SAME_DENSITY; i++) {
     const densities = chapters.slice(i, i + MAX_SAME_DENSITY).map(c => c.density);
     if (densities.every(d => d && d === densities[0])) {
-      findings.push({ severity: 'advisory', msg: `第 ${chapters[i].number}-${chapters[i + MAX_SAME_DENSITY - 1].number} 章连续密度"${densities[0]}"` });
+      findings.push({ severity: 'advisory', msg: `第 ${chapters[i].chapter}-${chapters[i + MAX_SAME_DENSITY - 1].chapter} 章连续密度"${densities[0]}"` });
     }
   }
 
@@ -88,7 +97,7 @@ function main() {
     const prev = chapters[i - 1].tension;
     const curr = chapters[i].tension;
     if (prev !== null && curr !== null && Math.abs(curr - prev) > 2) {
-      findings.push({ severity: 'advisory', msg: `第 ${chapters[i - 1].number}→${chapters[i].number} 张力跳变: ${prev}→${curr}` });
+      findings.push({ severity: 'advisory', msg: `第 ${chapters[i - 1].chapter}→${chapters[i].chapter} 张力跳变: ${prev}→${curr}` });
     }
   }
 
@@ -105,21 +114,26 @@ function main() {
 
 function extractChapters(content) {
   const chapters = [];
-  // 简单提取并兼容 - chapter: N 或是 - number: N 的格式
-  const blocks = content.split(/^\s*-\s+(?:chapter|number):\s*/m).slice(1);
-  for (const block of blocks) {
-    const numMatch = block.match(/^(\d+)/);
-    if (!numMatch) continue;
-    const num = parseInt(numMatch[1]);
+  const markers = [...content.matchAll(/^\s*-\s+(chapter|number):\s*(\d+)/gm)];
+  for (let i = 0; i < markers.length; i++) {
+    const marker = markers[i];
+    const nextMarker = markers[i + 1];
+    const blockStart = marker.index + marker[0].length;
+    const blockEnd = nextMarker ? nextMarker.index : content.length;
+    const block = content.slice(blockStart, blockEnd);
+    const key = marker[1];
+    const num = parseInt(marker[2], 10);
     
     const tensionStr = extractValue(block, /tension:\s*(\d+)/);
     const wordsStr = extractValue(block, /words_target:\s*(\d+)/);
     const realWordsStr = extractValue(block, /words:\s*(\d+)/);
     
     chapters.push({
-      number: num,
+      chapter: num,
+      legacyKey: key === 'number' ? key : null,
       title: extractValue(block, /title:\s*["']?([^"'\n]+)/),
       file: extractValue(block, /file:\s*["']?([^"'\n]+)/),
+      outline_file: extractValue(block, /outline_file:\s*["']?([^"'\n]+)/),
       status: extractValue(block, /status:\s*["']?([^"'\n]+)/),
       tension: tensionStr ? parseInt(tensionStr) : null,
       words_target: wordsStr ? parseInt(wordsStr) : null,
@@ -138,7 +152,7 @@ function extractValue(text, pattern) {
 }
 
 function countBeats(text) {
-  const beatsMatch = text.match(/beats:\s*\n([\s\S]*?)(?=\n\s*(?:tension|words|words_target|density|title|summary|file|status|characters|plotlines|functions):|$)/);
+  const beatsMatch = text.match(/beats:\s*\n([\s\S]*?)(?=\n\s*(?:tension|words|words_target|density|title|summary|file|outline_file|status|characters|plotlines|functions):|$)/);
   if (!beatsMatch) return 0;
   const items = beatsMatch[1].match(/^\s*-\s/gm);
   return items ? items.length : 0;
