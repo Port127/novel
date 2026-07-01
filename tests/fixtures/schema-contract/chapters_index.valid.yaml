@@ -1,0 +1,36 @@
+chapters:
+  - chapter: 1
+    title: "第一章 旧梦醒来"
+    file: "content/chapter_001.md"
+    outline_file: "settings/chapter_outlines/chapter_001.md"
+    status: "planned"
+    words_target: 3000
+    words: 0
+    density: "密"
+    tension: 4
+    summary:
+      main_plot: "主角在失败记忆中醒来，发现关键机会提前出现。"
+      character_change: "从麻木自保转向主动抢占先机。"
+      foreshadowing: "埋设旧账本和神秘来电。"
+      emotion: "压迫感 4"
+      hook: "电话那头说出了前世害死他的名字。"
+    beats:
+      - "醒来确认时间线"
+      - "验证前世记忆"
+      - "抢先拿到账本线索"
+    functions:
+      - "开局引入"
+      - "钩子建立"
+    characters:
+      - "林周"
+    beat_ref:
+      act: 1
+      sequence: 1
+      beat: 1
+stats:
+  total: 1
+  planned: 1
+  draft: 0
+  written: 0
+  revised: 0
+  total_words: 0

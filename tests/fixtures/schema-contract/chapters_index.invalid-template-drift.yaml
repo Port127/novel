@@ -1,0 +1,18 @@
+target_chapters: 1
+completed_chapters: 0
+chapters:
+  - number: 1
+    title: "第一章 旧模板"
+    summary: "旧模板摘要"
+    word_count: 3000
+    tension: 8
+    status: planned
+    beats:
+      - "节拍 1"
+      - "节拍 2"
+      - "节拍 3"
+    characters:
+      - "林周"
+    key_events:
+      - "旧字段"
+    emotional_tone: "紧张"
