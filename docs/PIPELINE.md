@@ -1,6 +1,6 @@
 # Skill Pipeline 流程
 
-> 本文档描述 Novel V2 当前的人机协同创作流程。这里的 Pipeline 不是 CLI 自动流水线，而是 Agent 按 Skills 引导、用户实时监督确认的阶段化创作流程。
+> 本文档描述 Novel V4 当前的人机协同创作流程。这里的 Pipeline 不是 CLI 自动流水线，而是 Agent 按 Skills 引导、用户实时监督确认的阶段化创作流程。
 
 ## 一、总原则
 

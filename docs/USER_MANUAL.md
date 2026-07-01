@@ -1,6 +1,6 @@
 # 用户手册
 
-Novel V2 当前的推荐使用方式是：直接与 Agent 对话，由 Agent 按 Skills 引导你完成创作。不要把 CLI 当作主入口。
+Novel V4 当前的推荐使用方式是：直接与 Agent 对话，由 Agent 按 Skills 引导你完成创作。不要把 CLI 当作主入口。
 
 ## 一、开始前先理解
 
