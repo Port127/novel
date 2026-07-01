@@ -91,9 +91,9 @@ ready_for_draft: true
 
 ---
 
-## 细纲 Markdown 模板 (`chapter_{N}.md`)
+## 细纲 Markdown 模板 (`chapter_XXX.md`)
 
-> **说明**：生成 `settings/chapter_outlines/chapter_{N}.md` 时，必须使用以下 Markdown 结构。此结构与上方的 Frontmatter 配合使用。
+> **说明**：生成 `settings/chapter_outlines/chapter_XXX.md` 时，文件名必须三位补零（例如 `chapter_001.md`），并使用以下 Markdown 结构。此结构与上方的 Frontmatter 配合使用。
 
 ```markdown
 ## 细纲（第 N 章）

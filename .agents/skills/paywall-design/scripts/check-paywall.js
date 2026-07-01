@@ -79,42 +79,71 @@ function main() {
 }
 
 function extractPaywallChapter(content) {
-  const match = content.match(/paywall_chapter:\s*(\d+)/);
+  const match = content.match(/^paywall_chapter:\s*(\d+)/m);
   return match ? parseInt(match[1]) : null;
 }
 
-function extractNumber(content, pattern) {
-  const match = content.match(pattern);
+function extractNumber(section, field) {
+  const match = section.match(new RegExp(`^\\s+${field}:\\s*(\\d+)`, 'm'));
   return match ? parseInt(match[1], 10) : null;
 }
 
 function validatePaywallFields(paywallContent, findings, paywallChapter) {
-  const requiredPatterns = [
-    [/paywall_chapter:\s*\d+/, '缺少 paywall_chapter'],
-    [/strategy:\s*\n[\s\S]*?platform:\s*["']?[^"'\n]+/, '缺少 strategy.platform'],
-    [/strategy:\s*\n[\s\S]*?target_free_chapters:\s*\d+/, '缺少 strategy.target_free_chapters'],
-    [/strategy:\s*\n[\s\S]*?reason:\s*["']?[^"'\n]+/, '缺少 strategy.reason'],
-    [/candidate_cuts:\s*\n\s*-\s+chapter:\s*\d+/, '缺少 candidate_cuts'],
-    [/final_cut:\s*\n[\s\S]*?chapter:\s*\d+/, '缺少 final_cut.chapter'],
-    [/final_cut:\s*\n[\s\S]*?free_last_chapter:\s*\d+/, '缺少 final_cut.free_last_chapter'],
-    [/final_cut:\s*\n[\s\S]*?paid_first_chapter:\s*\d+/, '缺少 final_cut.paid_first_chapter'],
-    [/final_cut:\s*\n[\s\S]*?cliffhanger:\s*["']?[^"'\n]+/, '缺少 final_cut.cliffhanger'],
-    [/final_cut:\s*\n[\s\S]*?payoff_promise:\s*["']?[^"'\n]+/, '缺少 final_cut.payoff_promise'],
-    [/commercial_review:\s*\n[\s\S]*?verdict:\s*["']?(pass|rework)/, '缺少 commercial_review.verdict'],
-    [/commercial_review:\s*\n[\s\S]*?notes:\s*["']?[^"'\n]+/, '缺少 commercial_review.notes'],
-  ];
+  const strategy = extractTopLevelSection(paywallContent, 'strategy');
+  const candidateCuts = extractTopLevelSection(paywallContent, 'candidate_cuts');
+  const finalCut = extractTopLevelSection(paywallContent, 'final_cut');
+  const commercialReview = extractTopLevelSection(paywallContent, 'commercial_review');
 
-  for (const [pattern, message] of requiredPatterns) {
-    if (!pattern.test(paywallContent)) findings.push({ severity: 'blocking', message });
-  }
+  if (!/^paywall_chapter:\s*\d+/m.test(paywallContent)) findings.push({ severity: 'blocking', message: '缺少 paywall_chapter' });
+  if (!hasScalarField(strategy, 'platform')) findings.push({ severity: 'blocking', message: '缺少 strategy.platform' });
+  if (!hasNumberField(strategy, 'target_free_chapters')) findings.push({ severity: 'blocking', message: '缺少 strategy.target_free_chapters' });
+  if (!hasScalarField(strategy, 'reason')) findings.push({ severity: 'blocking', message: '缺少 strategy.reason' });
+  if (!/^\s+-\s+chapter:\s*\d+/m.test(candidateCuts)) findings.push({ severity: 'blocking', message: '缺少 candidate_cuts' });
+  if (!hasNumberField(finalCut, 'chapter')) findings.push({ severity: 'blocking', message: '缺少 final_cut.chapter' });
+  if (!hasNumberField(finalCut, 'free_last_chapter')) findings.push({ severity: 'blocking', message: '缺少 final_cut.free_last_chapter' });
+  if (!hasNumberField(finalCut, 'paid_first_chapter')) findings.push({ severity: 'blocking', message: '缺少 final_cut.paid_first_chapter' });
+  if (!hasScalarField(finalCut, 'cliffhanger')) findings.push({ severity: 'blocking', message: '缺少 final_cut.cliffhanger' });
+  if (!hasScalarField(finalCut, 'payoff_promise')) findings.push({ severity: 'blocking', message: '缺少 final_cut.payoff_promise' });
+  if (!/^\s+verdict:\s*["']?(pass|rework)["']?\s*$/m.test(commercialReview)) findings.push({ severity: 'blocking', message: '缺少 commercial_review.verdict' });
+  if (!hasScalarField(commercialReview, 'notes')) findings.push({ severity: 'blocking', message: '缺少 commercial_review.notes' });
 
-  const finalChapter = extractNumber(paywallContent, /final_cut:\s*\n[\s\S]*?chapter:\s*(\d+)/);
+  const finalChapter = extractNumber(finalCut, 'chapter');
+  const freeLastChapter = extractNumber(finalCut, 'free_last_chapter');
+  const paidFirstChapter = extractNumber(finalCut, 'paid_first_chapter');
   if (finalChapter !== null && finalChapter <= 0) {
     findings.push({ severity: 'blocking', message: `final_cut.chapter 必须大于 0: ${finalChapter}` });
   }
   if (finalChapter && paywallChapter && finalChapter !== paywallChapter) {
     findings.push({ severity: 'blocking', message: `final_cut.chapter (${finalChapter}) 必须等于 paywall_chapter (${paywallChapter})` });
   }
+  if (freeLastChapter && paywallChapter && freeLastChapter !== paywallChapter) {
+    findings.push({ severity: 'blocking', message: `final_cut.free_last_chapter (${freeLastChapter}) 必须等于 paywall_chapter (${paywallChapter})` });
+  }
+  if (paidFirstChapter && paywallChapter && paidFirstChapter !== paywallChapter + 1) {
+    findings.push({ severity: 'blocking', message: `final_cut.paid_first_chapter (${paidFirstChapter}) 必须等于 paywall_chapter + 1 (${paywallChapter + 1})` });
+  }
+}
+
+function extractTopLevelSection(content, key) {
+  const lines = content.split(/\r?\n/);
+  const start = lines.findIndex(line => new RegExp(`^${key}:\\s*(?:#.*)?$`).test(line));
+  if (start === -1) return '';
+
+  const section = [];
+  for (let i = start + 1; i < lines.length; i++) {
+    if (/^[A-Za-z_][\w-]*:\s*/.test(lines[i])) break;
+    section.push(lines[i]);
+  }
+  return section.join('\n');
+}
+
+function hasNumberField(section, field) {
+  return new RegExp(`^\\s+${field}:\\s*\\d+\\s*(?:#.*)?$`, 'm').test(section);
+}
+
+function hasScalarField(section, field) {
+  const match = section.match(new RegExp(`^\\s+${field}:\\s*["']?([^"'#\\n]+)["']?\\s*(?:#.*)?$`, 'm'));
+  return Boolean(match && match[1].trim());
 }
 
 function extractTensions(content) {

@@ -1,0 +1,18 @@
+paywall_chapter: 20
+strategy:
+  platform: "番茄"
+  target_free_chapters: 20
+  reason: "免费末章形成强悬念，付费首章立即兑现反击。"
+candidate_cuts:
+  - chapter: 20
+    tension: 5
+    reason: "主线危机和反派压迫同时抵达。"
+final_cut:
+  chapter: 20
+  free_last_chapter: 19
+  paid_first_chapter: 22
+  cliffhanger: "主角打开账本，却发现第一页写着自己的名字。"
+  payoff_promise: "付费首章揭示账本来源，并让主角完成第一次反制。"
+commercial_review:
+  verdict: "pass"
+  notes: "此文件故意让免费末章和付费首章错位。"

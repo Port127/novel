@@ -1,0 +1,17 @@
+paywall_chapter: 20
+strategy:
+  platform: "番茄"
+  target_free_chapters: 20
+candidate_cuts:
+  - chapter: 20
+    tension: 5
+    reason: "候选理由不能替代 strategy.reason。"
+final_cut:
+  chapter: 20
+  free_last_chapter: 20
+  paid_first_chapter: 21
+  cliffhanger: "主角打开账本，却发现第一页写着自己的名字。"
+  payoff_promise: "付费首章揭示账本来源，并让主角完成第一次反制。"
+commercial_review:
+  verdict: "pass"
+  notes: "此文件故意缺少 strategy.reason。"
